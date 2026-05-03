@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,24 +23,55 @@ import { NewsletterModule } from './newsletter/newsletter.module';
 import { PortfolioUpdateModule } from './portfolio-update/portfolio-update.module';
 import { HealthModule } from './health/health.module';
 import { ResumeModule } from './resume/resume.module';
+import { parseDatabaseUrl } from './database/parse-database-url';
 
 @Module({
   imports: [
     CqrsModule.forRoot(),
-    // Load .env everywhere
-    ConfigModule.forRoot({ isGlobal: true }),
+    // Load .env from backend folder whether you start Nest from repo root or backend/
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '.env'),
+        join(process.cwd(), 'backend', '.env'),
+        join(process.cwd(), '.env'),
+      ],
+    }),
 
     // PostgreSQL connection via TypeORM
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject:  [ConfigService],
-      useFactory: (cfg: ConfigService) => ({
+      useFactory: (cfg: ConfigService) => {
+        const isProd = cfg.get('NODE_ENV', 'development') === 'production';
+        const fromUrl = parseDatabaseUrl(cfg.get<string>('DATABASE_URL') || '');
+        const host = fromUrl?.host ?? cfg.get('DB_HOST', 'localhost');
+        const sslExplicit = cfg.get('DB_SSL');
+        const useSsl =
+          sslExplicit === 'true' ||
+          sslExplicit === '1' ||
+          (sslExplicit !== 'false' &&
+            sslExplicit !== '0' &&
+            isProd &&
+            host !== 'localhost' &&
+            host !== '127.0.0.1');
+
+        const syncBootstrap = cfg.get('DATABASE_SYNC') === 'true';
+        const synchronize = syncBootstrap || !isProd;
+        if (syncBootstrap && isProd) {
+          console.warn(
+            '⚠ DATABASE_SYNC=true → TypeORM synchronize is ON in production. Create tables once, redeploy without this var, then rely on migrations for future schema changes.',
+          );
+        }
+
+        return {
         type:        'postgres',
-        host:        cfg.get('DB_HOST',   'localhost'),
-        port:        cfg.get<number>('DB_PORT', 5432),
-        username:    cfg.get('DB_USER',   'postgres'),
-        password:    cfg.get('DB_PASS',   'password'),
-        database:    cfg.get('DB_NAME',   'portfolio_db'),
+        host,
+        port:        fromUrl?.port ?? cfg.get<number>('DB_PORT', 5432),
+        username:    fromUrl?.username ?? cfg.get('DB_USER', 'postgres'),
+        password:    fromUrl?.password ?? cfg.get('DB_PASS', 'password'),
+        database:    fromUrl?.database ?? cfg.get('DB_NAME', 'portfolio_db'),
+        ...(useSsl ? { ssl: { rejectUnauthorized: cfg.get('DB_SSL_REJECT_UNAUTHORIZED') !== 'false' } } : {}),
         entities:    [
           Visitor,
           ContactMessage,
@@ -49,9 +81,10 @@ import { ResumeModule } from './resume/resume.module';
           NewsletterSubscriber,
           PortfolioUpdate,
         ],
-        synchronize: cfg.get('NODE_ENV', 'development') !== 'production',
+        synchronize,
         logging:     false,
-      }),
+        };
+      },
     }),
 
     // Rate-limit: 60 requests / minute per IP

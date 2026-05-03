@@ -1,0 +1,5 @@
+# Point Railway’s “Root Directory” at `backend`.
+# Nixpacks installs deps and runs `npm run build` automatically when it sees package.json scripts.
+[deploy]
+startCommand = "npm run start"
+restartPolicyType = "ON_FAILURE"

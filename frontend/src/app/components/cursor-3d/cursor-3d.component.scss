@@ -2,12 +2,18 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 140px;
-  height: 140px;
+  width: 112px;
+  height: 112px;
   pointer-events: none;
   z-index: 10048;
   transform: translate(-50%, -50%);
-  mix-blend-mode: normal;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  filter: drop-shadow(0 2px 12px rgba(74, 222, 128, 0.28));
+}
+
+.cv.ready {
+  opacity: 1;
 }
 
 .cv.off {

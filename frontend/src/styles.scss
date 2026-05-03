@@ -84,6 +84,12 @@ body.cursor-3d-on {
   cursor: none;
 }
 
+/* Restore native caret/text cursor over editable fields for usability */
+body.cursor-3d-on input,
+body.cursor-3d-on textarea {
+  cursor: text !important;
+}
+
 section {
   position: relative;
 }

@@ -1,0 +1,3 @@
+# Railway: second service pointing at `services/resume-analyzer`; build from Dockerfile recommended.
+[deploy]
+restartPolicyType = "ON_FAILURE"
