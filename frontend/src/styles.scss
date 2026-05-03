@@ -1,0 +1,99 @@
+/* src/styles.scss — Global styles */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+:root {
+  --bg: #0b0f14;
+  --text: #e8edf3;
+  --muted: #98a3b3;
+  --surface-1: #111823;
+  --surface-2: #16202d;
+  --line: #253244;
+  --accent: #34d399;
+  --accent-2: #60a5fa;
+}
+
+body {
+  background:   var(--bg);
+  color:        var(--text);
+  font-family:  'DM Mono', monospace;
+  overflow-x:   hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .3s ease, color .3s ease;
+}
+
+body.light-theme {
+  --bg: #f6f9fc;
+  --text: #18202c;
+  --muted: #4f5f75;
+  --surface-1: #ffffff;
+  --surface-2: #eef3f9;
+  --line: #d7e1ee;
+  --accent: #0f9b74;
+  --accent-2: #2563eb;
+}
+
+:root {
+  --container-max: 1180px;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(0, 229, 160, 0.55);
+  outline-offset: 2px;
+}
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Selection */
+::selection { background: rgba(0,229,160,.2); color: var(--text); }
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  opacity: .35;
+}
+
+body.light-theme::before {
+  opacity: .08;
+}
+
+/* Utility classes used across components */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease, transform .7s ease;
+  &.visible { opacity: 1; transform: translateY(0); }
+}
+
+section {
+  position: relative;
+}
+
+section > * {
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.tilt-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-3px);
+}

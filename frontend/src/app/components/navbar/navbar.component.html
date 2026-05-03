@@ -1,0 +1,36 @@
+<!-- navbar.component.html -->
+<nav [class.scrolled]="scrolled">
+  <a class="logo" href="#">KK<span>.</span>dev</a>
+  <ul class="links">
+    <li *ngFor="let l of links">
+      <a [href]="'#'+l.id" (click)="scrollTo(l.id,$event)">{{ l.label }}</a>
+    </li>
+  </ul>
+  <button class="admin-btn theme-btn" (click)="toggleTheme()">
+    {{ theme === 'dark' ? '☀ Light' : '🌙 Dark' }}
+  </button>
+  <a class="admin-btn logs-btn" href="/insights">Visitor Logs</a>
+  <button *ngIf="!isLoggedIn()" class="admin-btn" (click)="openLogin()">⚙ Admin</button>
+  <button *ngIf="isLoggedIn()"  class="admin-btn active" (click)="goAdmin()">⚙ Dashboard</button>
+</nav>
+
+<!-- Login Modal -->
+<div class="overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-hdr">
+      <span class="modal-title">Admin <em>Login</em></span>
+      <button class="modal-x" (click)="closeModal()">✕</button>
+    </div>
+    <p class="modal-sub">Enter your admin password to access the visitor dashboard.</p>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="••••••••••" [class.err]="loginError"/>
+        <div class="err-msg" *ngIf="loginError">{{ loginError }}</div>
+      </div>
+      <button type="submit" class="login-btn" [disabled]="loginLoading">
+        {{ loginLoading ? 'Signing in…' : 'Sign In →' }}
+      </button>
+    </form>
+  </div>
+</div>

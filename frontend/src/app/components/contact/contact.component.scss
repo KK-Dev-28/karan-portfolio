@@ -1,0 +1,66 @@
+/* contact.component.scss */
+.contact-sec { padding:7rem 3.5rem; background:#08090a; }
+.contact-grid { display:grid; grid-template-columns:1fr 1.15fr; gap:5rem; align-items:start; }
+
+.sec-label { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:#00e5a0; margin-bottom:1rem; display:flex; align-items:center; gap:.7rem;
+  &::before { content:''; width:22px; height:1px; background:#00e5a0; }
+}
+.sec-title { font-family:'Syne',sans-serif; font-size:clamp(2.5rem,5vw,4.5rem); font-weight:800; letter-spacing:-.03em; line-height:.93; margin-bottom:1.5rem; color:#ecedf2; }
+.italic { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; color:#8a8c9e; }
+.sub { font-size:.82rem; color:#5e6070; line-height:1.85; margin-bottom:2rem; }
+
+.info-list { display:flex; flex-direction:column; gap:1.4rem; margin-bottom:2rem; }
+.info-item { display:flex; gap:1rem; align-items:flex-start; }
+.ii-icon  { font-size:1.1rem; margin-top:.1rem; }
+.ii-label { font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:#5e6070; margin-bottom:.25rem; }
+.ii-val   { font-size:.78rem; color:#ecedf2; text-decoration:none; display:block; transition:color .2s; &:hover{color:#00e5a0;} }
+
+.quick-links { display:flex; flex-wrap:wrap; gap:.6rem; }
+.ql {
+  display:inline-flex; align-items:center; gap:.35rem;
+  font-size:.65rem; letter-spacing:.08em; text-transform:uppercase;
+  padding:.6rem 1.1rem; border:1px solid #1c1d21; color:#5e6070;
+  text-decoration:none; transition:all .2s;
+  &.wa { border-color:rgba(37,211,102,.2); color:#25d366; background:rgba(37,211,102,.06); &:hover{background:rgba(37,211,102,.14);} }
+  &.gh:hover { border-color:#5e6070; color:#ecedf2; }
+  &.ml { border-color:rgba(56,189,248,.2); color:#38bdf8; background:rgba(56,189,248,.06); &:hover{background:rgba(56,189,248,.14);} }
+}
+
+/* Form */
+.form-col { background:linear-gradient(180deg,#111318 0%,#0f1012 100%); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:2.5rem; box-shadow:0 16px 28px rgba(0,0,0,.18); }
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.field { margin-bottom:1.1rem;
+  label { display:block; font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:#5e6070; margin-bottom:.42rem; }
+  input, textarea {
+    width:100%; background:#090b0f; border:1px solid rgba(255,255,255,.08); color:#ecedf2;
+    font-family:'DM Mono',monospace; font-size:.8rem; padding:.75rem 1rem;
+    outline:none; transition:border-color .2s; resize:vertical; box-sizing:border-box;
+    &:focus  { border-color:rgba(0,229,160,.45); box-shadow:0 0 0 3px rgba(0,229,160,.08); }
+    &::placeholder { color:#2e2f35; }
+  }
+}
+.ferr { font-size:.62rem; color:#ff6b35; margin-top:.3rem; }
+.err-banner { background:rgba(255,107,53,.07); border:1px solid rgba(255,107,53,.2); color:#ff6b35; font-size:.72rem; padding:.75rem 1rem; margin-bottom:1rem; }
+
+.submit-btn {
+  width:100%; background:#00e5a0; color:#000; font-family:'DM Mono',monospace;
+  font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; border:none;
+  padding:1rem; cursor:pointer; transition:all .2s;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  &:hover:not(:disabled) { opacity:.88; transform:translateY(-1px); }
+  &:disabled { opacity:.5; cursor:not-allowed; }
+}
+
+/* Success */
+.success-box { text-align:center; padding:3rem 1rem;
+  .success-icon  { font-size:3rem; margin-bottom:1rem; }
+  .success-title { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:#00e5a0; margin-bottom:.75rem; }
+  p { font-size:.8rem; color:#5e6070; line-height:1.8; margin-bottom:1.5rem; }
+  button { background:none; border:1px solid #1c1d21; color:#5e6070; font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; padding:.6rem 1.2rem; cursor:pointer; transition:all .2s; &:hover{border-color:#00e5a0;color:#00e5a0;} }
+}
+
+@media(max-width:900px) {
+  .contact-sec  { padding:5rem 1.5rem; }
+  .contact-grid { grid-template-columns:1fr; gap:3rem; }
+  .row2         { grid-template-columns:1fr; }
+}

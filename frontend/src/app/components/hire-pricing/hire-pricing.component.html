@@ -1,0 +1,42 @@
+<section class="hire-sec" id="hire">
+  <div class="sec-label">Engage</div>
+  <h2 class="sec-title">Enterprise-ready engagements,<br><span class="italic">secured checkout</span></h2>
+  <p class="lead">
+    Deposits are processed with <strong>Stripe</strong> (cards, wallets where enabled). Funds settle to your Stripe account; use
+    <a href="https://stripe.com/connect" rel="noopener noreferrer" target="_blank">Stripe Connect</a>
+    if you later need split payouts to vendors.
+  </p>
+
+  <div class="email-row" *ngIf="catalog">
+    <label for="pay-email">Receipt email (optional)</label>
+    <input id="pay-email" type="email" [(ngModel)]="email" placeholder="you@company.com" autocomplete="email" />
+  </div>
+
+  <div class="catalog-error" *ngIf="loadError">
+    Could not load pricing from the API. Ensure the backend is running and try again.
+  </div>
+  <div class="checkout-err" *ngIf="checkoutError">{{ checkoutError }}</div>
+
+  <div class="grid" *ngIf="catalog as c">
+    <div class="card" *ngFor="let t of c.tiers" [class.featured]="t.id === 'standard'">
+      <div class="tier-top">
+        <span class="tier-id">{{ t.id }}</span>
+        <span class="price">{{ formatMoney(t.amountCents, c.currency) }}</span>
+      </div>
+      <div class="tier-label">{{ t.label }}</div>
+      <p class="tier-desc">{{ t.description }}</p>
+      <button
+        type="button"
+        class="pay-btn"
+        (click)="pay(t.id)"
+        [disabled]="busyTier !== null"
+      >
+        {{ busyTier === t.id ? 'Redirecting…' : 'Pay deposit — Stripe' }}
+      </button>
+    </div>
+  </div>
+
+  <p class="fine-print">
+    You will leave this site to complete payment on Stripe’s secure page. Test mode uses Stripe test cards only.
+  </p>
+</section>

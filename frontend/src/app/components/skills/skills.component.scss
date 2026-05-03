@@ -1,0 +1,30 @@
+/* skills.component.scss */
+.skills-sec { padding:7rem 3.5rem; background:#08090a; }
+.skills-cols { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start; }
+.sec-label { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:#00e5a0; margin-bottom:1rem; display:flex; align-items:center; gap:.7rem; &::before{content:'';width:22px;height:1px;background:#00e5a0;} }
+.sec-title { font-family:'Syne',sans-serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:800; letter-spacing:-.02em; color:#ecedf2; margin-bottom:.75rem; }
+.italic { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; color:#8a8c9e; }
+.sub { font-size:.8rem; color:#5e6070; line-height:1.85; margin-bottom:2.5rem; }
+.bars { display:flex; flex-direction:column; gap:1.2rem; }
+.bar-row { display:flex; flex-direction:column; gap:.38rem; }
+.bar-top { display:flex; justify-content:space-between; }
+.bar-name { font-size:.7rem; color:#8a8c9e; }
+.bar-pct  { font-size:.7rem; color:#00e5a0; }
+.bar-bg   { height:3px; background:#1c1d21; border-radius:2px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:2px; transition:width 1.3s cubic-bezier(.23,1,.32,1);
+  &.green{background:#00e5a0;} &.purple{background:#7b61ff;} &.orange{background:#ff6b35;} &.blue{background:#38bdf8;}
+}
+
+.award-card,.tags-card,.ai-card { background:#0f1012; border:1px solid #1c1d21; padding:1.8rem; margin-bottom:1.2rem; position:relative; overflow:hidden;
+  &::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(to bottom,#00e5a0,#7b61ff); }
+}
+.award-icon  { font-size:2rem; margin-bottom:.75rem; }
+.award-title { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; color:#ecedf2; margin-bottom:.4rem; }
+.award-desc  { font-size:.72rem; color:#5e6070; line-height:1.75; }
+.tags-title  { font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:#5e6070; margin-bottom:.9rem; }
+.tags { display:flex; flex-wrap:wrap; gap:.4rem; }
+.tag  { font-size:.6rem; letter-spacing:.07em; text-transform:uppercase; padding:.22rem .55rem; border:1px solid #1c1d21; color:#5e6070; transition:all .2s; &:hover{border-color:#00e5a0;color:#00e5a0;} }
+.ai-title { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700; color:#ecedf2; margin-bottom:.4rem; }
+.ai-desc  { font-size:.72rem; color:#5e6070; line-height:1.75; }
+
+@media(max-width:900px){ .skills-sec{padding:5rem 1.5rem;} .skills-cols{grid-template-columns:1fr; gap:3rem;} }

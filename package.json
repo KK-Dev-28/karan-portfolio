@@ -1,0 +1,11 @@
+{
+  "name": "karan-portfolio-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix frontend start\" \"npm --prefix backend run start:dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

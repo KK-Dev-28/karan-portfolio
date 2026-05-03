@@ -1,0 +1,13 @@
+<section class="faq-sec" id="faq">
+  <div class="sec-label">FAQ</div>
+  <h2 class="sec-title">Answers <span class="italic">up front</span></h2>
+  <div class="list">
+    <div class="item" *ngFor="let f of faqs; let i = index">
+      <button type="button" class="q-row" (click)="toggle(i)" [attr.aria-expanded]="openIndex === i">
+        <span>{{ f.q }}</span>
+        <span class="chev">{{ openIndex === i ? '−' : '+' }}</span>
+      </button>
+      <div class="a" *ngIf="openIndex === i">{{ f.a }}</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,40 @@
+/* gigs.component.scss */
+.gigs-sec { padding:7rem 3.5rem; background:#0f1012; border-top:1px solid #1c1d21; border-bottom:1px solid #1c1d21; }
+
+.sec-label { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:#00e5a0; margin-bottom:1rem; display:flex; align-items:center; gap:.7rem;
+  &::before { content:''; width:22px; height:1px; background:#00e5a0; }
+}
+.sec-title { font-family:'Syne',sans-serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:800; letter-spacing:-.02em; color:#ecedf2; margin-bottom:3.5rem; line-height:1.1; }
+.italic { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; color:#8a8c9e; }
+
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-bottom:2.5rem; }
+
+.card {
+  background:#08090a; border:1px solid #1c1d21; padding:2rem;
+  position:relative; overflow:hidden; transition:all .3s;
+  display:flex; flex-direction:column;
+
+  &::before { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(to right,#00e5a0,#7b61ff); transform:scaleX(0); transform-origin:left; transition:transform .35s; }
+  &:hover { border-color:rgba(0,229,160,.25); transform:translateY(-3px); &::before{transform:scaleX(1);} }
+}
+
+.gig-top  { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; }
+.gig-icon { font-size:1.8rem; }
+.gig-time { font-size:.58rem; letter-spacing:.1em; text-transform:uppercase; background:rgba(0,229,160,.08); border:1px solid rgba(0,229,160,.18); color:#00e5a0; padding:.2rem .5rem; white-space:nowrap; }
+
+.gig-name { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; color:#ecedf2; margin-bottom:.5rem; }
+.gig-desc { font-size:.73rem; color:#5e6070; line-height:1.8; flex:1; margin-bottom:1.5rem; }
+
+.gig-cta {
+  display:inline-block; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;
+  background:rgba(37,211,102,.08); border:1px solid rgba(37,211,102,.2); color:#25d366;
+  padding:.55rem 1rem; text-decoration:none; transition:all .2s; align-self:flex-start;
+  &:hover { background:rgba(37,211,102,.16); }
+}
+
+.bottom-note { text-align:center; font-size:.75rem; color:#5e6070; display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap;
+  a { color:#00e5a0; text-decoration:none; &:hover{text-decoration:underline;} }
+}
+
+@media(max-width:900px) { .gigs-sec{padding:5rem 1.5rem;} .grid{grid-template-columns:1fr 1fr;} }
+@media(max-width:600px) { .grid{grid-template-columns:1fr;} }

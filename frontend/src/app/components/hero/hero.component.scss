@@ -1,0 +1,32 @@
+/* hero.component.scss */
+.hero { min-height:100vh; display:flex; align-items:center; padding:0 3.5rem; position:relative; overflow:hidden; background:linear-gradient(180deg,var(--bg) 0%, #0d141d 100%); }
+.grid-bg { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px); background-size:55px 55px; mask-image:radial-gradient(ellipse 90% 80% at 50% 50%,black 20%,transparent 100%); }
+.glow1 { position:absolute; width:700px; height:700px; background:radial-gradient(circle,color-mix(in srgb,var(--accent) 18%, transparent) 0%,transparent 70%); top:-100px; left:-200px; animation:gp 7s ease-in-out infinite; }
+.glow2 { position:absolute; width:500px; height:500px; background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 18%, transparent) 0%,transparent 70%); bottom:0; right:0; animation:gp 9s ease-in-out infinite reverse; }
+@keyframes gp { 0%,100%{opacity:.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.08)} }
+
+.content { position:relative; z-index:2; max-width:860px; animation:fu .9s ease both; }
+
+.badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(0,229,160,.08); border:1px solid rgba(0,229,160,.22); padding:.34rem .85rem; font-size:.62rem; letter-spacing:.13em; text-transform:uppercase; color:#00e5a0; margin-bottom:2rem; border-radius:999px; }
+.dot { width:6px; height:6px; background:#00e5a0; border-radius:50%; animation:blink 2s infinite; display:inline-block; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.15} }
+
+h1 { font-family:'Syne',sans-serif; font-size:clamp(3.5rem,8vw,7.5rem); font-weight:800; line-height:.93; letter-spacing:-.035em; margin-bottom:1.2rem; color:var(--text); }
+.italic { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; color:var(--muted); em{color:var(--accent);font-style:normal;} }
+
+.role { font-size:.92rem; color:var(--muted); letter-spacing:.04em; margin-bottom:1.5rem; span{color:var(--accent);} }
+.desc { font-size:.86rem; line-height:1.95; color:var(--muted); max-width:580px; margin-bottom:2.5rem; }
+
+.cta { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.btn-primary { background:#00e5a0; color:#000; padding:.82rem 1.8rem; font-family:'DM Mono',monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; border:none; cursor:pointer; transition:all .2s; clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); &:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,229,160,.28);} }
+.btn-wa { background:rgba(37,211,102,.1); border:1px solid rgba(37,211,102,.25); color:#25d366; padding:.82rem 1.6rem; font-family:'DM Mono',monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; transition:all .2s; &:hover{background:rgba(37,211,102,.18);} }
+.btn-ghost { background:none; border:1px solid #1c1d21; color:#5e6070; padding:.82rem 1.5rem; font-family:'DM Mono',monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:all .2s; &:hover{border-color:#5e6070;color:#ecedf2;} }
+
+.floats { position:absolute; right:3.5rem; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:1.2rem; }
+.fc { background:rgba(15,16,18,.8); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(6px); padding:1.2rem 1.5rem; min-width:175px; border-radius:8px; }
+.fn { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:#ecedf2; span{color:#00e5a0;} }
+.fl { font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:#5e6070; margin-top:.2rem; }
+.available { display:flex; align-items:center; gap:.6rem; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:#00e5a0; background:rgba(0,229,160,.07); border-color:rgba(0,229,160,.18); padding:.9rem 1.2rem; }
+
+@keyframes fu { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+@media(max-width:900px) { .hero{padding:6.5rem 1.5rem 3.5rem;} .floats{display:none;} h1{font-size:clamp(2.7rem,12vw,4rem);} .desc{font-size:.8rem;} }

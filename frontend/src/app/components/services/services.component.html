@@ -1,0 +1,12 @@
+<!-- services.component.html -->
+<section class="services-sec" id="services">
+  <div class="sec-label">What I Do</div>
+  <h2 class="sec-title">End-to-end solutions,<br><span class="italic">delivered with care</span></h2>
+  <div class="grid">
+    <div class="card" [class]="s.color" *ngFor="let s of services">
+      <div class="icon">{{ s.icon }}</div>
+      <div class="name">{{ s.name }}</div>
+      <div class="desc">{{ s.desc }}</div>
+    </div>
+  </div>
+</section>

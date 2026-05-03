@@ -1,0 +1,25 @@
+<!-- gigs.component.html -->
+<section class="gigs-sec" id="gigs">
+  <div class="sec-label">Quick Delivery Services</div>
+  <h2 class="sec-title">Need something fast?<br><span class="italic">I've got you covered.</span></h2>
+
+  <div class="grid">
+    <div class="card" *ngFor="let g of gigs">
+      <div class="gig-top">
+        <span class="gig-icon">{{ g.icon }}</span>
+        <span class="gig-time">{{ g.time }}</span>
+      </div>
+      <div class="gig-name">{{ g.name }}</div>
+      <p class="gig-desc">{{ g.desc }}</p>
+      <a class="gig-cta" [href]="whatsapp(g.wa)" target="_blank">
+        💬 Order on WhatsApp →
+      </a>
+    </div>
+  </div>
+
+  <div class="bottom-note">
+    <span>Or email me at</span>
+    <a href="mailto:kkcode28012002&#64;gmail.com">kkcode28012002&#64;gmail.com</a>
+    <span>for any custom requirement.</span>
+  </div>
+</section>

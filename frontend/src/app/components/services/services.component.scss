@@ -1,0 +1,16 @@
+/* services.component.scss */
+.services-sec { padding:7rem 3.5rem; background:var(--surface-1); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.sec-label { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem; display:flex; align-items:center; gap:.7rem; &::before{content:'';width:22px;height:1px;background:var(--accent);} }
+.sec-title { font-family:'Syne',sans-serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:800; letter-spacing:-.02em; color:var(--text); margin-bottom:3.5rem; line-height:1.1; }
+.italic { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; color:var(--muted); }
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+.card { background:linear-gradient(180deg,var(--surface-2) 0%, var(--surface-1) 100%); border:1px solid color-mix(in srgb,var(--line) 90%, #fff 10%); border-radius:10px; padding:2rem 1.8rem; transition:all .3s; position:relative; overflow:hidden;
+  &::before { content:''; position:absolute; top:0; left:0; width:2px; height:0; transition:height .35s; }
+  &.green::before{background:#00e5a0;} &.purple::before{background:#7b61ff;} &.orange::before{background:#ff6b35;} &.blue::before{background:#38bdf8;}
+  &:hover { background:#151821; transform:translateY(-3px); border-color:rgba(0,229,160,.18); &::before{height:100%;} }
+}
+.icon { font-size:1.5rem; margin-bottom:.9rem; }
+.name { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; color:var(--text); margin-bottom:.5rem; }
+.desc { font-size:.74rem; color:var(--muted); line-height:1.8; }
+@media(max-width:900px){ .services-sec{padding:5rem 1.5rem;} .grid{grid-template-columns:1fr 1fr;} }
+@media(max-width:600px){ .grid{grid-template-columns:1fr;} }

@@ -1,0 +1,32 @@
+<!-- footer.component.html -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo">KK<span>.</span>dev</div>
+      <p class="tagline">Full Stack Developer · Angular · .NET · NestJS · PostgreSQL</p>
+    </div>
+    <div class="footer-links">
+      <div class="fl-col">
+        <div class="fl-title">Navigate</div>
+        <a (click)="go('services')"   href="#">Services</a>
+        <a (click)="go('skills')"     href="#">Skills</a>
+        <a (click)="go('projects')"   href="#">Projects</a>
+        <a (click)="go('experience')" href="#">Experience</a>
+        <a (click)="go('gigs')"       href="#">Gigs</a>
+        <a (click)="go('contact')"    href="#">Contact</a>
+      </div>
+      <div class="fl-col">
+        <div class="fl-title">Connect</div>
+        <a href="https://wa.me/918360426467" target="_blank">WhatsApp #1</a>
+        <a href="https://wa.me/916239589464" target="_blank">WhatsApp #2</a>
+        <a href="mailto:kkcode28012002@gmail.com">Email</a>
+        <a href="https://github.com/Karan28012002" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© {{ year }} <em>Karan Kapoor</em> · Ludhiana, Punjab, India</span>
+    <span class="stack-pill">Angular · NestJS · PostgreSQL</span>
+  </div>
+</footer>

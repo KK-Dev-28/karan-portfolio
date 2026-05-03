@@ -1,0 +1,104 @@
+<!-- contact.component.html -->
+<section class="contact-sec" id="contact">
+  <div class="contact-grid">
+
+    <!-- Left: Info -->
+    <div class="info-col">
+      <div class="sec-label">Get In Touch</div>
+      <h2 class="sec-title">Let's build<br><span class="italic">something great</span></h2>
+      <p class="sub">Available for freelance, remote work &amp; part-time engagements. WhatsApp gets the fastest response — usually within minutes.</p>
+
+      <div class="info-list">
+        <div class="info-item">
+          <span class="ii-icon">📧</span>
+          <div>
+            <div class="ii-label">Email</div>
+           <a class="ql ml" href="mailto:kkcode28012002&#64;gmail.com">📧 Email</a>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="ii-icon">📞</span>
+          <div>
+            <div class="ii-label">Phone / WhatsApp</div>
+            <div class="ii-val">+91-8360426467</div>
+            <div class="ii-val">+91-6239589464</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="ii-icon">📍</span>
+          <div>
+            <div class="ii-label">Location</div>
+            <div class="ii-val">Ludhiana, Punjab · Remote Ready</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="ii-icon">🐙</span>
+          <div>
+            <div class="ii-label">GitHub</div>
+            <a class="ii-val" href="https://github.com/Karan28012002" target="_blank">github.com/Karan28012002</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-links">
+        <a class="ql wa" href="https://wa.me/918360426467" target="_blank">💬 WhatsApp #1</a>
+        <a class="ql wa" href="https://wa.me/916239589464" target="_blank">💬 WhatsApp #2</a>
+        <a class="ql gh" href="https://github.com/Karan28012002" target="_blank">🐙 GitHub</a>
+        <a class="ql ml" href="mailto:kkcode28012002@gmail.com">📧 Email</a>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="form-col">
+
+      <!-- Success state -->
+      <div class="success-box" *ngIf="success">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Message Sent!</div>
+        <p>I'll get back to you within 24 hours. For a faster reply, WhatsApp me directly.</p>
+        <button (click)="reset()">Send Another Message</button>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="!success">
+        <div class="row2">
+          <div class="field">
+            <label>Your Name *</label>
+            <input type="text" formControlName="name" placeholder="John Smith"/>
+            <div class="ferr" *ngIf="f['name'].touched && f['name'].errors?.['required']">Name is required</div>
+          </div>
+          <div class="field">
+            <label>Email *</label>
+            <input type="email" formControlName="email" placeholder="you@email.com"/>
+            <div class="ferr" *ngIf="f['email'].touched && f['email'].errors?.['email']">Valid email required</div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Phone (optional)</label>
+            <input type="tel" formControlName="phone" placeholder="+91 XXXXX XXXXX"/>
+          </div>
+          <div class="field">
+            <label>Subject *</label>
+            <input type="text" formControlName="subject" placeholder="Freelance / Collaboration"/>
+            <div class="ferr" *ngIf="f['subject'].touched && f['subject'].errors?.['required']">Subject is required</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Message *</label>
+          <textarea formControlName="message" rows="5" placeholder="Describe your project or requirement…"></textarea>
+          <div class="ferr" *ngIf="f['message'].touched && f['message'].errors?.['required']">Message is required</div>
+        </div>
+
+        <div class="err-banner" *ngIf="errMsg">{{ errMsg }}</div>
+
+        <button type="submit" class="submit-btn" [disabled]="loading">
+          {{ loading ? 'Sending…' : 'Send Message →' }}
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>

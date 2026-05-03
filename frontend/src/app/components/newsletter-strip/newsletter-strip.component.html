@@ -1,0 +1,14 @@
+<section class="nl-sec" id="newsletter">
+  <div class="inner">
+    <div class="copy">
+      <div class="lbl">Updates</div>
+      <h3 class="title">Product &amp; engineering notes</h3>
+      <p class="sub">Low volume — architecture patterns, releases, and availability.</p>
+    </div>
+    <form class="form" (ngSubmit)="submit()">
+      <input type="email" [(ngModel)]="email" name="nl-email" placeholder="Email address" required autocomplete="email" />
+      <button type="submit" [disabled]="loading">{{ loading ? '…' : 'Subscribe' }}</button>
+    </form>
+  </div>
+  <p class="feedback" *ngIf="message" [class.good]="ok">{{ message }}</p>
+</section>

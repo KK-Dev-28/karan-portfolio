@@ -1,0 +1,22 @@
+<section class="journal-sec" id="journal">
+  <div class="sec-label">Journal</div>
+  <h2 class="sec-title">Progress &amp; <span class="italic">learning</span></h2>
+  <p class="lead">Updates you add in the admin dashboard appear here automatically — no redeploy needed.</p>
+
+  <div class="state loading" *ngIf="loading">Loading journal…</div>
+  <div class="state err" *ngIf="error">Could not load journal. Is the API running?</div>
+
+  <div class="timeline" *ngIf="!loading && !error && items.length">
+    <article class="entry" *ngFor="let it of items">
+      <div class="meta">
+        <span class="pill">{{ kindLabel(it.kind) }}</span>
+        <time [attr.datetime]="it.publishedAt || it.createdAt">{{ formatDate(it.publishedAt || it.createdAt) }}</time>
+      </div>
+      <h3 class="title">{{ it.title }}</h3>
+      <p class="body">{{ it.body }}</p>
+      <a *ngIf="it.linkUrl" class="link" [href]="it.linkUrl" target="_blank" rel="noopener noreferrer">Link ↗</a>
+    </article>
+  </div>
+
+  <p class="empty" *ngIf="!loading && !error && !items.length">No published entries yet. Add your first update in Admin → Journal.</p>
+</section>

@@ -1,0 +1,148 @@
+.journal-sec {
+  padding: 7rem 3.5rem;
+  background: #0c0d0f;
+  border-top: 1px solid #1c1d21;
+}
+
+.sec-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #00e5a0;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  &::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: #00e5a0;
+  }
+}
+
+.sec-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ecedf2;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.italic {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: #8a8c9e;
+}
+
+.lead {
+  font-size: 0.78rem;
+  color: #5e6070;
+  line-height: 1.8;
+  max-width: 40rem;
+  margin-bottom: 2.5rem;
+}
+
+.state {
+  font-size: 0.78rem;
+  padding: 2rem;
+  text-align: center;
+  border: 1px dashed #1c1d21;
+  &.err {
+    color: #ff6b6b;
+  }
+  &.loading {
+    color: #5e6070;
+  }
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 44rem;
+  border-left: 1px solid #1c1d21;
+  padding-left: 1.5rem;
+  margin-left: 0.35rem;
+}
+
+.entry {
+  position: relative;
+  padding: 1.5rem 1.75rem;
+  background: #08090a;
+  border: 1px solid #1c1d21;
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1.6rem;
+    top: 1.6rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #00e5a0;
+    box-shadow: 0 0 0 3px #0c0d0f;
+  }
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7b61ff;
+  border: 1px solid rgba(123, 97, 255, 0.35);
+  padding: 0.2rem 0.45rem;
+}
+
+time {
+  font-size: 0.65rem;
+  color: #5e6070;
+}
+
+.title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ecedf2;
+  margin-bottom: 0.5rem;
+}
+
+.body {
+  font-size: 0.76rem;
+  color: #8a8c9e;
+  line-height: 1.85;
+  white-space: pre-wrap;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.68rem;
+  color: #00e5a0;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.empty {
+  font-size: 0.78rem;
+  color: #5e6070;
+  padding: 2rem 0;
+}
+
+@media (max-width: 900px) {
+  .journal-sec {
+    padding: 5rem 1.5rem;
+  }
+}

@@ -1,0 +1,303 @@
+<!-- src/app/pages/admin/admin.page.html -->
+<div class="admin-wrap">
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <header class="admin-hdr">
+    <div class="admin-logo">KK<span>.</span>admin</div>
+    <div class="admin-hdr-right">
+      <span class="live-dot"></span>
+      <span class="live-lbl">Live</span>
+      <button class="logout-btn" (click)="logout()">Logout →</button>
+    </div>
+  </header>
+
+  <!-- ── Loading ────────────────────────────────────── -->
+  <div class="loading-box" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Fetching analytics from PostgreSQL…</p>
+  </div>
+
+  <!-- ── Dashboard ─────────────────────────────────── -->
+  <ng-container *ngIf="!loading && data">
+
+    <!-- Stats row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="sn green">{{ data.analytics.stats.total }}</div>
+        <div class="sl">Total Visits</div>
+      </div>
+      <div class="stat-card">
+        <div class="sn">{{ data.analytics.stats.today }}</div>
+        <div class="sl">Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="sn purple">{{ data.analytics.stats.unique }}</div>
+        <div class="sl">Unique IPs</div>
+      </div>
+      <div class="stat-card">
+        <div class="sn orange">{{ data.analytics.stats.week }}</div>
+        <div class="sl">This Week</div>
+      </div>
+      <div class="stat-card">
+        <div class="sn">{{ data.analytics.stats.returning }}</div>
+        <div class="sl">Returning</div>
+      </div>
+      <div class="stat-card">
+        <div class="sn green">{{ data.unread?.count || 0 }}</div>
+        <div class="sl">Unread Msgs</div>
+      </div>
+      <div class="stat-card" *ngIf="data.paymentStats">
+        <div class="sn purple">{{ data.paymentStats.completedCount || 0 }}</div>
+        <div class="sl">Paid checkouts</div>
+      </div>
+      <div class="stat-card" *ngIf="data.paymentStats">
+        <div class="sn green">{{ moneyMinor(data.paymentStats.completedAmount || 0, data.payments?.[0]?.currency || 'usd') }}</div>
+        <div class="sl">Stripe volume</div>
+      </div>
+      <div class="stat-card" *ngIf="data.subscriberCount">
+        <div class="sn">{{ data.subscriberCount.count || 0 }}</div>
+        <div class="sl">Newsletter</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="tab==='visitors'"  (click)="tab='visitors'">Visitors</button>
+      <button [class.active]="tab==='messages'"  (click)="tab='messages'">
+        Messages
+        <span class="badge" *ngIf="data.unread?.count">{{ data.unread.count }}</span>
+      </button>
+      <button [class.active]="tab==='breakdown'" (click)="tab='breakdown'">Analytics</button>
+      <button [class.active]="tab==='payments'" (click)="tab='payments'">Payments</button>
+      <button [class.active]="tab==='newsletter'" (click)="tab='newsletter'">Newsletter</button>
+      <button [class.active]="tab==='journal'" (click)="tab='journal'">Journal</button>
+    </div>
+
+    <!-- ── VISITORS TAB ──────────────────────────────── -->
+    <div class="tab-body" *ngIf="tab==='visitors'">
+      <div class="section-lbl">Recent Visitors (Today)</div>
+
+      <div class="vt-head visitor-head">
+        <span>Visitor</span><span>Device</span><span>Source</span><span>Page</span><span>When</span>
+      </div>
+
+      <ng-container *ngIf="data.analytics.recent.length; else noVisitors">
+        <div class="vt-row visitor-row" *ngFor="let v of data.analytics.recent">
+          <div class="vt-vis">
+            <span class="vt-flag">{{ v.flag }}</span>
+            <div>
+              <div class="vt-loc">{{ v.city }}, {{ v.country }}</div>
+              <div class="vt-ip">{{ v.ip }}</div>
+            </div>
+            <span [class]="v.isReturning ? 'badge-r' : 'badge-n'">
+              {{ v.isReturning ? 'RETURN' : 'NEW' }}
+            </span>
+          </div>
+          <div>
+            <div class="vt-dev">{{ v.device }} · {{ v.browser }}</div>
+            <div class="vt-os">{{ v.os }}</div>
+          </div>
+          <div class="vt-ref">{{ v.referrer }}</div>
+          <div class="vt-page">{{ v.page }}</div>
+          <div class="vt-time">{{ timeAgo(v.visitedAt) }}</div>
+        </div>
+      </ng-container>
+      <ng-template #noVisitors>
+        <div class="empty">No visitors today yet. Share your portfolio link!</div>
+      </ng-template>
+    </div>
+
+    <!-- ── MESSAGES TAB ──────────────────────────────── -->
+    <div class="tab-body" *ngIf="tab==='messages'">
+      <div class="section-lbl">Contact Messages</div>
+
+      <ng-container *ngIf="data.messages.length; else noMsgs">
+        <div class="msg-card" *ngFor="let m of data.messages" [class.unread]="!m.isRead">
+          <div class="msg-top">
+            <div>
+              <div class="msg-name">{{ m.name }}</div>
+              <div class="msg-email">{{ m.email }}<span *ngIf="m.phone"> · {{ m.phone }}</span></div>
+            </div>
+            <div class="msg-meta">
+              <span class="msg-time">{{ timeAgo(m.createdAt) }}</span>
+              <button class="read-btn" *ngIf="!m.isRead" (click)="markRead(m.id)">Mark Read</button>
+              <a class="reply-btn" [href]="'mailto:'+m.email+'?subject=Re: '+m.subject">Reply ↗</a>
+            </div>
+          </div>
+          <div class="msg-subj">{{ m.subject }}</div>
+          <div class="msg-body">{{ m.message }}</div>
+        </div>
+      </ng-container>
+      <ng-template #noMsgs>
+        <div class="empty">No messages yet.</div>
+      </ng-template>
+    </div>
+
+    <!-- ── ANALYTICS TAB ─────────────────────────────── -->
+    <div class="tab-body" *ngIf="tab==='breakdown'">
+      <div class="breakdown-grid">
+
+        <!-- Page Views -->
+        <div class="b-card">
+          <div class="section-lbl">Page Views</div>
+          <div class="bar-list">
+            <div class="br" *ngFor="let e of entries(data.analytics.pageViews)">
+              <div class="br-lbl">{{ e[0] }}</div>
+              <div class="br-track"><div class="br-fill green" [style.width.%]="pct(e[1], totalOf(data.analytics.pageViews))"></div></div>
+              <div class="br-val">{{ e[1] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Devices -->
+        <div class="b-card">
+          <div class="section-lbl">Devices</div>
+          <div class="bar-list">
+            <div class="br" *ngFor="let e of entries(data.analytics.devices); let i=index">
+              <div class="br-lbl">{{ e[0] }}</div>
+              <div class="br-track"><div [class]="'br-fill '+(i===0?'green':i===1?'purple':'orange')" [style.width.%]="pct(e[1], data.analytics.stats.total)"></div></div>
+              <div class="br-val">{{ e[1] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Traffic Sources -->
+        <div class="b-card">
+          <div class="section-lbl">Traffic Sources</div>
+          <div class="bar-list">
+            <div class="br" *ngFor="let e of entries(data.analytics.referrers)">
+              <div class="br-lbl">{{ e[0] }}</div>
+              <div class="br-track"><div class="br-fill blue" [style.width.%]="pct(e[1], data.analytics.stats.total)"></div></div>
+              <div class="br-val">{{ e[1] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Countries -->
+        <div class="b-card">
+          <div class="section-lbl">Top Countries</div>
+          <div class="bar-list">
+            <div class="br" *ngFor="let e of entries(data.analytics.countries).slice(0,8)">
+              <div class="br-lbl">{{ e[0] }}</div>
+              <div class="br-track"><div class="br-fill orange" [style.width.%]="pct(e[1], data.analytics.stats.total)"></div></div>
+              <div class="br-val">{{ e[1] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-day chart -->
+        <div class="b-card full">
+          <div class="section-lbl">Visits — Last 7 Days</div>
+          <div class="day-chart">
+            <div class="day-col" *ngFor="let d of data.analytics.dailyChart">
+              <div class="day-wrap">
+                <div class="day-count">{{ d.count }}</div>
+                <div class="day-bar" [style.height.px]="(d.count*5)+4"></div>
+              </div>
+              <div class="day-lbl">{{ d.date | slice:5 }}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── PAYMENTS TAB ─────────────────────────────── -->
+    <div class="tab-body" *ngIf="tab==='payments'">
+      <div class="section-lbl">Stripe checkouts</div>
+      <ng-container *ngIf="data.payments?.length; else noPay">
+        <div class="vt-head pay-head">
+          <span>Tier</span><span>Amount</span><span>Status</span><span>Email</span><span>When</span>
+        </div>
+        <div class="vt-row pay-row" *ngFor="let p of data.payments">
+          <div>{{ p.tier }}</div>
+          <div>{{ moneyMinor(p.amount, p.currency) }}</div>
+          <div><span class="pay-st" [class.ok]="p.status==='completed'">{{ p.status }}</span></div>
+          <div class="vt-ref">{{ p.customerEmail || '—' }}</div>
+          <div class="vt-time">{{ timeAgo(p.createdAt) }}</div>
+        </div>
+      </ng-container>
+      <ng-template #noPay>
+        <div class="empty">No payment sessions yet.</div>
+      </ng-template>
+    </div>
+
+    <!-- ── NEWSLETTER TAB ─────────────────────────── -->
+    <div class="tab-body" *ngIf="tab==='newsletter'">
+      <div class="section-lbl">Subscribers (recent)</div>
+      <ng-container *ngIf="data.subscribers?.length; else noSub">
+        <div class="vt-head sub-head">
+          <span>Email</span><span>Source</span><span>Subscribed</span>
+        </div>
+        <div class="vt-row sub-row" *ngFor="let s of data.subscribers">
+          <div class="msg-email">{{ s.email }}</div>
+          <div>{{ s.source }}</div>
+          <div class="vt-time">{{ timeAgo(s.createdAt) }}</div>
+        </div>
+      </ng-container>
+      <ng-template #noSub>
+        <div class="empty">No subscribers yet.</div>
+      </ng-template>
+    </div>
+
+    <!-- ── JOURNAL TAB (portfolio updates) ─────────── -->
+    <div class="tab-body" *ngIf="tab==='journal'">
+      <div class="section-lbl">Add journal entry</div>
+      <p class="journal-hint">Published posts show on the homepage under Journal. Drafts stay hidden.</p>
+      <form class="journal-form" [formGroup]="journalForm" (ngSubmit)="submitJournal()">
+        <div class="jf-row">
+          <label class="jf-lbl">Kind</label>
+          <select formControlName="kind" class="jf-input">
+            <option value="achievement">Achievement</option>
+            <option value="learning">Learning</option>
+            <option value="milestone">Milestone</option>
+            <option value="note">Note</option>
+          </select>
+        </div>
+        <div class="jf-row">
+          <label class="jf-lbl">Title</label>
+          <input class="jf-input" formControlName="title" placeholder="Short headline" />
+        </div>
+        <div class="jf-row">
+          <label class="jf-lbl">Body</label>
+          <textarea class="jf-textarea" formControlName="body" rows="5" placeholder="What shipped, what you learned, links context…"></textarea>
+        </div>
+        <div class="jf-row">
+          <label class="jf-lbl">Link (optional)</label>
+          <input class="jf-input" formControlName="linkUrl" placeholder="https://…" />
+        </div>
+        <label class="jf-check">
+          <input type="checkbox" formControlName="isPublished" />
+          Publish immediately
+        </label>
+        <div class="journal-err" *ngIf="journalErr">{{ journalErr }}</div>
+        <button type="submit" class="journal-save" [disabled]="journalBusy || journalForm.invalid">
+          {{ journalBusy ? 'Saving…' : 'Save entry' }}
+        </button>
+      </form>
+
+      <div class="section-lbl" style="margin-top:2.5rem">All entries</div>
+      <ng-container *ngIf="data.journalEntries?.length; else noJournal">
+        <div class="vt-head jr-head">
+          <span>Kind</span><span>Title</span><span>Status</span><span>When</span><span></span>
+        </div>
+        <div class="vt-row jr-row" *ngFor="let j of data.journalEntries">
+          <div>{{ j.kind }}</div>
+          <div class="jr-title">{{ j.title }}</div>
+          <div>
+            <span class="jr-st" [class.pub]="j.isPublished">{{ j.isPublished ? 'live' : 'draft' }}</span>
+          </div>
+          <div class="vt-time">{{ timeAgo(j.updatedAt) }}</div>
+          <div class="jr-actions">
+            <button type="button" class="jr-btn" (click)="toggleJournalPublish(j)">{{ j.isPublished ? 'Unpublish' : 'Publish' }}</button>
+            <button type="button" class="jr-btn danger" (click)="deleteJournal(j.id)">Delete</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #noJournal>
+        <div class="empty">No journal entries yet.</div>
+      </ng-template>
+    </div>
+
+  </ng-container>
+</div>

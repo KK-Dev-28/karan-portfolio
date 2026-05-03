@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build output
+backend/dist/
+frontend/dist/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs / OS
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Angular
+frontend/.angular/
+
+# Test / coverage
+coverage/
+*.tsbuildinfo
+
+# Misc
+.dist/

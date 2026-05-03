@@ -1,0 +1,14 @@
+<section class="test-sec" id="testimonials">
+  <div class="sec-label">Proof</div>
+  <h2 class="sec-title">Trusted by teams that value <span class="italic">quality delivery</span></h2>
+  <div class="grid">
+    <blockquote class="quote-card tilt-card" *ngFor="let x of items">
+      <div class="stars">★★★★★</div>
+      <p class="q">“{{ x.quote }}”</p>
+      <footer>
+        <span class="name">{{ x.name }}</span>
+        <span class="org">{{ x.org }}</span>
+      </footer>
+    </blockquote>
+  </div>
+</section>
