@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 import { Visitor }        from './visitor/visitor.entity';
 import { ContactMessage } from './contact/contact.entity';
@@ -20,9 +21,11 @@ import { PaymentModule } from './payment/payment.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { PortfolioUpdateModule } from './portfolio-update/portfolio-update.module';
 import { HealthModule } from './health/health.module';
+import { ResumeModule } from './resume/resume.module';
 
 @Module({
   imports: [
+    CqrsModule.forRoot(),
     // Load .env everywhere
     ConfigModule.forRoot({ isGlobal: true }),
 
@@ -63,6 +66,7 @@ import { HealthModule } from './health/health.module';
     NewsletterModule,
     PortfolioUpdateModule,
     HealthModule,
+    ResumeModule,
     AdminModule,
   ],
 })

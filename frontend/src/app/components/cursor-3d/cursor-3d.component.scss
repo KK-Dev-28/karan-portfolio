@@ -1,0 +1,15 @@
+.cv {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  z-index: 10048;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: normal;
+}
+
+.cv.off {
+  display: none;
+}

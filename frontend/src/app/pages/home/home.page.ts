@@ -15,6 +15,8 @@ import { FaqComponent }        from '../../components/faq/faq.component';
 import { NewsletterStripComponent } from '../../components/newsletter-strip/newsletter-strip.component';
 import { ContactComponent }    from '../../components/contact/contact.component';
 import { FooterComponent }     from '../../components/footer/footer.component';
+import { Cursor3dComponent }   from '../../components/cursor-3d/cursor-3d.component';
+import { SourceOfferingComponent } from '../../components/source-offering/source-offering.component';
 
 @Component({
   selector: 'app-home-page',
@@ -35,8 +37,11 @@ import { FooterComponent }     from '../../components/footer/footer.component';
     NewsletterStripComponent,
     ContactComponent,
     FooterComponent,
+    Cursor3dComponent,
+    SourceOfferingComponent,
   ],
   template: `
+    <app-cursor-3d></app-cursor-3d>
     <app-navbar></app-navbar>
     <app-hero></app-hero>
     <app-marquee></app-marquee>
@@ -49,6 +54,7 @@ import { FooterComponent }     from '../../components/footer/footer.component';
     <app-hire-pricing></app-hire-pricing>
     <app-testimonials></app-testimonials>
     <app-faq></app-faq>
+    <app-source-offering></app-source-offering>
     <app-newsletter-strip></app-newsletter-strip>
     <app-contact></app-contact>
     <app-footer></app-footer>

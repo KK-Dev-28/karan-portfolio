@@ -30,3 +30,8 @@ coverage/
 
 # Misc
 .dist/
+
+# Python resume service
+services/resume-analyzer/__pycache__/
+services/resume-analyzer/.venv/
+services/resume-analyzer/venv/

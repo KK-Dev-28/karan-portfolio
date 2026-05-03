@@ -9,6 +9,7 @@
   <button class="admin-btn theme-btn" (click)="toggleTheme()">
     {{ theme === 'dark' ? '☀ Light' : '🌙 Dark' }}
   </button>
+  <a class="admin-btn logs-btn" routerLink="/resume-review">Resume check</a>
   <a class="admin-btn logs-btn" href="/insights">Visitor Logs</a>
   <button *ngIf="!isLoggedIn()" class="admin-btn" (click)="openLogin()">⚙ Admin</button>
   <button *ngIf="isLoggedIn()"  class="admin-btn active" (click)="goAdmin()">⚙ Dashboard</button>

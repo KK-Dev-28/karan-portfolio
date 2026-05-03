@@ -13,15 +13,24 @@ import {
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { Request } from 'express';
+import { CommandBus } from '@nestjs/cqrs';
 import { PaymentService } from './payment.service';
 import { CreateCheckoutDto } from './dto/create-checkout.dto';
 import { CreateInsightsCheckoutDto } from './dto/create-insights-checkout.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import {
+  CreateCheckoutCommand,
+  CreateInsightsCheckoutCommand,
+  ProcessStripeWebhookCommand,
+} from './commands/payment.commands';
 
 @ApiTags('Payments')
 @Controller('payments')
 export class PaymentController {
-  constructor(private readonly svc: PaymentService) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly svc: PaymentService,
+  ) {}
 
   @Get('catalog')
   @ApiOperation({ summary: 'Public engagement tiers and amounts (from server config)' })
@@ -33,7 +42,7 @@ export class PaymentController {
   @Throttle({ default: { ttl: 60_000, limit: 15 } })
   @ApiOperation({ summary: 'Create Stripe Checkout session (redirect URL)' })
   createCheckout(@Body() dto: CreateCheckoutDto) {
-    return this.svc.createCheckoutSession(dto);
+    return this.commandBus.execute(new CreateCheckoutCommand(dto));
   }
 
   @Get('insights/catalog')
@@ -46,7 +55,7 @@ export class PaymentController {
   @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @ApiOperation({ summary: 'Create checkout for visitor logs subscription access' })
   createInsightsCheckout(@Body() dto: CreateInsightsCheckoutDto) {
-    return this.svc.createInsightsCheckoutSession(dto);
+    return this.commandBus.execute(new CreateInsightsCheckoutCommand(dto));
   }
 
   @Post('insights/activate')
@@ -66,7 +75,7 @@ export class PaymentController {
   ) {
     const raw = req.rawBody;
     if (!raw) throw new BadRequestException('rawBody missing — enable rawBody in NestFactory.create');
-    return this.svc.handleWebhook(sig, raw);
+    return this.commandBus.execute(new ProcessStripeWebhookCommand(sig, raw));
   }
 
   @Get()

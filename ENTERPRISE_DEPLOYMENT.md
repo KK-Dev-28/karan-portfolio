@@ -129,3 +129,58 @@ Set env vars:
 - Add WAF + bot rules in Cloudflare
 - Add automated backups + restore drill
 - Add role-based admin auth (multi-user)
+
+## 10) Organization repo & collaborators
+
+Primary remote for this workspace: `https://github.com/KK-Dev-28/karan-portfolio.git`
+
+- Keep the repository **private** until you intentionally publish or sell a snapshot.
+- Grant access via **GitHub → Settings → Collaborators** (or org team) — never commit personal Stripe/DB passwords into git.
+- Branch flow: feature branches → **`dev`** → PR → **`main`** (protect `main` with required PR + CI).
+
+## 11) Python resume analyzer (optional microservice)
+
+The Nest API exposes `POST /api/resume/analyze` and **proxies** to a FastAPI app in `services/resume-analyzer/`.
+
+### Local
+
+1. Python 3.11+ recommended.
+2. From `services/resume-analyzer/`:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate   # Windows
+pip install -r requirements.txt
+uvicorn main:app --host 127.0.0.1 --port 8010
+```
+
+3. In `backend/.env` set:
+
+```env
+RESUME_SERVICE_URL=http://127.0.0.1:8010
+```
+
+4. Restart the Nest API. Open the Angular route **`/resume-review`** and run **Analyze**.
+
+If `RESUME_SERVICE_URL` is unset, the API returns **503** with a clear message (frontend shows the error text).
+
+### Production (Railway pattern)
+
+- Create a **second Railway service** from `services/resume-analyzer` (Dockerfile or Nixpacks with start command `uvicorn main:app --host 0.0.0.0 --port $PORT`).
+- Set the public or **private networking** URL as `RESUME_SERVICE_URL` on the **Nest** service so only the API can call Python (prefer private URL if both services are on Railway).
+- Do **not** expose the Python service to browsers unless you add auth; the intended path is **browser → Nest → Python**.
+
+## 12) CQRS in the Nest API
+
+Writes for **payments** (checkout + Stripe webhook) and **portfolio journal** (create / patch / delete), plus the public **list published updates** read path, go through **`@nestjs/cqrs`** command/query handlers that delegate to the existing services. This keeps room for domain events and sagas later without rewriting business logic.
+
+## 13) Buyer / licensee setup (no secrets in git)
+
+Whoever receives a **source license** must still:
+
+1. Create their own **PostgreSQL** (Railway/Neon/etc.) and set `DB_*` on the backend.
+2. Create **Stripe** account → API keys → webhook to `https://<api-host>/api/payments/webhook` with the same events as §6.
+3. Deploy **backend** (Railway) and **frontend** (Vercel); set `FRONTEND_URL`, `apiUrl` in `environment.prod.ts`, `JWT_SECRET`, `ADMIN_PASSWORD`.
+4. Optionally deploy **`services/resume-analyzer`** and set `RESUME_SERVICE_URL`.
+
+Deliver **`.env.example`** and this document as the handoff; rotate all secrets for the buyer’s own accounts.

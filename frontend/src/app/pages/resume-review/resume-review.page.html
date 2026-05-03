@@ -1,0 +1,28 @@
+<div class="page">
+  <a routerLink="/" class="back">← Home</a>
+  <h1>Resume preview</h1>
+  <p class="sub">
+    Heuristic scoring via the Nest API and Python microservice. Start the API with
+    <code>RESUME_SERVICE_URL</code> and run <code>uvicorn</code> in
+    <code>services/resume-analyzer</code> (see deployment guide).
+  </p>
+
+  <label for="resume">Resume text</label>
+  <textarea id="resume" [(ngModel)]="resumeText" placeholder="Paste your resume or bullet list…"></textarea>
+
+  <label for="jd">Job description (optional)</label>
+  <textarea
+    id="jd"
+    class="jd"
+    [(ngModel)]="jobText"
+    placeholder="Paste a job description to check keyword alignment…"
+  ></textarea>
+
+  <div class="actions">
+    <button type="button" class="btn" (click)="run()" [disabled]="busy">{{ busy ? 'Analyzing…' : 'Analyze' }}</button>
+  </div>
+
+  <p class="err" *ngIf="error">{{ error }}</p>
+
+  <pre class="out" *ngIf="resultJson">{{ resultJson }}</pre>
+</div>

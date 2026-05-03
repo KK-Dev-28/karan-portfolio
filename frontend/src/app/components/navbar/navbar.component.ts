@@ -1,7 +1,7 @@
 // navbar.component.ts
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ThemeService } from '../../services/theme.service';
@@ -9,7 +9,7 @@ import { ThemeService } from '../../services/theme.service';
 @Component({ 
   selector: 'app-navbar', 
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './navbar.component.html', 
   styleUrls: ['./navbar.component.scss'] 
 })
@@ -30,6 +30,7 @@ export class NavbarComponent implements OnInit {
     { label:'Gigs',       id:'gigs' },
     { label:'Hire',       id:'hire' },
     { label:'FAQ',        id:'faq' },
+    { label:'Source',     id:'source-code' },
     { label:'Contact',    id:'contact' },
   ];
 

@@ -24,7 +24,7 @@ git init
 git add .
 git commit -m "Initial commit: portfolio + API + admin + CI"
 git branch -M main
-git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
+git remote add origin https://github.com/KK-Dev-28/karan-portfolio.git
 git push -u origin main
 ```
 
@@ -388,7 +388,7 @@ npm start      # try again
 | 📞 Phone 1 | +91-8360426467 |
 | 📞 Phone 2 | +91-6239589464 |
 | 💬 WhatsApp | wa.me/918360426467 |
-| 🐙 GitHub | github.com/Karan28012002 |
+| 🐙 GitHub | github.com/KK-Dev-28 |
 | 📍 Location | Ludhiana, Punjab, India |
 
 ---

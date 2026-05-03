@@ -9,6 +9,7 @@ import { AdminPageComponent } from './pages/admin/admin.page';
 import { PaymentSuccessPageComponent } from './pages/payment-success/payment-success.page';
 import { PaymentCancelPageComponent } from './pages/payment-cancel/payment-cancel.page';
 import { InsightsPageComponent } from './pages/insights/insights.page';
+import { ResumeReviewPageComponent } from './pages/resume-review/resume-review.page';
 
 const routes = [
   { path: '', component: HomePageComponent },
@@ -16,6 +17,7 @@ const routes = [
   { path: 'payment/success', component: PaymentSuccessPageComponent },
   { path: 'payment/cancel', component: PaymentCancelPageComponent },
   { path: 'insights', component: InsightsPageComponent },
+  { path: 'resume-review', component: ResumeReviewPageComponent },
   { path: '**', redirectTo: '' },
 ];
 

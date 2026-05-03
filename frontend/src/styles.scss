@@ -79,6 +79,11 @@ body.light-theme::before {
   &.visible { opacity: 1; transform: translateY(0); }
 }
 
+/* Custom 3D cursor trail (see app-cursor-3d); disabled when prefers-reduced-motion */
+body.cursor-3d-on {
+  cursor: none;
+}
+
 section {
   position: relative;
 }
