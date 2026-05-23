@@ -1,14 +1,28 @@
-<section class="test-sec" id="testimonials">
-  <div class="sec-label">Proof</div>
-  <h2 class="sec-title">Trusted by teams that value <span class="italic">quality delivery</span></h2>
-  <div class="grid">
-    <blockquote class="quote-card tilt-card" *ngFor="let x of items">
-      <div class="stars">★★★★★</div>
-      <p class="q">“{{ x.quote }}”</p>
-      <footer>
-        <span class="name">{{ x.name }}</span>
-        <span class="org">{{ x.org }}</span>
-      </footer>
-    </blockquote>
+<section class="test-sec reveal" id="testimonials">
+  <div class="container">
+    <div class="sec-label">What Clients Say</div>
+    <h2 class="sec-title">Trusted by Teams That Value <span class="italic">Quality Delivery</span></h2>
+
+    <div class="test-grid" *ngIf="items.length">
+      <blockquote class="test-card glow-card tilt-card" *ngFor="let x of items">
+        <div class="test-stars">
+          <span *ngFor="let s of starsArr(x.rating)" class="star">★</span>
+        </div>
+        <p class="test-body">"{{ x.body }}"</p>
+        <footer class="test-footer">
+          <div class="test-avatar">{{ x.name[0] }}</div>
+          <div>
+            <div class="test-name">{{ x.name }}</div>
+            <div class="test-meta" *ngIf="x.company || x.role">
+              {{ x.role }}<span *ngIf="x.role && x.company"> · </span>{{ x.company }}
+            </div>
+          </div>
+        </footer>
+      </blockquote>
+    </div>
+
+    <div class="empty-reviews" *ngIf="!items.length">
+      <p>Be the first to leave a review below.</p>
+    </div>
   </div>
 </section>

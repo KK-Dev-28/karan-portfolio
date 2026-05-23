@@ -1,0 +1,177 @@
+<div class="blog-page">
+
+  <!-- Hero -->
+  <header class="blog-hero">
+    <div class="container">
+      <a class="blog-back" routerLink="/">← Portfolio</a>
+      <div class="blog-hero-inner">
+        <div class="blog-hero-text">
+          <div class="sec-label">Community Blog</div>
+          <h1 class="blog-title">Ideas worth <span class="italic">reading</span></h1>
+          <p class="blog-sub">Real posts from real builders — powered by AI, published by humans.</p>
+        </div>
+        <div class="blog-cta-card">
+          <ng-container *ngIf="!isLoggedIn">
+            <div class="bcc-price">{{ fmtAmount }}<span class="bcc-freq"> one-time</span></div>
+            <div class="bcc-desc">Lifetime writer access · Unlimited posts · AI generation</div>
+            <button class="bcc-btn" (click)="openPay()">Start Writing →</button>
+            <button class="bcc-login" (click)="openLogin()">Already a member? Sign in</button>
+          </ng-container>
+          <ng-container *ngIf="isLoggedIn">
+            <div class="bcc-check">✓</div>
+            <div class="bcc-welcome">Welcome back, writer</div>
+            <a class="bcc-btn" routerLink="/blog-write">Go to Editor →</a>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tag filter bar -->
+  <div class="blog-filter" *ngIf="allTags.length > 0">
+    <div class="container">
+      <div class="bf-inner">
+        <button class="bf-chip" [class.active]="!activeTag" (click)="setTag(null)">All</button>
+        <button class="bf-chip" *ngFor="let t of allTags" [class.active]="activeTag === t" (click)="setTag(t)">{{ t }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Posts -->
+  <main class="blog-main">
+    <div class="container">
+
+      <div class="posts-loading" *ngIf="loading">
+        <div class="spin-sm"></div> Loading posts…
+      </div>
+
+      <div class="posts-empty" *ngIf="!loading && filtered.length === 0">
+        <p>No posts yet — be the first!</p>
+        <button class="bcc-btn" (click)="openPay()" *ngIf="!isLoggedIn" style="width:auto;padding:.75rem 1.75rem">Get Writer Access →</button>
+        <a class="bcc-btn" routerLink="/blog-write" *ngIf="isLoggedIn" style="width:auto;padding:.75rem 1.75rem;text-decoration:none">Write First Post →</a>
+      </div>
+
+      <ng-container *ngIf="!loading && filtered.length > 0">
+
+        <!-- Featured first post -->
+        <a class="post-featured" *ngIf="!activeTag && page === 1 && featured"
+          [routerLink]="['/blog/posts', featured.slug]">
+          <div class="pf-cover" *ngIf="featured.coverImage">
+            <img [src]="featured.coverImage" [alt]="featured.title" loading="lazy" />
+          </div>
+          <div class="pf-body">
+            <div class="pf-badge">Featured Post</div>
+            <h2 class="pf-title">{{ featured.title }}</h2>
+            <p class="pf-excerpt">{{ excerpt(featured.excerpt || featured.body) }}</p>
+            <div class="pf-meta">
+              <span class="pf-author">{{ featured.authorName }}</span>
+              <span>·</span>
+              <span>{{ timeAgo(featured.publishedAt || featured.createdAt) }}</span>
+              <span>·</span>
+              <span>{{ readingTime(featured.body) }} min read</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Grid -->
+        <div class="posts-grid">
+          <a class="post-card" *ngFor="let p of gridPosts" [routerLink]="['/blog/posts', p.slug]">
+            <div class="pc-cover" *ngIf="p.coverImage">
+              <img [src]="p.coverImage" [alt]="p.title" loading="lazy" />
+            </div>
+            <div class="pc-body">
+              <div class="pc-meta">
+                <span class="pc-author">{{ p.authorName }}</span>
+                <span class="pc-dot">·</span>
+                <span class="pc-read-time">{{ readingTime(p.body) }} min</span>
+                <span class="pc-dot">·</span>
+                <span>{{ timeAgo(p.publishedAt || p.createdAt) }}</span>
+              </div>
+              <h2 class="pc-title">{{ p.title }}</h2>
+              <p class="pc-excerpt">{{ excerpt(p.excerpt || p.body) }}</p>
+              <div class="pc-tags" *ngIf="p.tags?.length">
+                <span class="pc-tag" *ngFor="let t of p.tags" (click)="$event.preventDefault(); setTag(t)">{{ t }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+      </ng-container>
+
+      <div class="pagination" *ngIf="totalPages > 1">
+        <button class="pg-btn" [disabled]="page <= 1" (click)="loadPosts(page-1)">← Prev</button>
+        <span class="pg-info">{{ page }} / {{ totalPages }}</span>
+        <button class="pg-btn" [disabled]="page >= totalPages" (click)="loadPosts(page+1)">Next →</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="pay-modal" (click)="$event.stopPropagation()">
+      <button class="modal-x" (click)="closeModal()">✕</button>
+
+      <!-- Login -->
+      <ng-container *ngIf="modalView === 'login'">
+        <h3 class="m-title">Sign in to Blog</h3>
+        <p class="m-sub">Welcome back, writer.</p>
+        <div class="m-form">
+          <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="loginForm.email" placeholder="you@email.com" /></div>
+          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="loginForm.password" placeholder="••••••••" /></div>
+          <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
+          <button class="m-btn" (click)="doLogin()" [disabled]="busy">
+            <ng-container *ngIf="!busy">Sign In →</ng-container>
+            <ng-container *ngIf="busy">Signing in…</ng-container>
+          </button>
+          <p class="m-switch">Don't have access? <button class="m-lnk" (click)="modalView='pay'">Get writer access</button></p>
+        </div>
+      </ng-container>
+
+      <!-- Pay -->
+      <ng-container *ngIf="modalView === 'pay'">
+        <h3 class="m-title">Get Writer Access</h3>
+        <p class="m-sub">{{ fmtAmount }} · lifetime · unlimited posts · AI generation</p>
+        <div class="m-form">
+          <div class="mf-row"><label class="mf-lbl">Your Name</label><input class="mf-input" [(ngModel)]="payForm.name" placeholder="Your full name" /></div>
+          <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="payForm.email" placeholder="you@email.com" /></div>
+          <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
+          <button class="m-btn" (click)="startPay()" [disabled]="busy">
+            <ng-container *ngIf="!busy">Pay {{ fmtAmount }} &amp; Continue →</ng-container>
+            <ng-container *ngIf="busy">Opening payment…</ng-container>
+          </button>
+          <p class="m-switch">Already a member? <button class="m-lnk" (click)="modalView='login'">Sign in</button></p>
+        </div>
+      </ng-container>
+
+      <!-- Register form (after payment) -->
+      <ng-container *ngIf="modalView === 'register-form'">
+        <div class="m-success-icon">🎉</div>
+        <h3 class="m-title">Payment successful!</h3>
+        <p class="m-sub">Create your writer account to get started.</p>
+        <div class="m-form">
+          <div class="mf-row"><label class="mf-lbl">Display Name</label><input class="mf-input" [(ngModel)]="regForm.name" placeholder="Your name" /></div>
+          <div class="mf-row"><label class="mf-lbl">Username</label><input class="mf-input" [(ngModel)]="regForm.username" placeholder="yourusername" /></div>
+          <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="regForm.email" placeholder="you@email.com" /></div>
+          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="regForm.password" placeholder="Min 8 characters" /></div>
+          <div class="mf-row"><label class="mf-lbl">Confirm Password</label><input class="mf-input" type="password" [(ngModel)]="regForm.confirm" placeholder="Repeat password" /></div>
+          <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
+          <button class="m-btn" (click)="doRegister()" [disabled]="busy">
+            <ng-container *ngIf="!busy">Create Account →</ng-container>
+            <ng-container *ngIf="busy">Creating account…</ng-container>
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Success -->
+      <ng-container *ngIf="modalView === 'success'">
+        <div class="m-success-icon">✓</div>
+        <h3 class="m-title">Account created!</h3>
+        <p class="m-sub">You're all set. Head to the editor and start writing your first post.</p>
+        <a class="m-btn" routerLink="/blog-write" (click)="closeModal()" style="text-decoration:none">Go to Editor →</a>
+      </ng-container>
+
+    </div>
+  </div>
+
+</div>

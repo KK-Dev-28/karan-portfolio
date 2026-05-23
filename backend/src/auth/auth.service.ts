@@ -1,6 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -8,20 +9,22 @@ export class AuthService {
 
   constructor(private jwt: JwtService, private cfg: ConfigService) {}
 
-  async login(password: string) {
-    const raw = this.cfg.get<string>('ADMIN_PASSWORD') ?? 'Karan@Admin2025';
-    const expected = raw.trim();
-    const attempt = (password ?? '').trim();
-    const configured = !!this.cfg.get<string>('ADMIN_PASSWORD');
+  async login(password: string, ip = 'unknown') {
+    const expected = (this.cfg.get<string>('ADMIN_PASSWORD') ?? '').trim();
+    const attempt  = (password ?? '').trim();
 
-    if (attempt.length === 0 || attempt !== expected) {
-      this.log.warn(
-        `Admin login rejected (ADMIN_PASSWORD ${configured ? 'loaded from env' : 'using fallback default'})`,
-      );
-      throw new UnauthorizedException('Invalid password');
+    if (!attempt || !expected || attempt !== expected) {
+      this.log.warn(`[AUTH] Failed login attempt from IP ${ip}`);
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    this.log.log('Admin login OK');
-    return { access_token: this.jwt.sign({ sub: 'admin', role: 'admin' }) };
+    this.log.log(`[AUTH] Successful admin login from IP ${ip}`);
+    return {
+      access_token: this.jwt.sign({
+        sub:  'admin',
+        role: 'admin',
+        jti:  randomUUID(),
+      }),
+    };
   }
 }

@@ -1,5 +1,38 @@
-/* marquee.component.scss */
-.marq { border-top:1px solid #1c1d21; border-bottom:1px solid #1c1d21; padding:.9rem 0; overflow:hidden; background:#0f1012; }
-.track { display:flex; gap:2.5rem; width:max-content; animation:marq 30s linear infinite; }
-@keyframes marq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.mi { display:flex; align-items:center; gap:.6rem; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:#5e6070; white-space:nowrap; b{color:#00e5a0;font-weight:400;} }
+.marq {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: .85rem 0;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+.track {
+  display: flex;
+  gap: 2.5rem;
+  width: max-content;
+  animation: marq 35s linear infinite;
+}
+
+@keyframes marq {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.mi {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  font-family: var(--font-body);
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+
+  b {
+    color: var(--accent);
+    font-weight: 400;
+    font-size: .5rem;
+  }
+}

@@ -1,0 +1,229 @@
+.demos-sec {
+  padding: 7rem 0;
+  background: var(--bg);
+}
+
+.demos-lead {
+  font-size: .88rem;
+  color: var(--text-muted);
+  line-height: 1.9;
+  max-width: 520px;
+  margin: 1rem 0 2.5rem;
+}
+
+/* ── filter bar ── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-bottom: 2.5rem;
+}
+
+.filter-btn {
+  padding: .45rem 1rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--text-muted);
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-head);
+  letter-spacing: .04em;
+  transition: all var(--t-fast);
+
+  &:hover { border-color: rgba(245, 158, 11, 0.4); color: var(--text); }
+  &.active { background: var(--accent); border-color: var(--accent); color: #000; }
+}
+
+/* ── loading / empty ── */
+.demos-loading {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.dl-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.demos-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+  padding: 4rem 0;
+  color: var(--text-dim);
+
+  .de-icon { font-size: 2.5rem; }
+  p { font-size: .85rem; }
+}
+
+/* ── grid ── */
+.demos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.demo-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--t-mid);
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+
+    .dc-overlay { opacity: 1; }
+  }
+}
+
+.dc-thumb {
+  position: relative;
+  height: 180px;
+  background: var(--bg-2);
+  background-size: cover;
+  background-position: center;
+}
+
+.dc-thumb-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .dtp-icon { font-size: 2.5rem; }
+}
+
+.dc-type-badge {
+  position: absolute;
+  top: .75rem;
+  right: .75rem;
+  background: rgba(0, 0, 0, 0.65);
+  color: var(--text-muted);
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .25rem .6rem;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.dc-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.dc-open-btn {
+  padding: .55rem 1.25rem;
+  background: var(--accent);
+  color: #000;
+  font-size: .8rem;
+  font-weight: 700;
+  border-radius: 8px;
+  font-family: var(--font-head);
+}
+
+.dc-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.dc-cat-tag {
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.dc-title {
+  font-family: var(--font-head);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.dc-desc {
+  font-size: .76rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── bottom CTA ── */
+.demos-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  p {
+    font-size: .88rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+}
+
+.dcta-wa {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .65rem 1.25rem;
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.25);
+  border-radius: var(--radius);
+  color: #25d366;
+  font-size: .78rem;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: var(--font-head);
+  white-space: nowrap;
+  transition: all var(--t-fast);
+
+  &:hover { background: rgba(37, 211, 102, 0.15); }
+}
+
+.wa-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #25d366;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .demos-cta { flex-direction: column; text-align: center; }
+}

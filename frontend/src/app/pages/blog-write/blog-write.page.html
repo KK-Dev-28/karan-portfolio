@@ -1,0 +1,250 @@
+<div class="write-page">
+
+  <!-- Sidebar nav -->
+  <aside class="write-sidebar" *ngIf="me">
+    <div class="ws-logo">KK<span class="logo-dot">.</span><span class="ws-tag">blog</span></div>
+    <div class="ws-user">
+      <div class="ws-avatar" *ngIf="me.avatar"><img [src]="me.avatar" [alt]="me.name" /></div>
+      <div class="ws-avatar-placeholder" *ngIf="!me.avatar">{{ me.name?.charAt(0) }}</div>
+      <div class="ws-info">
+        <div class="ws-name">{{ me.name }}</div>
+        <div class="ws-username">&#64;{{ me.username }}</div>
+      </div>
+    </div>
+    <div class="ws-stats">
+      <div class="ws-stat"><span class="wss-num">{{ publishedCount }}</span><span class="wss-lbl">Published</span></div>
+      <div class="ws-stat"><span class="wss-num">{{ draftCount }}</span><span class="wss-lbl">Drafts</span></div>
+    </div>
+    <nav class="ws-nav">
+      <button class="wsn-item" [class.active]="tab==='posts'"    (click)="tab='posts'">
+        <span class="wsn-icon">📝</span> My Posts
+      </button>
+      <button class="wsn-item" (click)="newPost()">
+        <span class="wsn-icon">✍</span> New Post
+      </button>
+      <button class="wsn-item" [class.active]="tab==='profile'"  (click)="tab='profile'">
+        <span class="wsn-icon">👤</span> Profile
+      </button>
+      <button class="wsn-item" [class.active]="tab==='settings'" (click)="tab='settings'">
+        <span class="wsn-icon">⚙</span> Settings
+      </button>
+    </nav>
+    <div class="ws-footer">
+      <a class="wsf-link" routerLink="/blog">← Blog Feed</a>
+      <button class="wsf-logout" (click)="logout()">Sign out</button>
+    </div>
+  </aside>
+
+  <!-- Main area -->
+  <main class="write-main">
+
+    <!-- Loading -->
+    <div class="wm-loading" *ngIf="!me"><div class="spin-sm"></div> Loading…</div>
+
+    <!-- ── My Posts ── -->
+    <div class="wm-panel" *ngIf="me && tab==='posts'">
+      <div class="wm-hdr">
+        <h2 class="wm-title">My Posts</h2>
+        <button class="wm-action-btn" (click)="newPost()">+ New Post</button>
+      </div>
+
+      <div class="wm-loading" *ngIf="postsLoading"><div class="spin-sm"></div></div>
+
+      <div class="no-posts" *ngIf="!postsLoading && myPosts.length === 0">
+        <p>Nothing written yet.</p>
+        <button class="wm-action-btn" (click)="newPost()">Write your first post →</button>
+      </div>
+
+      <div class="post-list" *ngIf="!postsLoading && myPosts.length > 0">
+        <div class="pl-item" *ngFor="let p of myPosts">
+          <div class="pli-body">
+            <div class="pli-title">{{ p.title }}</div>
+            <div class="pli-meta">
+              <span class="pli-badge" [class.pub]="p.published" [class.draft]="!p.published">{{ p.published ? 'Published' : 'Draft' }}</span>
+              <span class="pli-time">{{ timeAgo(p.createdAt) }}</span>
+              <span class="pli-tags" *ngIf="p.tags?.length">· {{ p.tags.join(', ') }}</span>
+            </div>
+          </div>
+          <div class="pli-actions">
+            <button class="pli-btn" (click)="editPost(p)">Edit</button>
+            <button class="pli-btn" (click)="togglePublish(p)">{{ p.published ? 'Unpublish' : 'Publish' }}</button>
+            <button class="pli-btn danger" (click)="deletePost(p)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Editor ── -->
+    <div class="wm-panel" *ngIf="me && tab==='editor'">
+      <div class="wm-hdr">
+        <button class="back-btn" (click)="tab='posts'">← Posts</button>
+        <h2 class="wm-title">{{ editingId ? 'Edit Post' : 'New Post' }}</h2>
+        <button class="ai-trigger" (click)="showAI=!showAI">✨ Generate with AI</button>
+      </div>
+
+      <!-- AI panel -->
+      <div class="ai-panel" *ngIf="showAI">
+        <div class="ai-panel-hdr">Claude AI · Blog Generator</div>
+        <div class="ai-form">
+          <div class="af-row">
+            <label class="af-lbl">Prompt / Topic</label>
+            <textarea class="af-textarea" [(ngModel)]="aiForm.prompt" placeholder="e.g. 'Why every developer should learn system design before age 25'"></textarea>
+          </div>
+          <div class="af-row-2">
+            <div class="af-row">
+              <label class="af-lbl">Tone</label>
+              <select class="af-select" [(ngModel)]="aiForm.tone">
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="technical">Technical</option>
+                <option value="motivational">Motivational</option>
+                <option value="humorous">Humorous</option>
+              </select>
+            </div>
+            <div class="af-row">
+              <label class="af-lbl">Length</label>
+              <select class="af-select" [(ngModel)]="aiForm.length">
+                <option value="short">Short (300–500 words)</option>
+                <option value="medium">Medium (600–900 words)</option>
+                <option value="long">Long (1000–1500 words)</option>
+              </select>
+            </div>
+          </div>
+          <div class="af-err" *ngIf="aiErr">{{ aiErr }}</div>
+          <div class="af-actions">
+            <button class="af-cancel" (click)="showAI=false">Cancel</button>
+            <button class="af-generate" (click)="generateAI()" [disabled]="aiLoading">
+              {{ aiLoading ? 'Generating…' : '✨ Generate Post' }}
+            </button>
+          </div>
+          <p class="af-note" *ngIf="aiLoading">Claude is writing your post… this takes 10–20 seconds.</p>
+        </div>
+      </div>
+
+      <!-- Editor form -->
+      <div class="editor-form">
+        <div class="ef-row">
+          <label class="ef-lbl">Title *</label>
+          <input class="ef-input" [(ngModel)]="editorForm.title" placeholder="Your post title…" />
+        </div>
+        <div class="ef-row">
+          <div class="ef-lbl-row">
+            <label class="ef-lbl">Body *</label>
+            <span class="ef-wordcount">{{ wordCount }} words · {{ readingMins }} min read</span>
+          </div>
+          <textarea class="ef-textarea" [(ngModel)]="editorForm.body" placeholder="Write your post here… plain text, just write!"></textarea>
+        </div>
+        <div class="ef-row-2">
+          <div class="ef-row">
+            <label class="ef-lbl">Excerpt <span class="ef-hint">(optional summary)</span></label>
+            <input class="ef-input" [(ngModel)]="editorForm.excerpt" placeholder="One-line summary…" />
+          </div>
+          <div class="ef-row">
+            <label class="ef-lbl">Cover Image URL <span class="ef-hint">(optional)</span></label>
+            <input class="ef-input" [(ngModel)]="editorForm.coverImage" placeholder="https://…" />
+          </div>
+        </div>
+        <div class="ef-row">
+          <label class="ef-lbl">Tags <span class="ef-hint">(comma-separated)</span></label>
+          <input class="ef-input" [(ngModel)]="editorForm.tags" placeholder="angular, nestjs, career…" />
+        </div>
+        <div class="ef-publish-row">
+          <label class="toggle-wrap" (click)="editorForm.published = !editorForm.published">
+            <div class="toggle-switch" [class.on]="editorForm.published"><div class="toggle-knob"></div></div>
+            <span class="ef-lbl" *ngIf="editorForm.published">Publish immediately</span>
+            <span class="ef-lbl" *ngIf="!editorForm.published">Save as draft</span>
+          </label>
+        </div>
+        <div class="ef-err" *ngIf="saveErr">{{ saveErr }}</div>
+        <div class="ef-ok"  *ngIf="saveOk">Saved!</div>
+        <div class="ef-actions">
+          <button class="ef-cancel" (click)="tab='posts'">Cancel</button>
+          <button class="ef-save" (click)="save()" [disabled]="saving">{{ saving ? 'Saving…' : (editorForm.published ? 'Publish' : 'Save Draft') }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Profile ── -->
+    <div class="wm-panel" *ngIf="me && tab==='profile'">
+      <div class="wm-hdr">
+        <h2 class="wm-title">Public Profile</h2>
+        <a class="wm-view-link" [routerLink]="['/blog/u', me.username]" target="_blank">View public profile →</a>
+      </div>
+      <div class="settings-form">
+        <div class="sf-row"><label class="sf-lbl">Display Name</label><input class="sf-input" [(ngModel)]="profileForm.name" /></div>
+        <div class="sf-row"><label class="sf-lbl">Bio</label><textarea class="sf-textarea" [(ngModel)]="profileForm.bio" placeholder="Tell readers about yourself…"></textarea></div>
+        <div class="sf-row"><label class="sf-lbl">Avatar URL</label><input class="sf-input" [(ngModel)]="profileForm.avatar" placeholder="https://…" /></div>
+        <div class="sf-row-2">
+          <div class="sf-row"><label class="sf-lbl">Website</label><input class="sf-input" [(ngModel)]="profileForm.website" placeholder="https://…" /></div>
+          <div class="sf-row"><label class="sf-lbl">Twitter / X</label><input class="sf-input" [(ngModel)]="profileForm.twitter" placeholder="@handle" /></div>
+        </div>
+        <div class="sf-row-2">
+          <div class="sf-row"><label class="sf-lbl">LinkedIn URL</label><input class="sf-input" [(ngModel)]="profileForm.linkedin" placeholder="https://linkedin.com/in/…" /></div>
+          <div class="sf-row"><label class="sf-lbl">GitHub</label><input class="sf-input" [(ngModel)]="profileForm.github" placeholder="username" /></div>
+        </div>
+        <div class="sf-err" *ngIf="profileErr">{{ profileErr }}</div>
+        <div class="sf-ok"  *ngIf="profileOk">Profile saved!</div>
+        <button class="sf-save" (click)="saveProfile()" [disabled]="profileSaving">{{ profileSaving ? 'Saving…' : 'Save Profile' }}</button>
+      </div>
+    </div>
+
+    <!-- ── Settings ── -->
+    <div class="wm-panel" *ngIf="me && tab==='settings'">
+      <div class="wm-hdr"><h2 class="wm-title">Settings</h2></div>
+
+      <div class="settings-section">
+        <div class="ss-title">Visibility</div>
+        <div class="toggle-row">
+          <div class="tr-info"><div class="tr-lbl">Public Profile</div><div class="tr-sub">Anyone can see your profile page at /blog/u/{{ me.username }}</div></div>
+          <div class="toggle-switch" [class.on]="settingsForm.publicProfile" (click)="settingsForm.publicProfile=!settingsForm.publicProfile"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <div class="tr-info"><div class="tr-lbl">Show Bio</div><div class="tr-sub">Display your bio on your public profile</div></div>
+          <div class="toggle-switch" [class.on]="settingsForm.showBio" (click)="settingsForm.showBio=!settingsForm.showBio"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <div class="tr-info"><div class="tr-lbl">Show Social Links</div><div class="tr-sub">Show Twitter, LinkedIn, GitHub on your profile</div></div>
+          <div class="toggle-switch" [class.on]="settingsForm.showSocials" (click)="settingsForm.showSocials=!settingsForm.showSocials"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <div class="tr-info"><div class="tr-lbl">Show Post Count</div><div class="tr-sub">Display how many posts you've published</div></div>
+          <div class="toggle-switch" [class.on]="settingsForm.showPostCount" (click)="settingsForm.showPostCount=!settingsForm.showPostCount"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="sf-ok" *ngIf="settingsOk">Settings saved!</div>
+        <button class="sf-save" (click)="saveSettings()" [disabled]="settingsSaving">{{ settingsSaving ? 'Saving…' : 'Save Settings' }}</button>
+      </div>
+
+      <div class="settings-section" style="margin-top:2rem">
+        <div class="ss-title">Change Password</div>
+        <div class="settings-form">
+          <div class="sf-row"><label class="sf-lbl">Current Password</label><input class="sf-input" type="password" [(ngModel)]="pwForm.currentPassword" /></div>
+          <div class="sf-row-2">
+            <div class="sf-row"><label class="sf-lbl">New Password</label><input class="sf-input" type="password" [(ngModel)]="pwForm.newPassword" /></div>
+            <div class="sf-row"><label class="sf-lbl">Confirm New</label><input class="sf-input" type="password" [(ngModel)]="pwForm.confirm" /></div>
+          </div>
+          <div class="sf-err" *ngIf="pwErr">{{ pwErr }}</div>
+          <div class="sf-ok"  *ngIf="pwOk">Password changed!</div>
+          <button class="sf-save" (click)="changePassword()" [disabled]="pwSaving">{{ pwSaving ? 'Saving…' : 'Change Password' }}</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Mobile bottom nav -->
+  <nav class="mobile-nav" *ngIf="me">
+    <button class="mn-item" [class.active]="tab==='posts'"    (click)="tab='posts'">
+      <span class="mn-icon">📝</span><span class="mn-lbl">Posts</span>
+    </button>
+    <button class="mn-item" (click)="newPost()">
+      <span class="mn-icon">✍</span><span class="mn-lbl">Write</span>
+    </button>
+    <button class="mn-item" [class.active]="tab==='profile'"  (click)="tab='profile'">
+      <span class="mn-icon">👤</span><span class="mn-lbl">Profile</span>
+    </button>
+    <button class="mn-item" [class.active]="tab==='settings'" (click)="tab='settings'">
+      <span class="mn-icon">⚙</span><span class="mn-lbl">Settings</span>
+    </button>
+  </nav>
+
+</div>

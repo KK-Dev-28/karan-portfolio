@@ -1,0 +1,67 @@
+<section class="reviews-sec" id="reviews">
+  <div class="sec-label">Leave a Review</div>
+  <h2 class="sec-title">Worked with me? <span class="italic">Share your experience</span></h2>
+  <p class="reviews-sub">All reviews are verified before being shown publicly.</p>
+
+  <div class="review-success" *ngIf="success">
+    <div class="success-icon">🎉</div>
+    <h3>Thank you for your review!</h3>
+    <p>Your review has been submitted and is pending approval. It will appear publicly once verified.</p>
+  </div>
+
+  <form class="review-form" *ngIf="!success" (ngSubmit)="submit()">
+    <div class="rf-row two-col">
+      <div class="rf-field">
+        <label>Your Name *</label>
+        <input type="text" [(ngModel)]="form.name" name="name" placeholder="John Doe" required />
+      </div>
+      <div class="rf-field">
+        <label>Email *</label>
+        <input type="email" [(ngModel)]="form.email" name="email" placeholder="you@company.com" required />
+      </div>
+    </div>
+    <div class="rf-row two-col">
+      <div class="rf-field">
+        <label>Company (optional)</label>
+        <input type="text" [(ngModel)]="form.company" name="company" placeholder="Acme Corp" />
+      </div>
+      <div class="rf-field">
+        <label>Your Role (optional)</label>
+        <input type="text" [(ngModel)]="form.role" name="role" placeholder="CTO, Founder, PM…" />
+      </div>
+    </div>
+
+    <div class="rf-field">
+      <label>Rating *</label>
+      <div class="star-picker">
+        <span
+          *ngFor="let i of [1,2,3,4,5]"
+          class="star"
+          [class.active]="i <= effectiveRating()"
+          (click)="setRating(i)"
+          (mouseenter)="setHover(i)"
+          (mouseleave)="setHover(0)">★</span>
+        <span class="rating-label">{{ form.rating }}/5</span>
+      </div>
+    </div>
+
+    <div class="rf-field">
+      <label>Review Title *</label>
+      <input type="text" [(ngModel)]="form.title" name="title" maxlength="200"
+        placeholder="Great work — delivered on time!" required />
+    </div>
+
+    <div class="rf-field">
+      <label>Your Review *</label>
+      <textarea [(ngModel)]="form.body" name="body" rows="5" maxlength="2000"
+        placeholder="Describe your experience working with Karan…" required></textarea>
+    </div>
+
+    <div class="review-err" *ngIf="error">{{ error }}</div>
+
+    <button type="submit" class="review-submit"
+      [disabled]="busy || !form.name || !form.email || !form.title || !form.body">
+      {{ busy ? 'Submitting…' : 'Submit Review' }}
+    </button>
+  </form>
+</section>

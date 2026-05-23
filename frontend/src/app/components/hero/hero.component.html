@@ -1,23 +1,58 @@
-<!-- hero.component.html -->
 <section class="hero" id="hero">
-  <div class="grid-bg"></div>
-  <div class="glow1"></div><div class="glow2"></div>
+  <canvas #canvas class="hero-canvas"></canvas>
 
-  <div class="content">
-    <div class="badge"><span class="dot"></span>🏆 High Productivity Award · Available for Freelance</div>
-    <h1>Karan<br><span class="italic">Kapoor<em>.</em></span></h1>
-    <div class="role">Full Stack Developer · <span>Angular + .NET + NestJS + PostgreSQL</span></div>
-    <p class="desc">2.6 years building production-grade web apps. I deliver complete solutions — from REST APIs to polished UIs — clean, fast, and on time. Available for freelance, remote &amp; part-time work.</p>
-    <div class="cta">
-      <button class="btn-primary" (click)="go('projects')">View My Work</button>
-      <a class="btn-wa" href="https://wa.me/918360426467" target="_blank">💬 WhatsApp Me</a>
-      <button class="btn-ghost" (click)="go('contact')">Get In Touch</button>
+  <div class="hero-overlay">
+    <div class="hero-badge" *ngIf="hero?.available">
+      <span class="badge-dot"></span>
+      {{ hero?.badge }}
+    </div>
+
+    <h1 class="hero-name" *ngIf="hero">
+      <span class="line1">{{ hero.name }}</span>
+      <span class="line2">{{ hero.lastName }}<em class="dot-accent">.</em></span>
+    </h1>
+
+    <div class="hero-role" *ngIf="hero">
+      <span>{{ hero.role }}</span>
+      <span class="role-sep">·</span>
+      <span class="role-stack">{{ hero.stack }}</span>
+    </div>
+
+    <p class="hero-desc" *ngIf="hero">{{ hero.description }}</p>
+
+    <div class="hero-cta" *ngIf="hero">
+      <button class="btn-primary" (click)="go('projects')" data-cursor="VIEW">
+        {{ hero.ctaPrimary }}
+        <span class="btn-arrow">→</span>
+      </button>
+      <a class="btn-wa" [href]="waUrl" target="_blank" data-cursor="CHAT">
+        <span class="wa-icon">💬</span> WhatsApp Me
+      </a>
+      <button class="btn-ghost" (click)="go('contact')" data-cursor="OPEN">
+        {{ hero.ctaGhost }}
+      </button>
     </div>
   </div>
 
-  <div class="floats">
-    <div class="fc"><div class="fn">2.6<span>+</span></div><div class="fl">Years Exp</div></div>
-    <div class="fc"><div class="fn">5<span>+</span></div><div class="fl">Live Apps</div></div>
-    <div class="fc available"><span class="dot"></span>Open to Freelance</div>
+  <div class="hero-stats" *ngIf="hero">
+    <div class="stat">
+      <div class="stat-n">{{ hero.yearsExp }}<span>+</span></div>
+      <div class="stat-l">Years Exp</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-n">{{ hero.liveApps }}<span>+</span></div>
+      <div class="stat-l">Live Apps</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-n">100<span>%</span></div>
+      <div class="stat-l">Client Satisfaction</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
   </div>
 </section>

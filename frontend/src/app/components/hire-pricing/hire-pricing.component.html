@@ -1,42 +1,98 @@
-<section class="hire-sec" id="hire">
-  <div class="sec-label">Engage</div>
-  <h2 class="sec-title">Enterprise-ready engagements,<br><span class="italic">secured checkout</span></h2>
-  <p class="lead">
-    Deposits are processed with <strong>Stripe</strong> (cards, wallets where enabled). Funds settle to your Stripe account; use
-    <a href="https://stripe.com/connect" rel="noopener noreferrer" target="_blank">Stripe Connect</a>
-    if you later need split payouts to vendors.
-  </p>
+<section class="hire-sec reveal" id="hire">
+  <div class="container">
+    <div class="sec-label">Work With Me</div>
+    <h2 class="sec-title">Let's build something <span class="italic">together</span></h2>
+    <p class="hire-lead">
+      Every project starts with a conversation — no fixed quotes, no awkward forms.
+      Tell me what you need on WhatsApp and I'll scope it with you directly.
+    </p>
 
-  <div class="email-row" *ngIf="catalog">
-    <label for="pay-email">Receipt email (optional)</label>
-    <input id="pay-email" type="email" [(ngModel)]="email" placeholder="you@company.com" autocomplete="email" />
-  </div>
-
-  <div class="catalog-error" *ngIf="loadError">
-    Could not load pricing from the API. Ensure the backend is running and try again.
-  </div>
-  <div class="checkout-err" *ngIf="checkoutError">{{ checkoutError }}</div>
-
-  <div class="grid" *ngIf="catalog as c">
-    <div class="card" *ngFor="let t of c.tiers" [class.featured]="t.id === 'standard'">
-      <div class="tier-top">
-        <span class="tier-id">{{ t.id }}</span>
-        <span class="price">{{ formatMoney(t.amountCents, c.currency) }}</span>
+    <div class="process-strip">
+      <div class="ps-step">
+        <div class="ps-num">01</div>
+        <div class="ps-text">
+          <strong>Chat first</strong>
+          <span>Describe your need on WhatsApp — takes 2 mins</span>
+        </div>
       </div>
-      <div class="tier-label">{{ t.label }}</div>
-      <p class="tier-desc">{{ t.description }}</p>
-      <button
-        type="button"
-        class="pay-btn"
-        (click)="pay(t.id)"
-        [disabled]="busyTier !== null"
-      >
-        {{ busyTier === t.id ? 'Redirecting…' : 'Pay deposit — Stripe' }}
-      </button>
+      <div class="ps-arrow">→</div>
+      <div class="ps-step">
+        <div class="ps-num">02</div>
+        <div class="ps-text">
+          <strong>Scope &amp; plan</strong>
+          <span>I'll outline what's involved &amp; realistic timelines</span>
+        </div>
+      </div>
+      <div class="ps-arrow">→</div>
+      <div class="ps-step">
+        <div class="ps-num">03</div>
+        <div class="ps-text">
+          <strong>Build &amp; deliver</strong>
+          <span>Clean code, clear milestones, on-time handoff</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="engage-grid">
+      <div class="engage-card">
+        <div class="ec-badge">Quick Task</div>
+        <h3 class="ec-title">Project Kickstart</h3>
+        <p class="ec-desc">Best for standalone features, bug fixes, UI components, or short deliverables with a clear scope.</p>
+        <ul class="ec-list">
+          <li>Single focused deliverable</li>
+          <li>Fast turnaround (same-day to 3 days)</li>
+          <li>Code review &amp; handoff notes</li>
+          <li>One round of revisions included</li>
+        </ul>
+        <a class="ec-wa"
+           href="/api/wa?text=Hi Karan, I have a quick task to discuss. Details:"
+           target="_blank" rel="noopener noreferrer">
+          <span class="wa-dot"></span> Chat on WhatsApp
+        </a>
+      </div>
+
+      <div class="engage-card featured">
+        <div class="ec-top-bar">Most Popular</div>
+        <div class="ec-badge">Full Project</div>
+        <h3 class="ec-title">Growth Build</h3>
+        <p class="ec-desc">End-to-end feature or full-stack web app — from database design to polished frontend with deployment.</p>
+        <ul class="ec-list">
+          <li>Full-stack Angular + NestJS / .NET</li>
+          <li>Database design &amp; REST API</li>
+          <li>Admin panel &amp; auth if needed</li>
+          <li>CI/CD pipeline &amp; Railway/Vercel deploy</li>
+          <li>2 weeks of post-launch support</li>
+        </ul>
+        <a class="ec-wa"
+           href="/api/wa?text=Hi Karan, I want to discuss a full project. Description:"
+           target="_blank" rel="noopener noreferrer">
+          <span class="wa-dot"></span> Chat on WhatsApp
+        </a>
+      </div>
+
+      <div class="engage-card">
+        <div class="ec-badge">Long Term</div>
+        <h3 class="ec-title">Ongoing Partner</h3>
+        <p class="ec-desc">Retainer-style collaboration — I become part of your dev team for sprints, maintenance, and new features.</p>
+        <ul class="ec-list">
+          <li>Weekly or sprint-based delivery</li>
+          <li>Code architecture &amp; reviews</li>
+          <li>Priority response on WhatsApp</li>
+          <li>Flexible scope per sprint</li>
+          <li>Monthly progress summaries</li>
+        </ul>
+        <a class="ec-wa"
+           href="/api/wa?text=Hi Karan, I am interested in an ongoing collaboration. Our stack and needs:"
+           target="_blank" rel="noopener noreferrer">
+          <span class="wa-dot"></span> Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="hire-note">
+      <span class="note-icon">💬</span>
+      <p>Pricing is always discussed transparently on WhatsApp based on your exact scope.
+         Free projects are possible — just tell me about your idea.</p>
     </div>
   </div>
-
-  <p class="fine-print">
-    You will leave this site to complete payment on Stripe’s secure page. Test mode uses Stripe test cards only.
-  </p>
 </section>

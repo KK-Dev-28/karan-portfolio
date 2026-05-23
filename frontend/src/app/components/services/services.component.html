@@ -1,12 +1,104 @@
-<!-- services.component.html -->
-<section class="services-sec" id="services">
-  <div class="sec-label">What I Do</div>
-  <h2 class="sec-title">End-to-end solutions,<br><span class="italic">delivered with care</span></h2>
-  <div class="grid">
-    <div class="card" [class]="s.color" *ngFor="let s of services">
-      <div class="icon">{{ s.icon }}</div>
-      <div class="name">{{ s.name }}</div>
-      <div class="desc">{{ s.desc }}</div>
+<section class="services-sec reveal" id="services">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="svc-header">
+      <div class="svc-header-left">
+        <div class="sec-label">Services</div>
+        <h2 class="sec-title">What I Build &amp; <span class="italic">Deliver</span></h2>
+        <p class="svc-lead">
+          No upfront prices. We discuss your needs first, then I send a custom quote.<br>
+          All work is sprint-based with daily updates on active days.
+        </p>
+      </div>
+      <div class="availability-pill">
+        <span class="avail-dot"></span>
+        <div>
+          <div class="avail-status">Available for work</div>
+          <div class="avail-times">Sat / Sun · Weeknights 10 PM IST</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Featured 3 services -->
+    <div class="featured-grid">
+      <div class="svc-card featured glow-card" *ngFor="let s of featured" [attr.data-cursor]="'CHAT'">
+        <div class="card-badge" *ngIf="s.badge">{{ s.badge }}</div>
+        <div class="svc-icon-wrap">
+          <span class="svc-icon">{{ s.icon }}</span>
+        </div>
+        <div class="svc-name">{{ s.name }}</div>
+        <div class="svc-tagline">{{ s.tagline }}</div>
+        <p class="svc-desc">{{ s.desc }}</p>
+        <ul class="svc-bullets">
+          <li *ngFor="let b of s.bullets">
+            <span class="bullet-dot">✓</span> {{ b }}
+          </li>
+        </ul>
+        <a class="svc-cta" [href]="waLink(s.wa)" target="_blank" rel="noopener">
+          <span class="cta-icon">💬</span> Let's Discuss →
+        </a>
+      </div>
+    </div>
+
+    <!-- More services -->
+    <div class="more-label">More Services</div>
+    <div class="more-grid">
+      <div class="svc-card more glow-card" *ngFor="let s of more" [attr.data-cursor]="'CHAT'">
+        <div class="svc-icon-sm">{{ s.icon }}</div>
+        <div class="svc-name-sm">{{ s.name }}</div>
+        <div class="svc-tagline-sm">{{ s.tagline }}</div>
+        <p class="svc-desc-sm">{{ s.desc }}</p>
+        <ul class="svc-bullets-sm">
+          <li *ngFor="let b of s.bullets">
+            <span class="bullet-dot">✓</span> {{ b }}
+          </li>
+        </ul>
+        <a class="svc-cta-sm" [href]="waLink(s.wa)" target="_blank" rel="noopener">
+          Discuss →
+        </a>
+      </div>
+    </div>
+
+    <!-- How I Work -->
+    <div class="process-section">
+      <div class="process-label">
+        <div class="sec-label">How I Work</div>
+        <h3 class="process-title">Sprint-Based Delivery — You're Always in the Loop</h3>
+      </div>
+      <div class="process-steps">
+        <div class="step" *ngFor="let p of process; let last = last">
+          <div class="step-num">{{ p.step }}</div>
+          <div class="step-body">
+            <div class="step-title">{{ p.title }}</div>
+            <div class="step-desc">{{ p.desc }}</div>
+          </div>
+          <div class="step-arrow" *ngIf="!last">→</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reach Me section -->
+    <div class="reach-section">
+      <div class="reach-header">
+        <div class="sec-label">Reach Me</div>
+        <h3 class="reach-title">Start a Conversation — Pick Your Channel</h3>
+        <p class="reach-sub">I respond fastest on WhatsApp Business. For ongoing projects, Microsoft Teams works best.</p>
+      </div>
+      <div class="channels-grid">
+        <a class="channel-card" *ngFor="let c of channels"
+           [href]="c.href" target="_blank" rel="noopener"
+           [class]="'ch-' + c.color"
+           [attr.data-cursor]="'CHAT'">
+          <span class="ch-icon">{{ c.icon }}</span>
+          <div class="ch-body">
+            <div class="ch-label">{{ c.label }}</div>
+            <div class="ch-value">{{ c.value }}</div>
+            <div class="ch-note">{{ c.note }}</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
   </div>
 </section>

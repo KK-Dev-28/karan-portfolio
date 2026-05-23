@@ -1,58 +1,87 @@
-<section class="source-sec" id="source-code">
-  <div class="sec-label">Licensing & services</div>
-  <h2 class="sec-title">Full source, deployment, or custom build</h2>
-  <p class="lead">
-    This repository is private under
-    <strong>KK-Dev-28</strong>. Access is granted only to collaborators. If you want the
-    <strong>complete monorepo</strong> (Angular + NestJS + admin + CI), a <strong>white-label</strong> variant, or
-    <strong>hands-on setup</strong> of production Postgres, Stripe, Vercel, and Railway — reach out or purchase a
-    license package. I can also extend the stack (CQRS in the API, Python resume scoring, and more) under a scoped
-    agreement.
-  </p>
+<section class="source-sec reveal" id="source-code">
+  <div class="container">
+    <div class="sec-label">Licensing &amp; Source Code</div>
+    <h2 class="sec-title">Own a portfolio <span class="italic">like this</span></h2>
+    <p class="source-lead">
+      The full monorepo — Angular + NestJS + admin portal + CI/CD — is available under a private license.
+      Answer 4 quick questions so I can suggest the right approach for you, then we'll talk on WhatsApp.
+    </p>
 
-  <div class="grid">
-    <article class="card">
-      <h3>Buy source license</h3>
-      <p>
-        One-time license for the codebase as shipped: frontend, backend, workflows, and docs. You deploy with your own
-        Stripe, database, and hosting accounts — no secrets from my production are included.
-      </p>
-      <div class="actions">
-        <a class="btn btn-primary" href="mailto:kkcode28012002@gmail.com?subject=Portfolio%20source%20license">
-          Email to license
-        </a>
+    <div class="survey-wrap">
+      <!-- Step questions -->
+      <div class="survey-card" *ngIf="!allAnswered">
+        <div class="sq-progress">
+          <div class="sq-prog-bar" [style.width]="(step / questions.length * 100) + '%'"></div>
+        </div>
+        <div class="sq-count">{{ step + 1 }} / {{ questions.length }}</div>
+        <div class="sq-label">{{ currentQ.label }}</div>
+        <div class="sq-options">
+          <button
+            *ngFor="let opt of currentQ.options"
+            class="sq-opt"
+            [class.selected]="answers[currentQ.key] === opt"
+            (click)="select(opt)">
+            {{ opt }}
+          </button>
+        </div>
+        <div class="sq-steps">
+          <span *ngFor="let q of questions; let i = index" class="sq-dot" [class.active]="i === step" [class.done]="answers[q.key]"></span>
+        </div>
       </div>
-    </article>
 
-    <article class="card">
-      <h3>Customize or integrate</h3>
-      <p>
-        Branding, extra modules, ATS-style resume checks, analytics, or third-party APIs. Work is scoped with a clear
-        milestone plan after a short discovery call.
-      </p>
-      <div class="actions">
-        <a class="btn btn-primary" href="mailto:kkcode28012002@gmail.com?subject=Portfolio%20customization">
-          Discuss scope
+      <!-- Result / CTA -->
+      <div class="survey-result" *ngIf="allAnswered">
+        <div class="sr-icon">🎉</div>
+        <h3 class="sr-title">Perfect, let's talk!</h3>
+        <p class="sr-desc">Your answers help me suggest the right package — source license, guided setup, or a full custom build. Hit the button below and I'll have your context pre-filled.</p>
+        <div class="sr-summary">
+          <div class="srs-row" *ngFor="let q of questions">
+            <span class="srs-key">{{ q.label }}</span>
+            <span class="srs-val">{{ answers[q.key] }}</span>
+          </div>
+        </div>
+        <a class="sr-wa" [href]="waUrl" target="_blank" rel="noopener noreferrer">
+          <span class="wa-dot-lg"></span> Open WhatsApp Conversation
         </a>
-        <a class="btn btn-ghost" routerLink="/resume-review">Try resume preview</a>
+        <button class="sr-restart" (click)="restart()">Start over</button>
       </div>
-    </article>
+    </div>
 
-    <article class="card">
-      <h3>Production setup</h3>
-      <p>
-        Guided or done-for-you: Railway Postgres + API, Vercel frontend, Stripe webhooks, env templates, and smoke
-        tests. Ideal if you want the same architecture without spending weekends on infra.
-      </p>
-      <div class="actions">
-        <a class="btn btn-ghost" href="mailto:kkcode28012002@gmail.com?subject=Production%20deployment%20help">
-          Book setup help
-        </a>
-      </div>
-    </article>
+    <!-- 3 offering cards -->
+    <div class="offer-grid">
+      <article class="offer-card">
+        <div class="oc-icon">📦</div>
+        <h3 class="oc-title">Source License</h3>
+        <p class="oc-desc">Complete monorepo as shipped — Angular frontend, NestJS backend, admin portal, CI/CD workflows. Deploy with your own accounts.</p>
+        <ul class="oc-points">
+          <li>Frontend + Backend + Admin</li>
+          <li>Railway &amp; Vercel ready</li>
+          <li>All env configs included</li>
+        </ul>
+      </article>
+
+      <article class="offer-card featured">
+        <div class="oc-top-badge">Most Requested</div>
+        <div class="oc-icon">🎨</div>
+        <h3 class="oc-title">White-Label Build</h3>
+        <p class="oc-desc">I rebrand and customize the entire portfolio with your content, colors, social links, and domain — handed off production-ready.</p>
+        <ul class="oc-points">
+          <li>Custom design &amp; branding</li>
+          <li>Your content &amp; projects</li>
+          <li>Deployment handoff</li>
+        </ul>
+      </article>
+
+      <article class="offer-card">
+        <div class="oc-icon">🛠️</div>
+        <h3 class="oc-title">Guided Setup</h3>
+        <p class="oc-desc">You get the code plus a live walkthrough — I explain the architecture, help you configure Railway, Stripe, and Vercel, and answer questions.</p>
+        <ul class="oc-points">
+          <li>1:1 setup session</li>
+          <li>Architecture walkthrough</li>
+          <li>Infra configuration help</li>
+        </ul>
+      </article>
+    </div>
   </div>
-
-  <p class="mono" style="margin-top: 2rem; text-align: center">
-    Repo: https://github.com/KK-Dev-28/karan-portfolio
-  </p>
 </section>

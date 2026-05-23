@@ -10,6 +10,11 @@ import { PaymentSuccessPageComponent } from './pages/payment-success/payment-suc
 import { PaymentCancelPageComponent } from './pages/payment-cancel/payment-cancel.page';
 import { InsightsPageComponent } from './pages/insights/insights.page';
 import { ResumeReviewPageComponent } from './pages/resume-review/resume-review.page';
+import { BlogPageComponent } from './pages/blog/blog.page';
+import { BlogWritePageComponent } from './pages/blog-write/blog-write.page';
+import { BlogProfilePageComponent } from './pages/blog-profile/blog-profile.page';
+import { BlogPostPageComponent } from './pages/blog-post/blog-post.page';
+import { AiToolsPageComponent } from './pages/ai-tools/ai-tools.page';
 
 const routes = [
   { path: '', component: HomePageComponent },
@@ -18,6 +23,11 @@ const routes = [
   { path: 'payment/cancel', component: PaymentCancelPageComponent },
   { path: 'insights', component: InsightsPageComponent },
   { path: 'resume-review', component: ResumeReviewPageComponent },
+  { path: 'blog', component: BlogPageComponent },
+  { path: 'blog-write', component: BlogWritePageComponent },
+  { path: 'blog/u/:username', component: BlogProfilePageComponent },
+  { path: 'blog/posts/:slug', component: BlogPostPageComponent },
+  { path: 'ai-tools', component: AiToolsPageComponent },
   { path: '**', redirectTo: '' },
 ];
 

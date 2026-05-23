@@ -1,42 +1,150 @@
-/* experience.component.scss */
-.exp-sec { padding:7rem 3.5rem; background:#08090a; }
-
-.sec-label { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:#00e5a0; margin-bottom:1rem; display:flex; align-items:center; gap:.7rem;
-  &::before { content:''; width:22px; height:1px; background:#00e5a0; }
-}
-.sec-title { font-family:'Syne',sans-serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:800; letter-spacing:-.02em; color:#ecedf2; margin-bottom:4rem; line-height:1.05; }
-.italic { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; color:#8a8c9e; }
-
-/* Timeline */
-.timeline { position:relative; padding-left:2rem; max-width:720px;
-  &::before { content:''; position:absolute; left:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom,#00e5a0,#7b61ff,transparent); }
+.exp-sec {
+  padding: 7rem 0;
+  background: var(--bg);
 }
 
-.tl-item { position:relative; padding:0 0 3rem 2.5rem;
-  &:last-child { padding-bottom:0; }
+.exp-layout {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.exp-header { margin-bottom: 4rem; }
+
+.exp-sub {
+  font-size: .88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-top: .75rem;
+}
+
+/* ── Timeline ──────────────────────────────────────── */
+.timeline {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.tl-line {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), rgba(245, 158, 11, 0.2), transparent);
+  border-radius: 2px;
+}
+
+.tl-item {
+  position: relative;
+  padding-bottom: 2.5rem;
+
+  &:last-child { padding-bottom: 0; }
+}
+
+.tl-dot-wrap {
+  position: absolute;
+  left: -2.5rem;
+  top: .25rem;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tl-dot {
-  position:absolute; left:-5px; top:5px; width:10px; height:10px;
-  background:#08090a; border:2px solid #00e5a0; border-radius:50%;
-  box-shadow:0 0 12px rgba(0,229,160,.4);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4), 0 0 0 4px rgba(245, 158, 11, 0.08);
+
+  .tl-dot-inner {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
 }
-.tl-item.edu .tl-dot { border-color:#7b61ff; box-shadow:0 0 10px rgba(123,97,255,.35); }
 
-.tl-body {}
+.tl-item.edu .tl-dot {
+  border-color: #a78bfa;
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.4), 0 0 0 4px rgba(167, 139, 250, 0.08);
 
-.tl-date { font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:#00e5a0; margin-bottom:.4rem; }
-.tl-item.edu .tl-date { color:#7b61ff; }
+  .tl-dot-inner { background: #a78bfa; }
+}
 
-.tl-top  { display:flex; align-items:center; gap:.75rem; margin-bottom:.2rem; flex-wrap:wrap; }
-.tl-role { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; color:#ecedf2; }
+/* ── Cards ─────────────────────────────────────────── */
+.tl-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: all var(--t-mid);
+}
 
-.tl-badge { font-size:.55rem; letter-spacing:.1em; text-transform:uppercase; padding:.12rem .42rem; border:1px solid rgba(0,229,160,.3); color:#00e5a0; background:rgba(0,229,160,.07); }
+.tl-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .5rem;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
 
-.tl-company { font-size:.78rem; color:#5e6070; margin-bottom:.65rem; }
+.tl-date {
+  font-family: var(--font-body);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 
-.tl-desc { font-size:.76rem; color:#8a8c9e; line-height:1.85; max-width:560px; }
+.tl-item.edu .tl-date { color: #a78bfa; }
 
-@media(max-width:900px) {
-  .exp-sec { padding:5rem 1.5rem; }
+.tl-badge {
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--accent);
+}
+
+.tl-role {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: .25rem;
+}
+
+.tl-company {
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: .75rem;
+}
+
+.tl-location {
+  color: var(--text-dim);
+  margin-left: .25rem;
+}
+
+.tl-desc {
+  font-size: .8rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .exp-sec { padding: 5rem 0; }
+  .timeline { padding-left: 1.75rem; }
 }

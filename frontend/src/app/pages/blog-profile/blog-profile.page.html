@@ -1,0 +1,52 @@
+<div class="profile-page">
+  <div class="container">
+    <a class="back-link" routerLink="/blog">← Blog Feed</a>
+
+    <div class="pf-loading" *ngIf="loading && !notFound"><div class="spin-sm"></div> Loading profile…</div>
+
+    <div class="pf-not-found" *ngIf="notFound">
+      <p>Profile not found or set to private.</p>
+      <a routerLink="/blog">← Back to blog</a>
+    </div>
+
+    <ng-container *ngIf="profile && !loading">
+      <!-- Profile header -->
+      <div class="pf-header">
+        <div class="pf-avatar" *ngIf="profile.avatar"><img [src]="profile.avatar" [alt]="profile.name" /></div>
+        <div class="pf-avatar-ph" *ngIf="!profile.avatar">{{ profile.name?.charAt(0) }}</div>
+        <div class="pf-info">
+          <h1 class="pf-name">{{ profile.name }}</h1>
+          <div class="pf-username">&#64;{{ profile.username }}</div>
+          <p class="pf-bio" *ngIf="profile.bio">{{ profile.bio }}</p>
+          <div class="pf-socials" *ngIf="profile.website || profile.twitter || profile.linkedin || profile.github">
+            <a *ngIf="profile.website" [href]="profile.website" target="_blank" rel="noopener" class="pf-social-link">🌐 Website</a>
+            <a *ngIf="profile.twitter" [href]="'https://twitter.com/'+profile.twitter.replace('@','')" target="_blank" rel="noopener" class="pf-social-link">𝕏 {{ profile.twitter }}</a>
+            <a *ngIf="profile.linkedin" [href]="profile.linkedin" target="_blank" rel="noopener" class="pf-social-link">LinkedIn</a>
+            <a *ngIf="profile.github" [href]="'https://github.com/'+profile.github" target="_blank" rel="noopener" class="pf-social-link">GitHub</a>
+          </div>
+          <div class="pf-meta">
+            <span *ngIf="profile.postCount !== null">{{ profile.postCount }} <ng-container *ngIf="profile.postCount === 1">post</ng-container><ng-container *ngIf="profile.postCount !== 1">posts</ng-container></span>
+            <span>Joined {{ timeAgo(profile.joinedAt) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Posts -->
+      <div class="pf-posts-hdr">Posts by {{ profile.name }}</div>
+      <div class="pf-empty" *ngIf="posts.length === 0">No published posts yet.</div>
+      <div class="pf-posts-grid" *ngIf="posts.length > 0">
+        <a class="pf-card" *ngFor="let p of posts" [routerLink]="['/blog/posts', p.slug]">
+          <div class="pfc-cover" *ngIf="p.coverImage"><img [src]="p.coverImage" [alt]="p.title" loading="lazy" /></div>
+          <div class="pfc-body">
+            <h3 class="pfc-title">{{ p.title }}</h3>
+            <p class="pfc-excerpt">{{ excerpt(p.excerpt || p.body) }}</p>
+            <div class="pfc-meta">
+              <span>{{ timeAgo(p.publishedAt || p.createdAt) }}</span>
+              <span *ngIf="p.tags?.length">· {{ p.tags.slice(0,3).join(', ') }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </ng-container>
+  </div>
+</div>

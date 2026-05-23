@@ -12,6 +12,18 @@ import { Payment }        from './payment/payment.entity';
 import { InsightsAccess } from './payment/insights-access.entity';
 import { NewsletterSubscriber } from './newsletter/newsletter.entity';
 import { PortfolioUpdate } from './portfolio-update/portfolio-update.entity';
+import { SiteContent }   from './site-content/site-content.entity';
+import { Review }        from './reviews/review.entity';
+import { ServiceOrder }  from './service-orders/service-order.entity';
+import { Survey }        from './survey/survey.entity';
+import { SurveyResponse } from './survey/survey-response.entity';
+import { Demo }          from './demos/demo.entity';
+import { Booking }       from './booking/booking.entity';
+import { BlogPost }      from './blog/blog-post.entity';
+import { BlogAccess }    from './blog/blog-access.entity';
+import { BlogUser }      from './blog/blog-user.entity';
+import { FreeUsage }          from './ai-tools/free-usage.entity';
+import { EmailVerification }  from './ai-tools/email-verification.entity';
 
 import { VisitorModule } from './visitor/visitor.module';
 import { ContactModule } from './contact/contact.module';
@@ -23,6 +35,14 @@ import { NewsletterModule } from './newsletter/newsletter.module';
 import { PortfolioUpdateModule } from './portfolio-update/portfolio-update.module';
 import { HealthModule } from './health/health.module';
 import { ResumeModule } from './resume/resume.module';
+import { SiteContentModule } from './site-content/site-content.module';
+import { ReviewModule }  from './reviews/review.module';
+import { ServiceOrderModule } from './service-orders/service-order.module';
+import { SurveyModule }  from './survey/survey.module';
+import { DemoModule }   from './demos/demo.module';
+import { BookingModule } from './booking/booking.module';
+import { BlogModule }   from './blog/blog.module';
+import { AiToolsModule } from './ai-tools/ai-tools.module';
 import { parseDatabaseUrl } from './database/parse-database-url';
 
 @Module({
@@ -80,6 +100,18 @@ import { parseDatabaseUrl } from './database/parse-database-url';
           InsightsAccess,
           NewsletterSubscriber,
           PortfolioUpdate,
+          SiteContent,
+          Review,
+          ServiceOrder,
+          Survey,
+          SurveyResponse,
+          Demo,
+          Booking,
+          BlogPost,
+          BlogAccess,
+          BlogUser,
+          FreeUsage,
+          EmailVerification,
         ],
         synchronize,
         logging:     false,
@@ -100,6 +132,14 @@ import { parseDatabaseUrl } from './database/parse-database-url';
     PortfolioUpdateModule,
     HealthModule,
     ResumeModule,
+    SiteContentModule,
+    ReviewModule,
+    ServiceOrderModule,
+    SurveyModule,
+    DemoModule,
+    BookingModule,
+    BlogModule,
+    AiToolsModule,
     AdminModule,
   ],
 })

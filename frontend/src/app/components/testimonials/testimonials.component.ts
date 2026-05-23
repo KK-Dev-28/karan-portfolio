@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReviewsService } from '../../services/reviews.service';
 
 @Component({
   selector: 'app-testimonials',
@@ -8,28 +9,15 @@ import { CommonModule } from '@angular/common';
   templateUrl: './testimonials.component.html',
   styleUrls: ['./testimonials.component.scss'],
 })
-export class TestimonialsComponent {
-  items = [
-    {
-      quote:
-        'Clear communication, solid architecture, and shipping velocity we could rely on through a tight launch window.',
-      name: 'Product lead',
-      org: 'B2B SaaS',
-      rating: 5,
-    },
-    {
-      quote:
-        'Production-grade NestJS and Angular work — documentation and handoff were as good as the code.',
-      name: 'Engineering manager',
-      org: 'Fintech',
-      rating: 5,
-    },
-    {
-      quote:
-        'From schema design to admin analytics, the full stack felt cohesive. Exactly what we needed for v1.',
-      name: 'Founder',
-      org: 'Startup',
-      rating: 5,
-    },
-  ];
+export class TestimonialsComponent implements OnInit {
+  items: any[] = [];
+
+  constructor(private reviews: ReviewsService) {}
+
+  ngOnInit() {
+    this.reviews.getApproved().subscribe({ next: r => (this.items = r), error: () => {} });
+  }
+
+  stars(n: number): string { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+  starsArr(n: number): number[] { return Array.from({ length: Math.max(0, Math.min(5, n)) }); }
 }

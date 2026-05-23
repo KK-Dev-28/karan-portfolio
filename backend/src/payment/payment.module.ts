@@ -8,7 +8,9 @@ import { InsightsAccessGuard } from './insights-access.guard';
 import {
   CreateCheckoutHandler,
   CreateInsightsCheckoutHandler,
-  ProcessStripeWebhookHandler,
+  ProcessWebhookHandler,
+  VerifyPaymentHandler,
+  VerifyInsightsPaymentHandler,
 } from './handlers/payment-command.handlers';
 
 @Module({
@@ -19,7 +21,9 @@ import {
     InsightsAccessGuard,
     CreateCheckoutHandler,
     CreateInsightsCheckoutHandler,
-    ProcessStripeWebhookHandler,
+    ProcessWebhookHandler,
+    VerifyPaymentHandler,
+    VerifyInsightsPaymentHandler,
   ],
   exports: [PaymentService, InsightsAccessGuard],
 })

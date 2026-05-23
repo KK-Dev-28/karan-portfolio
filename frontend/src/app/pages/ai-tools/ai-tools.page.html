@@ -1,0 +1,195 @@
+<div class="at-page">
+
+  <!-- ── Hero ── -->
+  <header class="at-hero">
+    <div class="at-hero-inner">
+      <div class="at-badge">AI Services</div>
+      <h1 class="at-title">Smart Tools for Creators</h1>
+      <p class="at-sub">Try our AI-powered idea generator free — verify your email, get 3 generations, no subscription needed.</p>
+    </div>
+  </header>
+
+  <!-- ── Free Service Card ── -->
+  <section class="at-section">
+    <div class="at-container">
+
+      <div class="at-free-card">
+        <div class="at-free-header">
+          <span class="at-tag">Free</span>
+          <span class="at-tag at-tag-uses">3 uses · email verified</span>
+          <h2 class="at-card-title">Blog Idea Generator</h2>
+          <p class="at-card-desc">Enter your niche or topic and get 5 unique, research-backed blog post ideas with hooks, outlines, and tags — instantly.</p>
+        </div>
+
+        <!-- ── Step indicators ── -->
+        <div class="at-steps">
+          <div class="at-step" [class.at-step-active]="step === 'email'" [class.at-step-done]="step !== 'email'">
+            <div class="at-step-dot">
+              <span *ngIf="step === 'email'">1</span>
+              <span *ngIf="step !== 'email'">&#10003;</span>
+            </div>
+            <span class="at-step-lbl">Email</span>
+          </div>
+          <div class="at-step-line"></div>
+          <div class="at-step" [class.at-step-active]="step === 'otp'" [class.at-step-done]="step === 'generate' || step === 'results'">
+            <div class="at-step-dot">
+              <span *ngIf="step === 'email' || step === 'otp'">2</span>
+              <span *ngIf="step === 'generate' || step === 'results'">&#10003;</span>
+            </div>
+            <span class="at-step-lbl">Verify</span>
+          </div>
+          <div class="at-step-line"></div>
+          <div class="at-step" [class.at-step-active]="step === 'generate' || step === 'results'">
+            <div class="at-step-dot">3</div>
+            <span class="at-step-lbl">Generate</span>
+          </div>
+        </div>
+
+        <div class="at-form">
+
+          <!-- ── Step 1: Email ── -->
+          <ng-container *ngIf="step === 'email'">
+            <div class="at-field">
+              <label class="at-lbl">Your Email Address</label>
+              <input class="at-input" type="email" [(ngModel)]="email" placeholder="you@example.com" (keyup.enter)="sendCode()" />
+              <span class="at-hint">We'll send a 6-digit code to verify it's you.</span>
+            </div>
+            <div class="at-err" *ngIf="error">{{ error }}</div>
+            <button class="at-btn" (click)="sendCode()" [disabled]="!email.trim() || loading">
+              <span *ngIf="!loading">Send Verification Code</span>
+              <span *ngIf="loading" class="at-spinner"></span>
+            </button>
+          </ng-container>
+
+          <!-- ── Step 2: OTP ── -->
+          <ng-container *ngIf="step === 'otp'">
+            <div class="at-email-confirmed">
+              <span class="at-email-icon">&#9993;</span>
+              <span>Code sent to <strong>{{ email }}</strong></span>
+            </div>
+            <div class="at-field">
+              <label class="at-lbl">Verification Code</label>
+              <input class="at-input at-otp-input" type="text" [(ngModel)]="otp" placeholder="000000" maxlength="6" inputmode="numeric" (keyup.enter)="verifyCode()" />
+              <span class="at-hint">Enter the 6-digit code from your inbox (check spam too).</span>
+            </div>
+            <div class="at-err" *ngIf="error">{{ error }}</div>
+            <button class="at-btn" (click)="verifyCode()" [disabled]="otp.trim().length !== 6 || loading">
+              <span *ngIf="!loading">Verify Email</span>
+              <span *ngIf="loading" class="at-spinner"></span>
+            </button>
+            <button class="at-btn-ghost" (click)="resendCode()" [disabled]="loading">Resend Code</button>
+          </ng-container>
+
+          <!-- ── Step 3: Generate ── -->
+          <ng-container *ngIf="step === 'generate'">
+            <div class="at-verified-badge">
+              <span class="at-v-icon">&#10003;</span>
+              <span>{{ email }} — verified</span>
+              <span class="at-uses-pill" [class.at-uses-empty]="remaining === 0">{{ remaining }} {{ remaining === 1 ? 'use' : 'uses' }} left</span>
+            </div>
+            <div class="at-field">
+              <label class="at-lbl">Topic or Niche</label>
+              <input class="at-input" type="text" [(ngModel)]="topic" placeholder="e.g. personal finance for millennials" maxlength="200" (keyup.enter)="generate()" />
+            </div>
+            <div class="at-err" *ngIf="error">{{ error }}</div>
+            <button class="at-btn" (click)="generate()" [disabled]="topic.trim().length < 3 || loading || remaining === 0">
+              <span *ngIf="!loading">Generate 5 Ideas</span>
+              <span *ngIf="loading" class="at-spinner"></span>
+            </button>
+            <p class="at-limit-note" *ngIf="remaining === 0">You've used all 3 free generations. Upgrade below for unlimited access.</p>
+          </ng-container>
+
+          <!-- ── Step 4: Results ── -->
+          <ng-container *ngIf="step === 'results'">
+            <div class="at-verified-badge">
+              <span class="at-v-icon">&#10003;</span>
+              <span>{{ email }}</span>
+              <span class="at-uses-pill" [class.at-uses-empty]="remaining === 0">{{ remaining }} {{ remaining === 1 ? 'use' : 'uses' }} left</span>
+            </div>
+
+            <div class="at-results-hdr">
+              <span class="at-results-title">5 ideas for "{{ topic }}"</span>
+            </div>
+
+            <div class="at-idea" *ngFor="let idea of ideas; let i = index">
+              <div class="at-idea-num">{{ i + 1 }}</div>
+              <div class="at-idea-body">
+                <h3 class="at-idea-title">{{ idea.title }}</h3>
+                <p class="at-idea-hook">{{ idea.hook }}</p>
+                <ul class="at-idea-outline">
+                  <li *ngFor="let pt of idea.outline">{{ pt }}</li>
+                </ul>
+                <div class="at-idea-tags">
+                  <span class="at-chip" *ngFor="let t of idea.tags">{{ t }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="at-action-row">
+              <button class="at-btn" (click)="generateAnother()" [disabled]="remaining === 0">Generate Another Topic</button>
+              <button class="at-btn-ghost" (click)="startOver()">Start Over</button>
+            </div>
+            <p class="at-limit-note" *ngIf="remaining === 0">All 3 free uses spent. Upgrade below for unlimited AI writing.</p>
+          </ng-container>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Paid Services ── -->
+  <section class="at-section at-section-dark">
+    <div class="at-container">
+      <div class="at-section-head">
+        <h2 class="at-sh-title">Unlock More Power</h2>
+        <p class="at-sh-sub">Premium services for serious creators and professionals</p>
+      </div>
+
+      <div class="at-services-grid">
+
+        <div class="at-svc-card">
+          <div class="at-svc-icon">&#9997;</div>
+          <h3 class="at-svc-name">Blog Writer</h3>
+          <p class="at-svc-desc">Full blog posts written by AI — give a topic and get a complete, publish-ready article with title, body, excerpt, and tags.</p>
+          <ul class="at-svc-perks">
+            <li>Unlimited generations</li>
+            <li>3 tone options (casual, professional, storytelling)</li>
+            <li>Short / medium / long length</li>
+            <li>Copy-paste ready output</li>
+          </ul>
+          <a class="at-svc-btn" routerLink="/blog">Get Blog Access</a>
+        </div>
+
+        <div class="at-svc-card at-svc-featured">
+          <div class="at-svc-badge">Popular</div>
+          <div class="at-svc-icon">&#128196;</div>
+          <h3 class="at-svc-name">Resume AI Review</h3>
+          <p class="at-svc-desc">Upload your resume and get a detailed AI critique with ATS score, section-by-section feedback, and actionable improvement tips.</p>
+          <ul class="at-svc-perks">
+            <li>ATS compatibility score</li>
+            <li>Section-by-section feedback</li>
+            <li>Keyword gap analysis</li>
+            <li>Instant detailed report</li>
+          </ul>
+          <a class="at-svc-btn" routerLink="/resume-review">Try Resume Review</a>
+        </div>
+
+        <div class="at-svc-card">
+          <div class="at-svc-icon">&#128203;</div>
+          <h3 class="at-svc-name">Document Creator</h3>
+          <p class="at-svc-desc">AI-powered cover letters, LinkedIn summaries, proposal drafts, and professional bios — tailored to your role and industry.</p>
+          <ul class="at-svc-perks">
+            <li>Cover letters</li>
+            <li>LinkedIn summary writer</li>
+            <li>Business proposals</li>
+            <li>Professional bio generator</li>
+          </ul>
+          <button class="at-svc-btn at-svc-btn-outline" disabled>Coming Soon</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,25 @@
+<section class="booking-sec reveal" id="booking">
+  <div class="container">
+    <div class="sec-label">Book a Session</div>
+    <h2 class="sec-title">Work with me <span class="italic">directly</span></h2>
+    <p class="booking-lead">Pick the session type that fits your need — pricing is discussed transparently on WhatsApp based on your exact topic.</p>
+
+    <div class="sessions-grid">
+      <div class="session-card" *ngFor="let s of sessions">
+        <div class="sc-duration">{{ s.duration }} min</div>
+        <h3 class="sc-label">{{ s.label }}</h3>
+        <ul class="sc-bullets">
+          <li *ngFor="let b of s.bullets">{{ b }}</li>
+        </ul>
+        <a class="sc-btn" [href]="waUrl(s.waText)" target="_blank" rel="noopener">
+          <span class="wa-dot"></span> Chat on WhatsApp →
+        </a>
+      </div>
+    </div>
+
+    <div class="hire-note">
+      <span class="note-icon">💬</span>
+      <p>Pricing is always discussed on WhatsApp first — no upfront payment, no surprises.</p>
+    </div>
+  </div>
+</section>

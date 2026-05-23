@@ -1,0 +1,50 @@
+<section class="est-sec reveal" id="estimator">
+  <div class="container">
+    <div class="sec-label">Free Tool</div>
+    <h2 class="sec-title">Project cost <span class="italic">estimator</span></h2>
+    <p class="est-lead">Answer 4 questions and get an instant ballpark estimate — then we'll fine-tune it on WhatsApp.</p>
+
+    <div class="est-wrap">
+
+      <!-- Quiz -->
+      <div class="est-card" *ngIf="!showResult">
+        <div class="est-progress-bar"><div class="est-fill" [style.width]="progress + '%'"></div></div>
+        <div class="est-meta">Step {{ step + 1 }} of {{ steps.length }}</div>
+        <h3 class="est-q">{{ currentStep.label }}</h3>
+
+        <div class="est-options" [class.multi]="currentStep.multi">
+          <button
+            *ngFor="let opt of currentStep.options"
+            class="est-opt"
+            [class.active]="isSelected(currentStep.key, opt.value)"
+            (click)="toggle(currentStep.key, opt.value, currentStep.multi)">
+            {{ opt.label }}
+            <span class="est-check" *ngIf="isSelected(currentStep.key, opt.value)">✓</span>
+          </button>
+        </div>
+
+        <div class="est-nav">
+          <button class="est-back" *ngIf="step > 0" (click)="step = step - 1">← Back</button>
+          <button class="est-next" *ngIf="currentStep.multi" (click)="nextStep()" [disabled]="!answers[currentStep.key]?.length">
+            {{ step === steps.length - 1 ? 'See Estimate →' : 'Next →' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="est-result" *ngIf="showResult">
+        <div class="er-label">Your Estimate</div>
+        <div class="er-range">{{ estimate.low }} — {{ estimate.high }}</div>
+        <p class="er-note">This is a rough range. The final price depends on exact requirements, revisions, and timeline. Let's talk!</p>
+        <div class="er-actions">
+          <a class="er-wa" [href]="'/api/wa?text=' + waMessage" target="_blank" rel="noopener">
+            <span class="wa-dot"></span> Discuss on WhatsApp
+          </a>
+          <button class="er-restart" (click)="restart()">Recalculate</button>
+        </div>
+        <div class="er-disclaimer">Estimates are indicative only and not binding quotes.</div>
+      </div>
+
+    </div>
+  </div>
+</section>

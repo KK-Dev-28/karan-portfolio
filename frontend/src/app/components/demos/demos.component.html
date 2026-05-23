@@ -1,0 +1,55 @@
+<section class="demos-sec reveal" id="demos">
+  <div class="container">
+    <div class="sec-label">My Work</div>
+    <h2 class="sec-title">Live demos &amp; <span class="italic">samples</span></h2>
+    <p class="demos-lead">Browse actual deliverables — screenshots, videos, reports, and live links from past projects.</p>
+
+    <div class="filter-bar">
+      <button
+        *ngFor="let f of filters"
+        class="filter-btn"
+        [class.active]="activeFilter === f.key"
+        (click)="activeFilter = f.key">
+        {{ f.label }}
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="demos-loading" *ngIf="loading">
+      <div class="dl-spinner"></div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="demos-empty" *ngIf="!loading && filtered.length === 0">
+      <span class="de-icon">📂</span>
+      <p>No demos in this category yet — check back soon.</p>
+    </div>
+
+    <!-- Grid -->
+    <div class="demos-grid" *ngIf="!loading && filtered.length > 0">
+      <div class="demo-card" *ngFor="let demo of filtered" (click)="openDemo(demo)">
+        <div class="dc-thumb" [style.backgroundImage]="demo.thumbnailUrl ? 'url(' + demo.thumbnailUrl + ')' : 'none'">
+          <div class="dc-thumb-placeholder" *ngIf="!demo.thumbnailUrl">
+            <span class="dtp-icon">{{ typeIcon[demo.type] || '📁' }}</span>
+          </div>
+          <div class="dc-type-badge">{{ demo.type }}</div>
+          <div class="dc-overlay">
+            <span class="dc-open-btn">{{ demo.liveUrl ? 'View Live →' : 'Open →' }}</span>
+          </div>
+        </div>
+        <div class="dc-body">
+          <div class="dc-cat-tag">{{ demo.category }}</div>
+          <h3 class="dc-title">{{ demo.title }}</h3>
+          <p class="dc-desc" *ngIf="demo.description">{{ demo.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="demos-cta">
+      <p>Want something similar? Let's build it together.</p>
+      <a class="dcta-wa" href="/api/wa?text=Hi Karan, I saw your demos and want something similar. " target="_blank" rel="noopener noreferrer">
+        <span class="wa-dot"></span> Chat on WhatsApp
+      </a>
+    </div>
+  </div>
+</section>

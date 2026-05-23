@@ -1,10 +1,34 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, HttpException, HttpStatus, ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression from 'compression';
 import { AppModule } from './app.module';
+
+/** Strip stack traces & internal details from all unhandled errors in production */
+@Catch()
+class SafeExceptionFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx  = host.switchToHttp();
+    const res  = ctx.getResponse();
+    const isProd = process.env.NODE_ENV === 'production';
+
+    if (exception instanceof HttpException) {
+      const status = exception.getStatus();
+      const body   = exception.getResponse();
+      return res.status(status).json(
+        typeof body === 'object' ? body : { statusCode: status, message: body },
+      );
+    }
+
+    console.error('[Unhandled]', exception);
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      statusCode: 500,
+      message: isProd ? 'Internal server error' : String(exception),
+    });
+  }
+}
 
 function corsOrigins(): string[] {
   const extras = process.env.ADDITIONAL_CORS_ORIGINS;
@@ -26,14 +50,37 @@ async function bootstrap() {
     rawBody: true,
   });
 
+  // ── Security headers ──────────────────────────────────────────────────────
   app.use(
     helmet({
       crossOriginEmbedderPolicy: false,
       crossOriginResourcePolicy: { policy: 'cross-origin' },
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc:  ["'self'"],
+          scriptSrc:   ["'self'", 'https://checkout.razorpay.com'],
+          frameSrc:    ["'self'", 'https://api.razorpay.com', 'https://checkout.razorpay.com'],
+          connectSrc:  ["'self'", 'https://api.razorpay.com', 'https://lumberjack.razorpay.com'],
+          imgSrc:      ["'self'", 'data:', 'https:'],
+          styleSrc:    ["'self'", "'unsafe-inline'"],
+          fontSrc:     ["'self'", 'https:', 'data:'],
+          objectSrc:   ["'none'"],
+          upgradeInsecureRequests: [],
+        },
+      },
     }),
   );
   app.use(compression());
 
+  // ── Body size cap (1 MB) — prevents large-payload DoS ────────────────────
+  app.use((req: any, res: any, next: any) => {
+    if (req.headers['content-length'] && parseInt(req.headers['content-length'], 10) > 1_048_576) {
+      return res.status(413).json({ statusCode: 413, message: 'Payload too large.' });
+    }
+    next();
+  });
+
+  // ── CORS ──────────────────────────────────────────────────────────────────
   const origins = corsOrigins();
   if (process.env.NODE_ENV === 'production' && origins.length === 0) {
     throw new Error(
@@ -47,15 +94,21 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Global validation
+  // ── Global pipes & filters ────────────────────────────────────────────────
   app.useGlobalPipes(
-    new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }),
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      stopAtFirstError: true,
+    }),
   );
+  app.useGlobalFilters(new SafeExceptionFilter());
 
-  // Global prefix
+  // ── Global prefix ─────────────────────────────────────────────────────────
   app.setGlobalPrefix('api');
 
-  // Swagger docs at /api/docs
+  // ── Swagger (dev only by default) ─────────────────────────────────────────
   const cfg = new DocumentBuilder()
     .setTitle('Karan Kapoor — Portfolio API')
     .setDescription('NestJS + PostgreSQL backend for portfolio & visitor analytics')

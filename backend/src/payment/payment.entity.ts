@@ -8,10 +8,10 @@ export class Payment {
   id: number;
 
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
-  stripeCheckoutSessionId: string | null;
+  razorpayOrderId: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  stripePaymentIntentId: string | null;
+  razorpayPaymentId: string | null;
 
   @Column({ type: 'int' })
   amount: number;

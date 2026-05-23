@@ -1,0 +1,93 @@
+<div class="post-page">
+
+  <!-- Loading -->
+  <div class="pp-loading" *ngIf="loading">
+    <div class="spin-sm"></div>
+    <span>Loading post…</span>
+  </div>
+
+  <!-- Not found -->
+  <div class="pp-not-found" *ngIf="notFound && !loading">
+    <div class="pp-nf-icon">404</div>
+    <h2 class="pp-nf-title">Post not found</h2>
+    <p class="pp-nf-sub">This post may have been removed or the link is incorrect.</p>
+    <a class="pp-back-btn" routerLink="/blog">← Back to Blog</a>
+  </div>
+
+  <ng-container *ngIf="post && !loading">
+
+    <!-- Cover image -->
+    <div class="pp-cover" *ngIf="post.coverImage">
+      <img [src]="post.coverImage" [alt]="post.title" />
+      <div class="pp-cover-overlay"></div>
+    </div>
+
+    <!-- Article -->
+    <article class="pp-article">
+      <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav class="pp-nav">
+          <a routerLink="/blog" class="pp-nav-link">Blog</a>
+          <span class="pp-nav-sep">›</span>
+          <span class="pp-nav-cur">{{ post.title }}</span>
+        </nav>
+
+        <!-- Tags -->
+        <div class="pp-tags" *ngIf="post.tags?.length">
+          <a class="pp-tag" *ngFor="let t of post.tags" [routerLink]="['/blog']" [queryParams]="{tag: t}">{{ t }}</a>
+        </div>
+
+        <!-- Title -->
+        <h1 class="pp-title">{{ post.title }}</h1>
+
+        <!-- Author + meta -->
+        <div class="pp-byline">
+          <div class="pp-avatar-wrap">
+            <div class="pp-avatar" *ngIf="post.author?.avatar">
+              <img [src]="post.author.avatar" [alt]="post.authorName" />
+            </div>
+            <div class="pp-avatar-ph" *ngIf="!post.author?.avatar">{{ post.authorName?.charAt(0) }}</div>
+          </div>
+          <div class="pp-byline-info">
+            <a class="pp-author-name" [routerLink]="['/blog/u', post.authorUsername]" *ngIf="post.authorUsername">{{ post.authorName }}</a>
+            <span class="pp-author-name" *ngIf="!post.authorUsername">{{ post.authorName }}</span>
+            <div class="pp-byline-meta">
+              <span>{{ formatDate(post.publishedAt || post.createdAt) }}</span>
+              <span class="pp-sep">·</span>
+              <span>{{ readingTime }} min read</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Excerpt -->
+        <p class="pp-excerpt" *ngIf="post.excerpt">{{ post.excerpt }}</p>
+
+        <!-- Divider -->
+        <div class="pp-divider"></div>
+
+        <!-- Body -->
+        <div class="pp-body">
+          <p class="pp-para" *ngFor="let para of bodyParagraphs">{{ para }}</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="pp-footer">
+          <div class="pp-footer-tags" *ngIf="post.tags?.length">
+            <span class="pp-foot-tag-lbl">Tags:</span>
+            <a class="pp-foot-tag" *ngFor="let t of post.tags" [routerLink]="['/blog']" [queryParams]="{tag: t}">{{ t }}</a>
+          </div>
+          <div class="pp-footer-author" *ngIf="post.authorUsername">
+            <span>Written by</span>
+            <a class="pp-foot-author" [routerLink]="['/blog/u', post.authorUsername]">{{ post.authorName }}</a>
+          </div>
+        </div>
+
+        <!-- Back -->
+        <a class="pp-back-link" routerLink="/blog">← All Posts</a>
+
+      </div>
+    </article>
+
+  </ng-container>
+</div>

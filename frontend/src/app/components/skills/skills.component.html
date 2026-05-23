@@ -1,38 +1,63 @@
-<!-- skills.component.html -->
-<section class="skills-sec" id="skills">
-  <div class="skills-cols">
-    <div class="left">
-      <div class="sec-label">My Toolkit</div>
-      <h2 class="sec-title">Skills &amp;<br><span class="italic">Technologies</span></h2>
-      <p class="sub">Real-world stack I use daily on production systems — not just tutorial projects.</p>
-      <div class="bars">
-        <div class="bar-row" *ngFor="let s of skills">
-          <div class="bar-top">
-            <span class="bar-name">{{ s.name }}</span>
-            <span class="bar-pct">{{ s.pct }}%</span>
-          </div>
-          <div class="bar-bg">
-            <div class="bar-fill" [class]="s.color" [style.width]="animated ? s.pct+'%' : '0%'"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+<section class="skills-sec reveal" id="skills">
+  <div class="container">
+    <div class="sec-label">My Toolkit</div>
+    <div class="skills-layout">
 
-    <div class="right">
-      <div class="award-card">
-        <div class="award-icon">🏆</div>
-        <div class="award-title">High Productivity Award</div>
-        <p class="award-desc">Awarded by CS Soft Solutions India Pvt. Ltd. for exceptional output on the Enterprise Inventory Management System. Recognised for delivering fast, clean, production-ready code consistently.</p>
-      </div>
-      <div class="tags-card">
-        <div class="tags-title">Also Familiar With</div>
-        <div class="tags">
-          <span class="tag" *ngFor="let t of tags">{{ t }}</span>
+      <!-- Left: bars + cards -->
+      <div class="skills-left">
+        <h2 class="sec-title">Skills &amp; <span class="italic">Technologies</span></h2>
+        <p class="skills-sub">Real-world stack I use daily on production systems — not just tutorial projects.</p>
+
+        <div class="bars">
+          <div class="bar-row" *ngFor="let s of skills">
+            <div class="bar-header">
+              <span class="bar-name">{{ s.name }}</span>
+              <span class="bar-pct">{{ s.pct }}%</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width]="animated ? s.pct + '%' : '0%'"></div>
+            </div>
+          </div>
         </div>
+
       </div>
-      <div class="ai-card">
-        <div class="ai-title">⚡ AI-Augmented Workflow</div>
-        <p class="ai-desc">I use Claude and ChatGPT as dev tools — faster debugging, cleaner code, better docs. You get more output for less time.</p>
+
+      <!-- Right: tech wheel + tags -->
+      <div class="skills-right">
+        <div class="wheel-wrapper">
+          <div class="wheel-orbit orbit-1">
+            <div class="orbit-ring"></div>
+            <div class="orbit-tag" *ngFor="let t of tags.slice(0, 6); let i = index"
+                 [style.transform]="'rotate(' + (i * 60) + 'deg) translateX(120px) rotate(-' + (i * 60) + 'deg)'">
+              {{ t }}
+            </div>
+          </div>
+          <div class="wheel-orbit orbit-2">
+            <div class="orbit-ring"></div>
+            <div class="orbit-tag" *ngFor="let t of tags.slice(6, 12); let i = index"
+                 [style.transform]="'rotate(' + (i * 60) + 'deg) translateX(200px) rotate(-' + (i * 60) + 'deg)'">
+              {{ t }}
+            </div>
+          </div>
+          <div class="wheel-center">
+            <span class="center-label">STACK</span>
+          </div>
+        </div>
+
+        <div class="also-familiar" *ngIf="tags.length > 12">
+          <div class="af-label">Also Familiar With</div>
+          <div class="af-tags">
+            <span class="af-tag" *ngFor="let t of tags.slice(12)">{{ t }}</span>
+          </div>
+        </div>
+
+        <div class="ai-card">
+          <span class="ai-icon">⚡</span>
+          <div>
+            <div class="ai-title">AI-Augmented Workflow</div>
+            <p class="ai-desc">Claude &amp; ChatGPT as dev tools — faster debugging, cleaner code, better docs.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

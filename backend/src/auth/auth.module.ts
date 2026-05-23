@@ -13,8 +13,8 @@ import { JwtStrategy } from './jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (cfg: ConfigService) => ({
-        secret: cfg.get('JWT_SECRET', 'karan-portfolio-super-secret-jwt-2025'),
-        signOptions: { expiresIn: '12h' },
+        secret: cfg.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '8h' },
       }),
     }),
   ],

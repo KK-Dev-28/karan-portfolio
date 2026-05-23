@@ -1,23 +1,39 @@
-<!-- experience.component.html -->
-<section class="exp-sec" id="experience">
-  <div class="sec-label">Journey</div>
-  <h2 class="sec-title">Experience &amp;<br><span class="italic">Education</span></h2>
+<section class="exp-sec reveal" id="experience">
+  <div class="container">
+    <div class="exp-layout">
+      <div class="exp-header">
+        <div class="sec-label">Journey</div>
+        <h2 class="sec-title">Experience &amp; <span class="italic">Education</span></h2>
+        <p class="exp-sub">A track record of building things that ship and delivering on time.</p>
+      </div>
 
-  <div class="timeline">
-    <div class="tl-item" *ngFor="let item of items" [class.edu]="item.isEdu">
-      <div class="tl-dot"></div>
+      <div class="timeline">
+        <div class="tl-line"></div>
 
-      <div class="tl-body">
-        <div class="tl-date">{{ item.date }}</div>
-        <div class="tl-top">
-          <div class="tl-role">{{ item.role }}</div>
-          <span class="tl-badge" *ngIf="item.badge">{{ item.badge }}</span>
+        <div class="tl-item reveal"
+             *ngFor="let item of items; let i = index"
+             [class.edu]="item.isEdu"
+             [class.alt]="i % 2 === 1">
+
+          <div class="tl-dot-wrap">
+            <div class="tl-dot">
+              <div class="tl-dot-inner"></div>
+            </div>
+          </div>
+
+          <div class="tl-card glow-card">
+            <div class="tl-card-header">
+              <span class="tl-date">{{ item.date }}</span>
+              <span class="tl-badge" *ngIf="item.badge">{{ item.badge }}</span>
+            </div>
+            <div class="tl-role">{{ item.role }}</div>
+            <div class="tl-company">
+              {{ item.company }}
+              <span class="tl-location" *ngIf="item.location">· {{ item.location }}</span>
+            </div>
+            <p class="tl-desc" *ngIf="item.desc">{{ item.desc }}</p>
+          </div>
         </div>
-        <div class="tl-company">
-          {{ item.company }}
-          <span *ngIf="item.location"> · {{ item.location }}</span>
-        </div>
-        <p class="tl-desc" *ngIf="item.desc">{{ item.desc }}</p>
       </div>
     </div>
   </div>

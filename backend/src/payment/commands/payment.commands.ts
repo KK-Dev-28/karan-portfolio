@@ -9,9 +9,26 @@ export class CreateInsightsCheckoutCommand {
   constructor(public readonly dto: CreateInsightsCheckoutDto) {}
 }
 
-export class ProcessStripeWebhookCommand {
+export class ProcessWebhookCommand {
   constructor(
     public readonly signature: string | undefined,
     public readonly rawBody: Buffer,
+  ) {}
+}
+
+export class VerifyPaymentCommand {
+  constructor(
+    public readonly orderId: string,
+    public readonly paymentId: string,
+    public readonly signature: string,
+  ) {}
+}
+
+export class VerifyInsightsPaymentCommand {
+  constructor(
+    public readonly orderId: string,
+    public readonly paymentId: string,
+    public readonly signature: string,
+    public readonly email: string,
   ) {}
 }

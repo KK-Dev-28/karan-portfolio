@@ -1,0 +1,29 @@
+<section class="dp-sec reveal" id="digital-products">
+  <div class="container">
+    <div class="sec-label">Digital Products</div>
+    <h2 class="sec-title">Buy once, <span class="italic">use forever</span></h2>
+    <p class="dp-lead">Production-ready templates and starter kits built from real projects. Skip weeks of boilerplate — ship in hours.</p>
+
+    <div class="dp-grid">
+      <div
+        class="dp-card"
+        *ngFor="let p of products"
+        [class.dp-featured]="p.featured">
+        <div class="dp-badge" *ngIf="p.badge">{{ p.badge }}</div>
+        <div class="dp-icon">{{ p.icon }}</div>
+        <h3 class="dp-title">{{ p.title }}</h3>
+        <p class="dp-desc">{{ p.desc }}</p>
+        <ul class="dp-bullets">
+          <li *ngFor="let b of p.bullets">{{ b }}</li>
+        </ul>
+        <div class="dp-footer">
+          <a class="dp-btn" [href]="waUrl(p.waText)" target="_blank" rel="noopener">
+            <span class="wa-dot"></span> Get Pricing on WhatsApp →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="dp-guarantee">Pricing discussed on WhatsApp · Lifetime updates · Instant delivery after confirmation</p>
+  </div>
+</section>

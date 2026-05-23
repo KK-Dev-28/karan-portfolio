@@ -9,7 +9,7 @@ export class InsightsAccess {
   email: string;
 
   @Column({ type: 'varchar', length: 255, unique: true })
-  stripeCheckoutSessionId: string;
+  razorpayOrderId: string;
 
   @Column({ type: 'varchar', length: 128, unique: true, nullable: true })
   accessToken: string | null;

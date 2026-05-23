@@ -1,54 +1,57 @@
-<!-- projects.component.html -->
-<section class="projects-sec" id="projects">
-  <div class="sec-label">Production Portfolio</div>
-  <div class="proj-header">
-    <h2 class="sec-title">Live Projects<br><span class="italic">I've Built</span></h2>
-    <a class="gh-link" href="https://github.com/Karan28012002" target="_blank">GitHub ↗</a>
-  </div>
-
-  <!-- Loading -->
-  <div class="loading" *ngIf="loading">
-    <div class="spinner"></div>
-    <span>Loading projects from database…</span>
-  </div>
-
-  <!-- Projects grid -->
-  <div class="grid" *ngIf="!loading">
-    <div class="card"
-         *ngFor="let p of projects; let i = index"
-         [class.featured]="p.isFeatured">
-
-      <!-- Award badge -->
-      <div class="award-badge" *ngIf="p.award">{{ p.award }}</div>
-
-      <!-- Number + period -->
-      <div class="proj-num">
-        0{{ i + 1 }}
-        <span class="period" *ngIf="p.period"> · {{ p.period }}</span>
-      </div>
-
-      <!-- Title -->
-      <div class="proj-title">{{ p.title }}</div>
-
-      <!-- Description -->
-      <p class="proj-desc">{{ p.description }}</p>
-
-      <!-- Tech stack tags -->
-      <div class="stack">
-        <span class="stag" [class]="stackColor(j)"
-              *ngFor="let t of p.techStack; let j = index">{{ t }}</span>
-      </div>
-
-      <!-- Links -->
-      <div class="proj-links">
-        <a *ngIf="p.githubUrl" [href]="p.githubUrl" target="_blank" class="plink">GitHub ↗</a>
-        <a *ngIf="p.liveUrl"   [href]="p.liveUrl"   target="_blank" class="plink live">Live ↗</a>
-      </div>
+<section class="projects-sec reveal" id="projects">
+  <div class="container">
+    <div class="sec-label">Production Portfolio</div>
+    <div class="proj-header">
+      <h2 class="sec-title">Live Projects <span class="italic">I've Built</span></h2>
+      <a class="gh-link" href="https://github.com/Karan28012002" target="_blank" rel="noopener">
+        GitHub ↗
+      </a>
     </div>
 
-    <!-- Empty state -->
-    <div class="empty" *ngIf="!projects.length">
-      No projects found. Make sure the backend is running.
+    <div class="loading-state" *ngIf="loading">
+      <div class="dot-spin"></div>
+    </div>
+
+    <div class="bento-grid" *ngIf="!loading">
+      <div class="bento-card glow-card tilt-card"
+           *ngFor="let p of projects; let i = index"
+           [class.featured]="p.isFeatured"
+           [class.wide]="i === 0"
+           [attr.data-cursor]="'VIEW'">
+
+        <div class="card-inner">
+          <div class="card-top">
+            <span class="proj-num">{{ (i + 1).toString().padStart(2, '0') }}</span>
+            <div class="proj-badges">
+              <span class="badge-award" *ngIf="p.award">{{ p.award }}</span>
+              <span class="badge-period" *ngIf="p.period">{{ p.period }}</span>
+            </div>
+          </div>
+
+          <h3 class="proj-title">{{ p.title }}</h3>
+          <p class="proj-desc">{{ p.description }}</p>
+
+          <div class="stack-tags">
+            <span class="stag" *ngFor="let t of (p.techStack ?? []).slice(0, 5)">{{ t }}</span>
+          </div>
+
+          <div class="proj-links">
+            <a *ngIf="p.githubUrl" [href]="p.githubUrl" target="_blank" rel="noopener" class="plink">
+              <span>GitHub</span> ↗
+            </a>
+            <a *ngIf="p.liveUrl" [href]="p.liveUrl" target="_blank" rel="noopener" class="plink live">
+              <span>Live</span> ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="card-glow"></div>
+      </div>
+
+      <div class="empty-state" *ngIf="!projects.length">
+        <div class="empty-icon">📂</div>
+        <p>Projects loading from database…</p>
+      </div>
     </div>
   </div>
 </section>

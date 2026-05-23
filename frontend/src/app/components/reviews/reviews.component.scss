@@ -1,0 +1,115 @@
+.reviews-sec {
+  padding: 5rem 0;
+  max-width: 720px;
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.reviews-sub {
+  color: var(--text-muted);
+  font-size: .88rem;
+  line-height: 1.7;
+  margin: .5rem 0 2rem;
+}
+
+.review-success {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+
+  .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+  h3 { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: .5rem; }
+  p { color: var(--text-muted); font-size: .85rem; }
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+
+.rf-row { display: flex; gap: 1rem; }
+.two-col .rf-field { flex: 1; }
+
+@media (max-width: 600px) {
+  .rf-row.two-col { flex-direction: column; }
+}
+
+.rf-field {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+
+  label {
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  input, textarea {
+    padding: .7rem 1rem;
+    font-size: .9rem;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    box-sizing: border-box;
+
+    &::placeholder { color: var(--text-dim); }
+  }
+
+  textarea { resize: vertical; min-height: 120px; }
+}
+
+.star-picker {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+
+  .star {
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--border);
+    transition: color var(--t-fast);
+
+    &.active { color: var(--accent); }
+  }
+
+  .rating-label {
+    margin-left: .5rem;
+    font-size: .85rem;
+    color: var(--text-muted);
+  }
+}
+
+.review-err {
+  color: #ef4444;
+  font-size: .82rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius);
+  padding: .6rem 1rem;
+}
+
+.review-submit {
+  padding: .9rem 2rem;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-head);
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--t-mid);
+
+  &:disabled { opacity: .5; cursor: not-allowed; }
+  &:not(:disabled):hover { background: var(--accent-2); box-shadow: 0 0 24px var(--accent-glow); }
+}

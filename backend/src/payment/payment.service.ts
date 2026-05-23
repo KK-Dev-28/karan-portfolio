@@ -2,258 +2,267 @@ import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import Stripe from 'stripe';
+import Razorpay from 'razorpay';
+import { validateWebhookSignature, validatePaymentVerification } from 'razorpay/dist/utils/razorpay-utils';
 import { randomBytes } from 'crypto';
 import { Payment } from './payment.entity';
 import { InsightsAccess } from './insights-access.entity';
 import { CheckoutTier, CreateCheckoutDto } from './dto/create-checkout.dto';
 import { CreateInsightsCheckoutDto } from './dto/create-insights-checkout.dto';
 
-type StripeClient = InstanceType<typeof Stripe>;
-
 @Injectable()
 export class PaymentService {
   private readonly log = new Logger(PaymentService.name);
-  private stripe: StripeClient | null = null;
+  private rzp: Razorpay | null = null;
 
   constructor(
-    @InjectRepository(Payment) private readonly repo: Repository<Payment>,
+    @InjectRepository(Payment)       private readonly repo:         Repository<Payment>,
     @InjectRepository(InsightsAccess) private readonly insightsRepo: Repository<InsightsAccess>,
     private readonly cfg: ConfigService,
   ) {
-    const key = this.cfg.get<string>('STRIPE_SECRET_KEY');
-    if (key) this.stripe = new Stripe(key, { apiVersion: Stripe.API_VERSION });
+    const keyId     = this.cfg.get<string>('RAZORPAY_KEY_ID');
+    const keySecret = this.cfg.get<string>('RAZORPAY_KEY_SECRET');
+    if (keyId && keySecret) {
+      this.rzp = new Razorpay({ key_id: keyId, key_secret: keySecret });
+      this.log.log('Razorpay client initialised');
+    } else {
+      this.log.warn('RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET not set — payments disabled');
+    }
   }
 
-  private tierAmountCents(tier: CheckoutTier): number {
-    const map: Record<CheckoutTier, string> = {
-      starter: 'STRIPE_STARTER_AMOUNT',
-      standard: 'STRIPE_STANDARD_AMOUNT',
-      enterprise: 'STRIPE_ENTERPRISE_AMOUNT',
+  private get keyId()     { return this.cfg.get<string>('RAZORPAY_KEY_ID')     ?? ''; }
+  private get keySecret() { return this.cfg.get<string>('RAZORPAY_KEY_SECRET') ?? ''; }
+  private get currency()  { return (this.cfg.get<string>('RAZORPAY_CURRENCY') || 'INR').toUpperCase(); }
+
+  private tierAmountPaise(tier: CheckoutTier): number {
+    const envMap: Record<CheckoutTier, string> = {
+      starter:    'RAZORPAY_STARTER_AMOUNT',
+      standard:   'RAZORPAY_STANDARD_AMOUNT',
+      enterprise: 'RAZORPAY_ENTERPRISE_AMOUNT',
     };
     const defaults: Record<CheckoutTier, number> = {
-      starter: 19_900,
-      standard: 49_900,
-      enterprise: 99_900,
+      starter:    99_900,
+      standard:   249_900,
+      enterprise: 499_900,
     };
-    const envKey = map[tier];
-    const raw = this.cfg.get<string>(envKey);
-    const n = raw ? parseInt(raw, 10) : defaults[tier];
-    if (!Number.isFinite(n) || n < 50) throw new BadRequestException('Invalid amount configuration');
+    const raw = this.cfg.get<string>(envMap[tier]);
+    const n   = raw ? parseInt(raw, 10) : defaults[tier];
+    if (!Number.isFinite(n) || n < 100) throw new BadRequestException('Invalid amount configuration');
     return n;
   }
 
   private tierLabel(tier: CheckoutTier): string {
     const labels: Record<CheckoutTier, string> = {
-      starter: 'Project kickoff deposit',
-      standard: 'Sprint engagement deposit',
-      enterprise: 'Enterprise engagement deposit',
+      starter:    'Project Kickstart',
+      standard:   'Growth Build',
+      enterprise: 'Ongoing Partner',
     };
     return labels[tier];
   }
 
+  private insightsAmountPaise(): number {
+    const raw = this.cfg.get<string>('RAZORPAY_INSIGHTS_AMOUNT');
+    const n   = raw ? parseInt(raw, 10) : 49_900;
+    if (!Number.isFinite(n) || n < 100) throw new BadRequestException('Invalid insights amount');
+    return n;
+  }
+
+  private insightsDays(): number {
+    const raw = this.cfg.get<string>('INSIGHTS_ACCESS_DAYS');
+    const n   = raw ? parseInt(raw, 10) : 30;
+    return Number.isFinite(n) && n >= 1 ? n : 30;
+  }
+
+  // ── Checkout ──────────────────────────────────────────────────────────────
+
   async createCheckoutSession(dto: CreateCheckoutDto) {
-    if (!this.stripe) {
-      throw new BadRequestException(
-        'Payments are not configured. Set STRIPE_SECRET_KEY in the server environment.',
-      );
-    }
-    const currency = (this.cfg.get<string>('STRIPE_CURRENCY') || 'usd').toLowerCase();
-    const amount = this.tierAmountCents(dto.tier);
-    const frontend = this.cfg.get<string>('FRONTEND_URL') || 'http://localhost:4200';
+    if (!this.rzp) throw new BadRequestException('Payments not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.');
+    const amount   = this.tierAmountPaise(dto.tier);
+    const currency = this.currency;
 
-    const session = await this.stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency,
-            unit_amount: amount,
-            product_data: {
-              name: this.tierLabel(dto.tier),
-              description: `Portfolio engagement — ${dto.tier} tier`,
-            },
-          },
-        },
-      ],
-      customer_email: dto.customerEmail || undefined,
-      success_url: `${frontend}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${frontend}/payment/cancel`,
-      metadata: { tier: dto.tier },
-    });
-
-    const row = this.repo.create({
-      stripeCheckoutSessionId: session.id,
+    const order = await this.rzp.orders.create({
       amount,
       currency,
-      status: 'pending',
-      tier: dto.tier,
-      customerEmail: dto.customerEmail ?? null,
+      receipt: `rcpt_${Date.now()}`,
+      notes:   { tier: dto.tier, email: dto.customerEmail ?? '' },
     });
-    await this.repo.save(row);
 
-    return { url: session.url, sessionId: session.id };
+    await this.repo.save(
+      this.repo.create({
+        razorpayOrderId: order.id,
+        amount,
+        currency,
+        status:        'pending',
+        tier:          dto.tier,
+        customerEmail: dto.customerEmail ?? null,
+      }),
+    );
+
+    return {
+      orderId:  order.id,
+      amount:   order.amount as number,
+      currency: order.currency,
+      keyId:    this.keyId,
+      name:     this.tierLabel(dto.tier),
+      email:    dto.customerEmail ?? '',
+    };
   }
 
-  private insightsAmountCents(): number {
-    const raw = this.cfg.get<string>('STRIPE_INSIGHTS_AMOUNT');
-    const n = raw ? parseInt(raw, 10) : 9900;
-    if (!Number.isFinite(n) || n < 50) throw new BadRequestException('Invalid insights amount configuration');
-    return n;
+  async verifyPayment(orderId: string, paymentId: string, signature: string) {
+    const valid = validatePaymentVerification(
+      { order_id: orderId, payment_id: paymentId },
+      signature,
+      this.keySecret,
+    );
+    if (!valid) throw new BadRequestException('Invalid payment signature');
+
+    await this.repo.update(
+      { razorpayOrderId: orderId },
+      { status: 'completed', razorpayPaymentId: paymentId },
+    );
+    return { success: true };
   }
 
-  private insightsDurationDays(): number {
-    const raw = this.cfg.get<string>('INSIGHTS_ACCESS_DAYS');
-    const n = raw ? parseInt(raw, 10) : 30;
-    if (!Number.isFinite(n) || n < 1) throw new BadRequestException('Invalid insights duration configuration');
-    return n;
-  }
+  // ── Insights ──────────────────────────────────────────────────────────────
 
   async createInsightsCheckoutSession(dto: CreateInsightsCheckoutDto) {
-    if (!this.stripe) {
-      throw new BadRequestException(
-        'Payments are not configured. Set STRIPE_SECRET_KEY in the server environment.',
-      );
-    }
-    const currency = (this.cfg.get<string>('STRIPE_CURRENCY') || 'usd').toLowerCase();
-    const frontend = this.cfg.get<string>('FRONTEND_URL') || 'http://localhost:4200';
-    const amount = this.insightsAmountCents();
-    const email = dto.email.trim().toLowerCase();
+    if (!this.rzp) throw new BadRequestException('Payments not configured.');
+    const amount   = this.insightsAmountPaise();
+    const currency = this.currency;
+    const email    = dto.email.trim().toLowerCase();
 
-    const session = await this.stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency,
-            unit_amount: amount,
-            product_data: {
-              name: 'Portfolio visitor logs access',
-              description: `Read-only analytics access for ${this.insightsDurationDays()} days`,
-            },
-          },
-        },
-      ],
-      customer_email: email,
-      success_url: `${frontend}/insights?session_id={CHECKOUT_SESSION_ID}&email=${encodeURIComponent(email)}`,
-      cancel_url: `${frontend}/insights`,
-      metadata: { type: 'insights_access', email },
+    const order = await this.rzp.orders.create({
+      amount,
+      currency,
+      receipt: `ins_${Date.now()}`,
+      notes:   { type: 'insights_access', email },
     });
 
-    const row = this.insightsRepo.create({
+    await this.insightsRepo.save(
+      this.insightsRepo.create({
+        email,
+        razorpayOrderId: order.id,
+        status:      'pending',
+        accessToken: null,
+        expiresAt:   null,
+      }),
+    );
+
+    return {
+      orderId:  order.id,
+      amount:   order.amount as number,
+      currency: order.currency,
+      keyId:    this.keyId,
+      name:     'Portfolio Visitor Logs Access',
       email,
-      stripeCheckoutSessionId: session.id,
-      status: 'pending',
-      accessToken: null,
-      expiresAt: null,
-    });
-    await this.insightsRepo.save(row);
-    return { url: session.url, sessionId: session.id };
+    };
   }
 
+  async verifyInsightsPayment(orderId: string, paymentId: string, signature: string, email: string) {
+    const valid = validatePaymentVerification(
+      { order_id: orderId, payment_id: paymentId },
+      signature,
+      this.keySecret,
+    );
+    if (!valid) throw new BadRequestException('Invalid payment signature');
+
+    const expires     = new Date(Date.now() + this.insightsDays() * 86_400_000);
+    const accessToken = `ins_${randomBytes(24).toString('hex')}`;
+
+    await this.insightsRepo.update(
+      { razorpayOrderId: orderId },
+      { status: 'active', accessToken, expiresAt: expires, email: email.toLowerCase() },
+    );
+    return { accessToken, expiresAt: expires };
+  }
+
+  // ── Webhook ───────────────────────────────────────────────────────────────
+
   async handleWebhook(signature: string | undefined, rawBody: Buffer) {
-    if (!this.stripe) return { received: false };
-    const whSecret = this.cfg.get<string>('STRIPE_WEBHOOK_SECRET');
+    const whSecret = this.cfg.get<string>('RAZORPAY_WEBHOOK_SECRET');
     if (!whSecret || !signature) {
       this.log.warn('Webhook secret or signature missing');
       return { received: false };
     }
-    let event: ReturnType<StripeClient['webhooks']['constructEvent']>;
-    try {
-      event = this.stripe.webhooks.constructEvent(rawBody, signature, whSecret);
-    } catch (e) {
-      this.log.warn(`Webhook signature failed: ${(e as Error).message}`);
-      throw new BadRequestException('Invalid signature');
+
+    const bodyStr = rawBody.toString();
+    if (!validateWebhookSignature(bodyStr, signature, whSecret)) {
+      this.log.warn('Razorpay webhook signature mismatch');
+      throw new BadRequestException('Invalid webhook signature');
     }
 
-    if (event.type === 'checkout.session.completed') {
-      const sess = event.data.object as {
-        id: string;
-        payment_intent?: string | { id?: string } | null;
-        customer_details?: { email?: string | null } | null;
-        customer_email?: string | null;
-        metadata?: { type?: string; email?: string };
-      };
-      const sessionId = sess.id;
-      const pi = typeof sess.payment_intent === 'string' ? sess.payment_intent : sess.payment_intent?.id;
-      const email = sess.customer_details?.email || sess.customer_email || null;
-      if (sess.metadata?.type === 'insights_access') {
-        const expires = new Date(Date.now() + this.insightsDurationDays() * 86_400_000);
-        const token = `ins_${randomBytes(24).toString('hex')}`;
+    let event: any;
+    try { event = JSON.parse(bodyStr); } catch { throw new BadRequestException('Invalid JSON body'); }
+
+    const paymentEntity = event?.payload?.payment?.entity;
+
+    if (event.event === 'payment.captured' && paymentEntity) {
+      const orderId   = paymentEntity.order_id  as string;
+      const paymentId = paymentEntity.id        as string;
+      const notes     = paymentEntity.notes     as Record<string, string> | undefined;
+
+      if (notes?.type === 'insights_access') {
+        const expires     = new Date(Date.now() + this.insightsDays() * 86_400_000);
+        const accessToken = `ins_${randomBytes(24).toString('hex')}`;
         await this.insightsRepo.update(
-          { stripeCheckoutSessionId: sessionId },
-          {
-            status: 'active',
-            accessToken: token,
-            expiresAt: expires,
-            email: (email || sess.metadata?.email || '').toLowerCase(),
-          },
+          { razorpayOrderId: orderId },
+          { status: 'active', accessToken, expiresAt: expires, email: (notes.email ?? '').toLowerCase() },
         );
+        this.log.log(`Insights access activated for order ${orderId}`);
       } else {
         await this.repo.update(
-          { stripeCheckoutSessionId: sessionId },
-          {
-            status: 'completed',
-            stripePaymentIntentId: pi ?? null,
-            customerEmail: email,
-          },
+          { razorpayOrderId: orderId },
+          { status: 'completed', razorpayPaymentId: paymentId },
         );
+        this.log.log(`Payment completed for order ${orderId}`);
       }
     }
-    if (event.type === 'checkout.session.expired') {
-      const sess = event.data.object as { id: string };
-      await this.repo.update({ stripeCheckoutSessionId: sess.id }, { status: 'expired' });
+
+    if (event.event === 'payment.failed' && paymentEntity?.order_id) {
+      await this.repo.update({ razorpayOrderId: paymentEntity.order_id }, { status: 'failed' });
     }
 
     return { received: true };
   }
 
+  // ── Catalog & Admin ───────────────────────────────────────────────────────
+
   getPublicCatalog() {
-    const currency = (this.cfg.get<string>('STRIPE_CURRENCY') || 'usd').toLowerCase();
-    const tiers = (['starter', 'standard', 'enterprise'] as CheckoutTier[]).map((id) => ({
+    const currency = this.currency;
+    const tiers = (['starter', 'standard', 'enterprise'] as CheckoutTier[]).map(id => ({
       id,
-      label: this.tierLabel(id),
-      amountCents: this.tierAmountCents(id),
+      label:       this.tierLabel(id),
+      amountPaise: this.tierAmountPaise(id),
       description:
-        id === 'starter'
-          ? 'Discovery, scope, and starter delivery — ideal for MVPs.'
-          : id === 'standard'
-            ? 'Dedicated sprint with weekly demos and production hardening.'
-            : 'Multi-team alignment, SLAs, and long-term roadmap support.',
+        id === 'starter'    ? 'Quick tasks, bug fixes, and standalone features.' :
+        id === 'standard'   ? 'Full-stack project builds with deployment.' :
+                              'Ongoing retainer — sprints, reviews, and support.',
     }));
     return { currency, tiers };
   }
 
   getInsightsCatalog() {
-    const currency = (this.cfg.get<string>('STRIPE_CURRENCY') || 'usd').toLowerCase();
     return {
-      currency,
-      amountCents: this.insightsAmountCents(),
-      durationDays: this.insightsDurationDays(),
-      name: 'Portfolio visitor logs access',
+      currency:     this.currency,
+      amountPaise:  this.insightsAmountPaise(),
+      durationDays: this.insightsDays(),
+      keyId:        this.keyId,
+      name:         'Portfolio Visitor Logs Access',
     };
   }
 
-  async activateInsightsAccess(sessionId: string, email?: string) {
+  async activateInsightsAccess(orderId: string, email?: string) {
     const where = email
-      ? { stripeCheckoutSessionId: sessionId, email: email.trim().toLowerCase() }
-      : { stripeCheckoutSessionId: sessionId };
+      ? { razorpayOrderId: orderId, email: email.trim().toLowerCase() }
+      : { razorpayOrderId: orderId };
     const row = await this.insightsRepo.findOne({ where });
     if (!row || row.status !== 'active' || !row.accessToken) {
-      throw new BadRequestException('Access is not active yet. Complete payment first.');
+      throw new BadRequestException('Access not yet active. Complete payment first.');
     }
     if (row.expiresAt && row.expiresAt.getTime() <= Date.now()) {
       throw new BadRequestException('Access token expired.');
     }
-    return {
-      accessToken: row.accessToken,
-      expiresAt: row.expiresAt,
-      email: row.email,
-    };
+    return { accessToken: row.accessToken, expiresAt: row.expiresAt, email: row.email };
   }
 
   async validateInsightsToken(token: string): Promise<boolean> {
@@ -275,8 +284,8 @@ export class PaymentService {
       .addSelect(`SUM(CASE WHEN p.status = 'completed' THEN 1 ELSE 0 END)`, 'completedCount')
       .getRawOne<{ total: string; completedAmount: string | null; completedCount: string }>();
     return {
-      total: parseInt(raw?.total ?? '0', 10) || 0,
-      completedCount: parseInt(raw?.completedCount ?? '0', 10) || 0,
+      total:           parseInt(raw?.total          ?? '0', 10) || 0,
+      completedCount:  parseInt(raw?.completedCount  ?? '0', 10) || 0,
       completedAmount: parseInt(raw?.completedAmount ?? '0', 10) || 0,
     };
   }

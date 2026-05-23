@@ -3,10 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ContactMessage } from './contact.entity';
 import { ContactService } from './contact.service';
 import { ContactController } from './contact.controller';
+import { WaRedirectController } from './wa-redirect.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([ContactMessage])],
   providers: [ContactService],
-  controllers: [ContactController],
+  controllers: [ContactController, WaRedirectController],
   exports: [ContactService],
 })
 export class ContactModule {}

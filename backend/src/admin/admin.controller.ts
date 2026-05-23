@@ -7,6 +7,10 @@ import { ProjectService } from '../project/project.service';
 import { PaymentService } from '../payment/payment.service';
 import { NewsletterService } from '../newsletter/newsletter.service';
 import { PortfolioUpdateService } from '../portfolio-update/portfolio-update.service';
+import { ReviewService } from '../reviews/review.service';
+import { ServiceOrderService } from '../service-orders/service-order.service';
+import { SurveyService } from '../survey/survey.service';
+import { BlogService } from '../blog/blog.service';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -20,6 +24,10 @@ export class AdminController {
     private payments: PaymentService,
     private newsletter: NewsletterService,
     private portfolioUpdates: PortfolioUpdateService,
+    private reviews: ReviewService,
+    private serviceOrders: ServiceOrderService,
+    private surveys: SurveyService,
+    private blogSvc: BlogService,
   ) {}
 
   @Get('dashboard')
@@ -35,6 +43,11 @@ export class AdminController {
       subscribers,
       subscriberCount,
       journalEntries,
+      allReviews,
+      serviceOrders,
+      surveys,
+      blogPosts,
+      blogUsers,
     ] = await Promise.all([
       this.visitors.analytics(),
       this.contacts.findAll(),
@@ -45,6 +58,11 @@ export class AdminController {
       this.newsletter.findRecentForDashboard(120),
       this.newsletter.count(),
       this.portfolioUpdates.findAllForAdmin(),
+      this.reviews.findAll(),
+      this.serviceOrders.findAll(),
+      this.surveys.findAllAdmin(),
+      this.blogSvc.getAllPostsAdmin(),
+      this.blogSvc.getAllUsersAdmin(),
     ]);
     return {
       analytics,
@@ -56,6 +74,11 @@ export class AdminController {
       subscribers,
       subscriberCount,
       journalEntries,
+      allReviews,
+      serviceOrders,
+      surveys,
+      blogPosts,
+      blogUsers,
     };
   }
 }

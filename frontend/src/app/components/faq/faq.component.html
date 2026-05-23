@@ -1,13 +1,21 @@
-<section class="faq-sec" id="faq">
-  <div class="sec-label">FAQ</div>
-  <h2 class="sec-title">Answers <span class="italic">up front</span></h2>
-  <div class="list">
-    <div class="item" *ngFor="let f of faqs; let i = index">
-      <button type="button" class="q-row" (click)="toggle(i)" [attr.aria-expanded]="openIndex === i">
-        <span>{{ f.q }}</span>
-        <span class="chev">{{ openIndex === i ? '−' : '+' }}</span>
-      </button>
-      <div class="a" *ngIf="openIndex === i">{{ f.a }}</div>
+<section class="faq-sec reveal" id="faq">
+  <div class="container">
+    <div class="faq-layout">
+      <div class="faq-header">
+        <div class="sec-label">FAQ</div>
+        <h2 class="sec-title">Answers <span class="italic">Up Front</span></h2>
+        <p class="faq-sub">Everything you need to know before we work together.</p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let f of faqs; let i = index" [class.open]="openIndex === i">
+          <button type="button" class="faq-q" (click)="toggle(i)" [attr.aria-expanded]="openIndex === i">
+            <span>{{ f.q }}</span>
+            <span class="faq-icon">{{ openIndex === i ? '−' : '+' }}</span>
+          </button>
+          <div class="faq-a" *ngIf="openIndex === i">{{ f.a }}</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

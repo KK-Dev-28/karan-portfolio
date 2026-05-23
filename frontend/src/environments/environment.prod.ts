@@ -1,5 +1,5 @@
 // src/environments/environment.prod.ts
 export const environment = {
   production: true,
-  apiUrl: 'https://YOUR-BACKEND-URL.railway.app/api',
+  apiUrl: 'https://karan-portfolio-api.onrender.com/api',
 };

@@ -1,28 +1,32 @@
-// skills.component.ts
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SiteContentService } from '../../services/site-content.service';
 
-@Component({ 
-  selector: 'app-skills', 
+@Component({
+  selector: 'app-skills',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './skills.component.html', 
-  styleUrls: ['./skills.component.scss'] 
+  templateUrl: './skills.component.html',
+  styleUrls: ['./skills.component.scss'],
 })
-export class SkillsComponent implements AfterViewInit {
-  skills = [
-    { name:'Angular / TypeScript', pct:90, color:'green' },
-    { name:'ASP.NET Web API / C#', pct:88, color:'green' },
-    { name:'SQL Server / EF Core',  pct:82, color:'purple' },
-    { name:'NestJS / Node.js',      pct:75, color:'orange' },
-    { name:'Apache Kafka',          pct:68, color:'blue' },
-    { name:'PostgreSQL',            pct:72, color:'purple' },
-    { name:'Next.js / React',       pct:60, color:'green' },
-    { name:'Docker / DevOps',       pct:55, color:'orange' },
-  ];
-  tags = ['VB.NET','.NET MVC','Postman','Git','Jira Cloud','Azure DevOps',
-          'CI/CD','JWT Auth','Swagger','RxJS','HTML5/CSS3','REST Design','TypeORM','Entity Framework'];
+export class SkillsComponent implements OnInit, AfterViewInit {
+  skills: any[] = [];
+  tags: string[] = [];
+  award: any = null;
   animated = false;
+
+  constructor(private cms: SiteContentService) {}
+
+  ngOnInit() {
+    this.cms.getAll().subscribe(c => {
+      const s = c['skills'];
+      if (s) {
+        this.skills = s.bars ?? [];
+        this.tags = s.tags ?? [];
+        this.award = s.award ?? null;
+      }
+    });
+  }
 
   ngAfterViewInit() {
     const obs = new IntersectionObserver(entries => {

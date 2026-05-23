@@ -1,32 +1,73 @@
-<!-- navbar.component.html -->
-<nav [class.scrolled]="scrolled">
-  <a class="logo" href="#">KK<span>.</span>dev</a>
-  <ul class="links">
-    <li *ngFor="let l of links">
-      <a [href]="'#'+l.id" (click)="scrollTo(l.id,$event)">{{ l.label }}</a>
-    </li>
-  </ul>
-  <button class="admin-btn theme-btn" (click)="toggleTheme()">
-    {{ theme === 'dark' ? '☀ Light' : '🌙 Dark' }}
-  </button>
-  <a class="admin-btn logs-btn" routerLink="/resume-review">Resume check</a>
-  <a class="admin-btn logs-btn" href="/insights">Visitor Logs</a>
-  <button *ngIf="!isLoggedIn()" class="admin-btn" (click)="openLogin()">⚙ Admin</button>
-  <button *ngIf="isLoggedIn()"  class="admin-btn active" (click)="goAdmin()">⚙ Dashboard</button>
+<!-- Scroll progress bar -->
+<div id="scroll-progress" [style.width]="scrollPct + '%'"></div>
+
+<!-- Floating pill navbar -->
+<nav class="navbar" [class.scrolled]="scrolled" [class.menu-open]="menuOpen">
+  <div class="navbar-pill">
+
+    <!-- Logo -->
+    <a class="logo" href="#" (click)="scrollTo('hero', $event)">
+      KK<span class="logo-dot">.</span>
+    </a>
+
+    <!-- Desktop Links -->
+    <ul class="nav-links">
+      <li *ngFor="let l of links">
+        <a [href]="'#'+l.id" (click)="scrollTo(l.id, $event)" [class.active]="activeSection === l.id">
+          {{ l.label }}
+        </a>
+      </li>
+    </ul>
+
+    <!-- Right controls -->
+    <div class="nav-controls">
+      <a class="nav-blog-link" routerLink="/ai-tools">AI Tools</a>
+      <a class="nav-blog-link" routerLink="/blog">Blog</a>
+      <button class="theme-toggle" (click)="toggleTheme()" [title]="theme === 'dark' ? 'Light mode' : 'Dark mode'">
+        {{ theme === 'dark' ? '☀' : '🌙' }}
+      </button>
+      <button *ngIf="!isLoggedIn()" class="nav-btn" (click)="openLogin()">Admin</button>
+      <button *ngIf="isLoggedIn()" class="nav-btn active" (click)="goAdmin()">Dashboard</button>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button class="hamburger" (click)="menuOpen = !menuOpen" [class.open]="menuOpen">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" [class.open]="menuOpen">
+  <ul>
+    <li *ngFor="let l of links">
+      <a [href]="'#'+l.id" (click)="scrollTo(l.id, $event); menuOpen=false">{{ l.label }}</a>
+    </li>
+    <li><a routerLink="/ai-tools" (click)="menuOpen=false">AI Tools</a></li>
+    <li><a routerLink="/blog" (click)="menuOpen=false">Blog</a></li>
+    <li><a routerLink="/resume-review" (click)="menuOpen=false">Resume Check</a></li>
+    <li><a href="/insights" (click)="menuOpen=false">Visitor Logs</a></li>
+  </ul>
+  <div class="mobile-footer">
+    <button class="theme-toggle" (click)="toggleTheme()">{{ theme === 'dark' ? '☀ Light Mode' : '🌙 Dark Mode' }}</button>
+    <button *ngIf="!isLoggedIn()" class="nav-btn" (click)="openLogin(); menuOpen=false">Admin Login</button>
+    <button *ngIf="isLoggedIn()" class="nav-btn active" (click)="goAdmin()">Dashboard</button>
+  </div>
+</div>
+<div class="menu-overlay" *ngIf="menuOpen" (click)="menuOpen=false"></div>
 
 <!-- Login Modal -->
 <div class="overlay" *ngIf="showModal" (click)="closeModal()">
   <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-hdr">
-      <span class="modal-title">Admin <em>Login</em></span>
+      <span class="modal-title">Admin Login</span>
       <button class="modal-x" (click)="closeModal()">✕</button>
     </div>
-    <p class="modal-sub">Enter your admin password to access the visitor dashboard.</p>
+    <p class="modal-sub">Enter your admin password to access the dashboard.</p>
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="field">
         <label>Password</label>
-        <input type="password" formControlName="password" placeholder="••••••••••" [class.err]="loginError"/>
+        <input type="password" formControlName="password" placeholder="••••••••••" [class.err]="loginError" />
         <div class="err-msg" *ngIf="loginError">{{ loginError }}</div>
       </div>
       <button type="submit" class="login-btn" [disabled]="loginLoading">
