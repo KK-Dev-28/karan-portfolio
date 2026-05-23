@@ -90,9 +90,9 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
       },
       { threshold: 0.1 },
     );
-    setTimeout(() => {
-      document.querySelectorAll('.reveal').forEach(el => this.revealObs.observe(el));
-    }, 400);
+    const scan = () => document.querySelectorAll('.reveal:not(.visible)').forEach(el => this.revealObs.observe(el));
+    // Scan multiple times — first pass for static elements, later passes catch async API-loaded items
+    [400, 1200, 2500, 4000].forEach(ms => setTimeout(scan, ms));
   }
 
   ngOnDestroy() { this.revealObs?.disconnect(); }
