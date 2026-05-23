@@ -31,18 +31,16 @@ class SafeExceptionFilter implements ExceptionFilter {
 }
 
 function corsOrigins(): string[] {
-  const extras = process.env.ADDITIONAL_CORS_ORIGINS;
-  const fromEnv = extras
-    ? extras.split(',').map((s) => s.trim()).filter(Boolean)
-    : [];
+  const parse = (v?: string) => (v ? v.split(',').map((s) => s.trim()).filter(Boolean) : []);
+  const fromEnv   = parse(process.env.ADDITIONAL_CORS_ORIGINS);
+  const fromMain  = parse(process.env.FRONTEND_URL);
   if (process.env.NODE_ENV === 'production') {
-    const main = process.env.FRONTEND_URL?.trim();
-    if (!main) {
+    if (fromMain.length === 0 && fromEnv.length === 0) {
       console.warn('⚠ FRONTEND_URL is unset in production — browsers cannot call your API until you set it.');
     }
-    return [...new Set(fromEnv.concat(main ? [main] : []))];
+    return [...new Set([...fromMain, ...fromEnv])];
   }
-  return [...new Set(['http://localhost:4200', process.env.FRONTEND_URL || 'http://localhost:4200', ...fromEnv])];
+  return [...new Set(['http://localhost:4200', ...fromMain, ...fromEnv])];
 }
 
 async function bootstrap() {

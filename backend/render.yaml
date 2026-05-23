@@ -15,3 +15,5 @@ services:
         value: 10000
       - key: DATABASE_SYNC
         value: "true"
+      - key: FRONTEND_URL
+        value: "https://karan-portfolio-six-sigma.vercel.app"
