@@ -13,8 +13,10 @@ import { ServiceOrdersService } from '../../services/service-orders.service';
 import { SurveyService }    from '../../services/survey.service';
 import { DemosService }    from '../../services/demos.service';
 import { BookingService }  from '../../services/booking.service';
+import { PaymentService }  from '../../services/payment.service';
 
-type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'newsletter' | 'journal' | 'cms' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
+type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'newsletter' | 'journal' | 'cms' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
+type DateFilter = 'today' | 'week' | 'month' | 'custom' | 'all';
 
 @Component({
   selector: 'app-admin-page',
@@ -27,6 +29,20 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   data: any       = null;
   loading         = true;
   tab: TabType    = 'visitors';
+
+  // ── Date filter state ─────────────────────────────────
+  dateFilter: DateFilter = 'all';
+  customFrom = '';
+  customTo   = '';
+
+  // ── Approvals state ───────────────────────────────────
+  pendingApprovals: any[] = [];
+  approvalsLoading        = false;
+  approvalActionBusy: Record<number, boolean> = {};
+  approvalNote: Record<number, string>        = {};
+  approvalReason: Record<number, string>      = {};
+  approvalMsg: Record<number, string>         = {};
+  approvalSnoozeHours: Record<number, number> = {};
 
   journalForm!:   FormGroup;
   journalBusy    = false;
@@ -57,17 +73,18 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   private sub!: Subscription;
 
   constructor(
-    private analytics: AnalyticsService,
-    private contact:   ContactService,
-    public  auth:      AuthService,
-    private fb:        FormBuilder,
+    private analytics:    AnalyticsService,
+    private contact:      ContactService,
+    public  auth:         AuthService,
+    private fb:           FormBuilder,
     private portfolioJournal: PortfolioJournalService,
-    private cmsService: SiteContentService,
-    private reviewsSvc: ReviewsService,
-    private ordersSvc:  ServiceOrdersService,
-    private surveySvc:  SurveyService,
-    private demosSvc:    DemosService,
-    private bookingSvc:  BookingService,
+    private cmsService:   SiteContentService,
+    private reviewsSvc:   ReviewsService,
+    private ordersSvc:    ServiceOrdersService,
+    private surveySvc:    SurveyService,
+    private demosSvc:     DemosService,
+    private bookingSvc:   BookingService,
+    private paymentSvc:   PaymentService,
   ) {}
 
   ngOnInit() {
@@ -263,6 +280,103 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     if (h < 24) return `${h}h ago`;
     return `${Math.floor(h / 24)}d ago`;
   }
+  // ── Date filter helpers ───────────────────────────────
+
+  setDateFilter(f: DateFilter) {
+    this.dateFilter = f;
+    if (f !== 'custom') { this.customFrom = ''; this.customTo = ''; }
+  }
+
+  private filterByDate<T extends { createdAt?: string; visitedAt?: string }>(items: T[]): T[] {
+    if (!items?.length) return items ?? [];
+    const now   = new Date();
+    const start = this.filterStart(now);
+    const end   = this.filterEnd(now);
+    if (!start) return items;
+    return items.filter(i => {
+      const d = new Date((i.createdAt ?? i.visitedAt) as string);
+      return d >= start && d <= end;
+    });
+  }
+
+  private filterStart(now: Date): Date | null {
+    if (this.dateFilter === 'all') return null;
+    if (this.dateFilter === 'today') {
+      const d = new Date(now); d.setHours(0, 0, 0, 0); return d;
+    }
+    if (this.dateFilter === 'week') {
+      const d = new Date(now); d.setDate(d.getDate() - d.getDay()); d.setHours(0, 0, 0, 0); return d;
+    }
+    if (this.dateFilter === 'month') {
+      const d = new Date(now.getFullYear(), now.getMonth(), 1); return d;
+    }
+    if (this.dateFilter === 'custom' && this.customFrom) return new Date(this.customFrom);
+    return null;
+  }
+
+  private filterEnd(now: Date): Date {
+    if (this.dateFilter === 'custom' && this.customTo) {
+      const d = new Date(this.customTo); d.setHours(23, 59, 59, 999); return d;
+    }
+    return now;
+  }
+
+  get filteredVisitors()  { return this.filterByDate(this.data?.analytics?.recent ?? []); }
+  get filteredMessages()  { return this.filterByDate(this.data?.messages ?? []); }
+  get filteredPayments()  { return this.filterByDate(this.data?.payments ?? []); }
+
+  // ── Approvals ─────────────────────────────────────────
+
+  loadApprovals() {
+    this.approvalsLoading = true;
+    const token = this.auth.getToken() ?? '';
+    this.paymentSvc.getPendingApprovals(token).subscribe({
+      next: a => { this.pendingApprovals = a; this.approvalsLoading = false; },
+      error: () => { this.approvalsLoading = false; },
+    });
+  }
+
+  doApprove(id: number) {
+    this.approvalActionBusy[id] = true;
+    const token = this.auth.getToken() ?? '';
+    this.paymentSvc.approvePayment(token, id, this.approvalNote[id]).subscribe({
+      next: () => { this.approvalActionBusy[id] = false; this.loadApprovals(); },
+      error: () => { this.approvalActionBusy[id] = false; },
+    });
+  }
+
+  doReject(id: number) {
+    const reason = this.approvalReason[id]?.trim();
+    if (!reason) return;
+    this.approvalActionBusy[id] = true;
+    const token = this.auth.getToken() ?? '';
+    this.paymentSvc.rejectPayment(token, id, reason).subscribe({
+      next: () => { this.approvalActionBusy[id] = false; this.loadApprovals(); },
+      error: () => { this.approvalActionBusy[id] = false; },
+    });
+  }
+
+  doRequestInfo(id: number) {
+    const message = this.approvalMsg[id]?.trim();
+    if (!message) return;
+    this.approvalActionBusy[id] = true;
+    const token = this.auth.getToken() ?? '';
+    this.paymentSvc.requestInfo(token, id, message).subscribe({
+      next: () => { this.approvalActionBusy[id] = false; this.loadApprovals(); },
+      error: () => { this.approvalActionBusy[id] = false; },
+    });
+  }
+
+  doSnooze(id: number) {
+    const hours = this.approvalSnoozeHours[id] || 4;
+    this.approvalActionBusy[id] = true;
+    const token = this.auth.getToken() ?? '';
+    this.paymentSvc.snoozePayment(token, id, hours).subscribe({
+      next: () => { this.approvalActionBusy[id] = false; this.loadApprovals(); },
+      error: () => { this.approvalActionBusy[id] = false; },
+    });
+  }
+
   logout() { this.auth.logout(); }
   ngOnDestroy() { this.sub?.unsubscribe(); }
 }

@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,6 +9,7 @@ import { Payment } from './payment.entity';
 import { InsightsAccess } from './insights-access.entity';
 import { CheckoutTier, CreateCheckoutDto } from './dto/create-checkout.dto';
 import { CreateInsightsCheckoutDto } from './dto/create-insights-checkout.dto';
+import { EmailService } from '../ai-tools/email.service';
 
 @Injectable()
 export class PaymentService {
@@ -16,15 +17,16 @@ export class PaymentService {
   private rzp: Razorpay | null = null;
 
   constructor(
-    @InjectRepository(Payment)       private readonly repo:         Repository<Payment>,
+    @InjectRepository(Payment)        private readonly repo:         Repository<Payment>,
     @InjectRepository(InsightsAccess) private readonly insightsRepo: Repository<InsightsAccess>,
     private readonly cfg: ConfigService,
+    private readonly emailSvc: EmailService,
   ) {
     const keyId     = this.cfg.get<string>('RAZORPAY_KEY_ID');
     const keySecret = this.cfg.get<string>('RAZORPAY_KEY_SECRET');
     if (keyId && keySecret) {
       this.rzp = new Razorpay({ key_id: keyId, key_secret: keySecret });
-      this.log.log('Razorpay client initialised');
+      this.log.log(`Razorpay client initialised (${keyId.startsWith('rzp_live') ? 'LIVE' : 'TEST'} mode)`);
     } else {
       this.log.warn('RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET not set — payments disabled');
     }
@@ -84,7 +86,7 @@ export class PaymentService {
       amount,
       currency,
       receipt: `rcpt_${Date.now()}`,
-      notes:   { tier: dto.tier, email: dto.customerEmail ?? '' },
+      notes:   { tier: dto.tier, email: dto.customerEmail ?? '', name: dto.customerName ?? '' },
     });
 
     await this.repo.save(
@@ -92,9 +94,12 @@ export class PaymentService {
         razorpayOrderId: order.id,
         amount,
         currency,
-        status:        'pending',
-        tier:          dto.tier,
-        customerEmail: dto.customerEmail ?? null,
+        status:         'pending',
+        tier:           dto.tier,
+        customerEmail:  dto.customerEmail  ?? null,
+        customerName:   dto.customerName   ?? null,
+        customerPhone:  dto.customerPhone  ?? null,
+        approvalStatus: null,
       }),
     );
 
@@ -108,7 +113,13 @@ export class PaymentService {
     };
   }
 
-  async verifyPayment(orderId: string, paymentId: string, signature: string) {
+  async verifyPayment(
+    orderId: string,
+    paymentId: string,
+    signature: string,
+    customerName?: string,
+    customerPhone?: string,
+  ) {
     const valid = validatePaymentVerification(
       { order_id: orderId, payment_id: paymentId },
       signature,
@@ -116,11 +127,112 @@ export class PaymentService {
     );
     if (!valid) throw new BadRequestException('Invalid payment signature');
 
-    await this.repo.update(
-      { razorpayOrderId: orderId },
-      { status: 'completed', razorpayPaymentId: paymentId },
-    );
-    return { success: true };
+    const updateData: Partial<Payment> = {
+      status:         'completed',
+      razorpayPaymentId: paymentId,
+      approvalStatus: 'pending_approval',
+    };
+    if (customerName)  updateData.customerName  = customerName;
+    if (customerPhone) updateData.customerPhone = customerPhone;
+
+    await this.repo.update({ razorpayOrderId: orderId }, updateData);
+
+    // Send admin notification
+    const payment = await this.repo.findOne({ where: { razorpayOrderId: orderId } });
+    if (payment) {
+      this.emailSvc.sendAdminPaymentAlert({
+        customerName:  payment.customerName,
+        customerEmail: payment.customerEmail,
+        customerPhone: payment.customerPhone,
+        tier:          payment.tier,
+        amountPaise:   payment.amount,
+        paymentId:     paymentId,
+        orderId,
+        paymentDbId:   payment.id,
+      }).catch(e => this.log.error('Admin alert email failed', e));
+    }
+
+    return { success: true, message: 'Payment received. Your subscription is pending admin approval.' };
+  }
+
+  // ── Admin approval actions ────────────────────────────────────────────────
+
+  async approvePayment(id: number, adminNote?: string) {
+    const payment = await this.repo.findOne({ where: { id } });
+    if (!payment) throw new NotFoundException('Payment not found');
+    if (payment.approvalStatus === 'approved') throw new BadRequestException('Already approved');
+
+    await this.repo.update(id, {
+      approvalStatus: 'approved',
+      approvedAt:     new Date(),
+      adminNote:      adminNote ?? null,
+    });
+
+    if (payment.customerEmail) {
+      await this.emailSvc.sendClientApprovalEmail({
+        customerName:  payment.customerName,
+        customerEmail: payment.customerEmail,
+        tier:          payment.tier,
+        amountPaise:   payment.amount,
+        adminNote,
+      });
+    }
+
+    return { success: true, message: 'Payment approved and client notified.' };
+  }
+
+  async rejectPayment(id: number, reason: string) {
+    const payment = await this.repo.findOne({ where: { id } });
+    if (!payment) throw new NotFoundException('Payment not found');
+
+    await this.repo.update(id, { approvalStatus: 'rejected', adminNote: reason });
+
+    if (payment.customerEmail) {
+      await this.emailSvc.sendClientRejectionEmail({
+        customerName:  payment.customerName,
+        customerEmail: payment.customerEmail,
+        tier:          payment.tier,
+        amountPaise:   payment.amount,
+        reason,
+      });
+    }
+
+    return { success: true, message: 'Payment rejected and client notified.' };
+  }
+
+  async requestPaymentInfo(id: number, message: string) {
+    const payment = await this.repo.findOne({ where: { id } });
+    if (!payment) throw new NotFoundException('Payment not found');
+
+    await this.repo.update(id, { approvalStatus: 'info_requested', adminNote: message });
+
+    if (payment.customerEmail) {
+      await this.emailSvc.sendClientInfoRequestEmail({
+        customerName:  payment.customerName,
+        customerEmail: payment.customerEmail,
+        tier:          payment.tier,
+        message,
+      });
+    }
+
+    return { success: true, message: 'Info request sent to client.' };
+  }
+
+  async snoozePayment(id: number, hours: number) {
+    const payment = await this.repo.findOne({ where: { id } });
+    if (!payment) throw new NotFoundException('Payment not found');
+
+    const snoozeUntil = new Date(Date.now() + hours * 3_600_000);
+    await this.repo.update(id, { approvalStatus: 'snoozed', snoozeUntil });
+
+    return { success: true, snoozeUntil, message: `Snoozed for ${hours} hour(s).` };
+  }
+
+  async findPendingApprovals() {
+    return this.repo.find({
+      where: { approvalStatus: 'pending_approval' },
+      order: { createdAt: 'DESC' },
+    });
   }
 
   // ── Insights ──────────────────────────────────────────────────────────────
@@ -208,13 +320,27 @@ export class PaymentService {
           { razorpayOrderId: orderId },
           { status: 'active', accessToken, expiresAt: expires, email: (notes.email ?? '').toLowerCase() },
         );
-        this.log.log(`Insights access activated for order ${orderId}`);
+        this.log.log(`Insights access activated via webhook for order ${orderId}`);
       } else {
         await this.repo.update(
           { razorpayOrderId: orderId },
-          { status: 'completed', razorpayPaymentId: paymentId },
+          { status: 'completed', razorpayPaymentId: paymentId, approvalStatus: 'pending_approval' },
         );
-        this.log.log(`Payment completed for order ${orderId}`);
+        this.log.log(`Payment completed via webhook for order ${orderId}`);
+        // Also send admin alert from webhook
+        const payment = await this.repo.findOne({ where: { razorpayOrderId: orderId } });
+        if (payment) {
+          this.emailSvc.sendAdminPaymentAlert({
+            customerName: payment.customerName,
+            customerEmail: payment.customerEmail,
+            customerPhone: payment.customerPhone,
+            tier: payment.tier,
+            amountPaise: payment.amount,
+            paymentId,
+            orderId,
+            paymentDbId: payment.id,
+          }).catch(e => this.log.error('Webhook admin alert email failed', e));
+        }
       }
     }
 
@@ -282,11 +408,13 @@ export class PaymentService {
       .select('COUNT(*)', 'total')
       .addSelect(`SUM(CASE WHEN p.status = 'completed' THEN p.amount ELSE 0 END)`, 'completedAmount')
       .addSelect(`SUM(CASE WHEN p.status = 'completed' THEN 1 ELSE 0 END)`, 'completedCount')
-      .getRawOne<{ total: string; completedAmount: string | null; completedCount: string }>();
+      .addSelect(`SUM(CASE WHEN p.approvalStatus = 'pending_approval' THEN 1 ELSE 0 END)`, 'pendingApprovals')
+      .getRawOne<{ total: string; completedAmount: string | null; completedCount: string; pendingApprovals: string }>();
     return {
-      total:           parseInt(raw?.total          ?? '0', 10) || 0,
-      completedCount:  parseInt(raw?.completedCount  ?? '0', 10) || 0,
-      completedAmount: parseInt(raw?.completedAmount ?? '0', 10) || 0,
+      total:            parseInt(raw?.total            ?? '0', 10) || 0,
+      completedCount:   parseInt(raw?.completedCount   ?? '0', 10) || 0,
+      completedAmount:  parseInt(raw?.completedAmount  ?? '0', 10) || 0,
+      pendingApprovals: parseInt(raw?.pendingApprovals ?? '0', 10) || 0,
     };
   }
 }

@@ -5,6 +5,7 @@ import { InsightsAccess } from './insights-access.entity';
 import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
 import { InsightsAccessGuard } from './insights-access.guard';
+import { EmailService } from '../ai-tools/email.service';
 import {
   CreateCheckoutHandler,
   CreateInsightsCheckoutHandler,
@@ -18,6 +19,7 @@ import {
   controllers: [PaymentController],
   providers: [
     PaymentService,
+    EmailService,
     InsightsAccessGuard,
     CreateCheckoutHandler,
     CreateInsightsCheckoutHandler,

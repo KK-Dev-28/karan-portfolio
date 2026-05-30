@@ -36,7 +36,7 @@ export class ProcessWebhookHandler implements ICommandHandler<ProcessWebhookComm
 export class VerifyPaymentHandler implements ICommandHandler<VerifyPaymentCommand> {
   constructor(private readonly payment: PaymentService) {}
   execute(command: VerifyPaymentCommand) {
-    return this.payment.verifyPayment(command.orderId, command.paymentId, command.signature);
+    return this.payment.verifyPayment(command.orderId, command.paymentId, command.signature, command.customerName, command.customerPhone);
   }
 }
 

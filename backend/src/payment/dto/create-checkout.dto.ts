@@ -15,4 +15,16 @@ export class CreateCheckoutDto {
   @IsEmail()
   @MaxLength(320)
   customerEmail?: string;
+
+  @ApiPropertyOptional({ example: 'Rahul Sharma' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  customerName?: string;
+
+  @ApiPropertyOptional({ example: '+91 98765 43210' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  customerPhone?: string;
 }

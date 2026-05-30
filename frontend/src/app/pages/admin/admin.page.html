@@ -57,7 +57,15 @@
           <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/></svg>
         </span>
         <span class="nav-label">Payments</span>
-        <span class="nav-count" *ngIf="data.paymentStats?.completedAmount">{{ moneyMinor(data.paymentStats.completedAmount, 'usd') }}</span>
+        <span class="nav-count" *ngIf="data.paymentStats?.completedAmount">{{ moneyMinor(data.paymentStats.completedAmount, 'inr') }}</span>
+      </button>
+
+      <button class="nav-item" [class.active]="tab==='approvals'" (click)="tab='approvals'; loadApprovals()">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        </span>
+        <span class="nav-label">Approvals</span>
+        <span class="nav-badge nav-badge-warn" *ngIf="data.paymentStats?.pendingApprovals">{{ data.paymentStats.pendingApprovals }}</span>
       </button>
 
       <button class="nav-item" [class.active]="tab==='orders'" (click)="tab='orders'">
@@ -236,13 +244,27 @@
         </button>
       </div>
 
+      <!-- ── Date filter bar ──────────────────────────── -->
+      <div class="date-filter-bar" *ngIf="tab==='visitors' || tab==='messages' || tab==='payments'">
+        <button class="df-btn" [class.active]="dateFilter==='today'"  (click)="setDateFilter('today')">Today</button>
+        <button class="df-btn" [class.active]="dateFilter==='week'"   (click)="setDateFilter('week')">This Week</button>
+        <button class="df-btn" [class.active]="dateFilter==='month'"  (click)="setDateFilter('month')">This Month</button>
+        <button class="df-btn" [class.active]="dateFilter==='all'"    (click)="setDateFilter('all')">All Time</button>
+        <button class="df-btn" [class.active]="dateFilter==='custom'" (click)="setDateFilter('custom')">Custom</button>
+        <ng-container *ngIf="dateFilter==='custom'">
+          <input type="date" class="df-date-input" [(ngModel)]="customFrom" placeholder="From" />
+          <span class="df-sep">–</span>
+          <input type="date" class="df-date-input" [(ngModel)]="customTo"   placeholder="To" />
+        </ng-container>
+      </div>
+
       <!-- ── VISITORS ───────────────────────────────── -->
       <div class="tab-panel" *ngIf="tab==='visitors'">
         <div class="section-lbl">Recent Visitors</div>
         <div class="table-wrap">
           <div class="vt-head visitor-head"><span>Visitor</span><span>Device</span><span>Source</span><span>Page</span><span>When</span></div>
-          <ng-container *ngIf="data.analytics.recent.length; else noVisitors">
-            <div class="vt-row visitor-row" *ngFor="let v of data.analytics.recent">
+          <ng-container *ngIf="filteredVisitors.length; else noVisitors">
+            <div class="vt-row visitor-row" *ngFor="let v of filteredVisitors">
               <div class="vt-vis">
                 <span class="vt-flag">{{ v.flag }}</span>
                 <div><div class="vt-loc">{{ v.city }}, {{ v.country }}</div><div class="vt-ip">{{ v.ip }}</div></div>
@@ -261,8 +283,8 @@
       <!-- ── MESSAGES ──────────────────────────────── -->
       <div class="tab-panel" *ngIf="tab==='messages'">
         <div class="section-lbl">Contact Messages</div>
-        <ng-container *ngIf="data.messages.length; else noMsgs">
-          <div class="msg-card" *ngFor="let m of data.messages" [class.unread]="!m.isRead">
+        <ng-container *ngIf="filteredMessages.length; else noMsgs">
+          <div class="msg-card" *ngFor="let m of filteredMessages" [class.unread]="!m.isRead">
             <div class="msg-top">
               <div>
                 <div class="msg-name">{{ m.name }}</div>
@@ -338,20 +360,125 @@
 
       <!-- ── PAYMENTS ──────────────────────────────── -->
       <div class="tab-panel" *ngIf="tab==='payments'">
-        <div class="section-lbl">Stripe Checkouts</div>
+        <div class="section-lbl">Razorpay Payments</div>
         <div class="table-wrap">
-          <ng-container *ngIf="data.payments?.length; else noPay">
-            <div class="vt-head pay-head"><span>Tier</span><span>Amount</span><span>Status</span><span>Email</span><span>When</span></div>
-            <div class="vt-row pay-row" *ngFor="let p of data.payments">
-              <div>{{ p.tier }}</div>
-              <div class="kpi-green">{{ moneyMinor(p.amount, p.currency) }}</div>
+          <ng-container *ngIf="filteredPayments.length; else noPay">
+            <div class="vt-head pay-head"><span>Customer</span><span>Tier</span><span>Amount</span><span>Razorpay</span><span>Approval</span><span>When</span></div>
+            <div class="vt-row pay-row" *ngFor="let p of filteredPayments">
+              <div>
+                <div class="msg-name" style="font-size:.8rem">{{ p.customerName || '—' }}</div>
+                <div class="vt-ref">{{ p.customerEmail || '—' }}</div>
+                <div class="vt-time" *ngIf="p.customerPhone">{{ p.customerPhone }}</div>
+              </div>
+              <div>{{ p.tier || '—' }}</div>
+              <div class="kpi-green" style="color:#22c55e;font-weight:700">{{ moneyMinor(p.amount, p.currency) }}</div>
               <div><span class="status-badge" [class.ok]="p.status==='completed'" [class.warn]="p.status==='pending'">{{ p.status }}</span></div>
-              <div class="vt-ref">{{ p.customerEmail || '—' }}</div>
+              <div>
+                <span *ngIf="p.approvalStatus" class="status-badge"
+                  [class.ok]="p.approvalStatus==='approved'"
+                  [class.danger]="p.approvalStatus==='rejected'"
+                  [class.warn]="p.approvalStatus==='pending_approval' || p.approvalStatus==='snoozed'"
+                  [class.info]="p.approvalStatus==='info_requested'">
+                  {{ p.approvalStatus }}
+                </span>
+                <span *ngIf="!p.approvalStatus" class="vt-time">—</span>
+              </div>
               <div class="vt-time">{{ timeAgo(p.createdAt) }}</div>
             </div>
           </ng-container>
           <ng-template #noPay><div class="empty">No payment sessions yet.</div></ng-template>
         </div>
+      </div>
+
+      <!-- ── APPROVALS ─────────────────────────────── -->
+      <div class="tab-panel" *ngIf="tab==='approvals'">
+        <div class="section-lbl">Pending Payment Approvals</div>
+        <div class="loading-inline" *ngIf="approvalsLoading">Loading approvals…</div>
+        <ng-container *ngIf="!approvalsLoading">
+          <ng-container *ngIf="pendingApprovals.length; else noApprovals">
+            <div class="approval-card" *ngFor="let a of pendingApprovals">
+              <div class="approval-header">
+                <div class="approval-customer">
+                  <div class="msg-name">{{ a.customerName || a.customerEmail || 'Unknown Customer' }}</div>
+                  <div class="msg-email">
+                    {{ a.customerEmail }}
+                    <span *ngIf="a.customerPhone"> · {{ a.customerPhone }}</span>
+                  </div>
+                </div>
+                <div class="approval-meta">
+                  <span class="status-badge warn">Pending Approval</span>
+                  <span class="vt-time">{{ timeAgo(a.createdAt) }}</span>
+                </div>
+              </div>
+
+              <div class="approval-details">
+                <div class="apd-item">
+                  <span class="apd-lbl">Tier</span>
+                  <span class="apd-val">{{ a.tier || '—' }}</span>
+                </div>
+                <div class="apd-item">
+                  <span class="apd-lbl">Amount</span>
+                  <span class="apd-val" style="color:#22c55e;font-weight:700">{{ moneyMinor(a.amount, a.currency) }}</span>
+                </div>
+                <div class="apd-item">
+                  <span class="apd-lbl">Order ID</span>
+                  <span class="apd-val vt-ref">{{ a.razorpayOrderId || '—' }}</span>
+                </div>
+                <div class="apd-item">
+                  <span class="apd-lbl">Payment ID</span>
+                  <span class="apd-val vt-ref">{{ a.razorpayPaymentId || '—' }}</span>
+                </div>
+              </div>
+
+              <div class="approval-actions">
+                <!-- Approve -->
+                <div class="approval-action-group">
+                  <div class="aag-lbl">Approve</div>
+                  <input class="form-input aag-input" [(ngModel)]="approvalNote[a.id]" placeholder="Optional note to client…" />
+                  <button class="aag-btn aag-approve" [disabled]="approvalActionBusy[a.id]" (click)="doApprove(a.id)">
+                    {{ approvalActionBusy[a.id] ? '…' : '✓ Approve' }}
+                  </button>
+                </div>
+
+                <!-- Reject -->
+                <div class="approval-action-group">
+                  <div class="aag-lbl">Reject</div>
+                  <input class="form-input aag-input" [(ngModel)]="approvalReason[a.id]" placeholder="Reason (required)…" />
+                  <button class="aag-btn aag-reject" [disabled]="approvalActionBusy[a.id] || !approvalReason[a.id]?.trim()" (click)="doReject(a.id)">
+                    {{ approvalActionBusy[a.id] ? '…' : '✗ Reject' }}
+                  </button>
+                </div>
+
+                <!-- Request Info -->
+                <div class="approval-action-group">
+                  <div class="aag-lbl">Request Info</div>
+                  <input class="form-input aag-input" [(ngModel)]="approvalMsg[a.id]" placeholder="What do you need from client?…" />
+                  <button class="aag-btn aag-info" [disabled]="approvalActionBusy[a.id] || !approvalMsg[a.id]?.trim()" (click)="doRequestInfo(a.id)">
+                    {{ approvalActionBusy[a.id] ? '…' : '? Request Info' }}
+                  </button>
+                </div>
+
+                <!-- Snooze -->
+                <div class="approval-action-group">
+                  <div class="aag-lbl">Snooze</div>
+                  <select class="form-input aag-input" [(ngModel)]="approvalSnoozeHours[a.id]">
+                    <option [ngValue]="1">1 hour</option>
+                    <option [ngValue]="4">4 hours</option>
+                    <option [ngValue]="8">8 hours</option>
+                    <option [ngValue]="24">24 hours</option>
+                    <option [ngValue]="48">2 days</option>
+                  </select>
+                  <button class="aag-btn aag-snooze" [disabled]="approvalActionBusy[a.id]" (click)="doSnooze(a.id)">
+                    {{ approvalActionBusy[a.id] ? '…' : '⏰ Snooze' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #noApprovals>
+            <div class="empty">No payments pending approval. All clear!</div>
+          </ng-template>
+        </ng-container>
       </div>
 
       <!-- ── SERVICE ORDERS ────────────────────────── -->

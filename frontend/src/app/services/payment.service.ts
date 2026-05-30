@@ -35,12 +35,12 @@ export class PaymentService {
     return this.http.get<PaymentCatalog>(`${this.base}/catalog`);
   }
 
-  createOrder(tier: CheckoutTier, customerEmail?: string): Observable<RazorpayOrder> {
-    return this.http.post<RazorpayOrder>(`${this.base}/checkout`, { tier, customerEmail });
+  createOrder(tier: CheckoutTier, customerEmail?: string, customerName?: string, customerPhone?: string): Observable<RazorpayOrder> {
+    return this.http.post<RazorpayOrder>(`${this.base}/checkout`, { tier, customerEmail, customerName, customerPhone });
   }
 
-  verifyPayment(orderId: string, paymentId: string, signature: string): Observable<{ success: boolean }> {
-    return this.http.post<{ success: boolean }>(`${this.base}/verify`, { orderId, paymentId, signature });
+  verifyPayment(orderId: string, paymentId: string, signature: string, customerName?: string, customerPhone?: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.base}/verify`, { orderId, paymentId, signature, customerName, customerPhone });
   }
 
   createInsightsOrder(email: string): Observable<RazorpayOrder> {
@@ -51,7 +51,47 @@ export class PaymentService {
     return this.http.post(`${this.base}/insights/verify`, { orderId, paymentId, signature, email });
   }
 
-  openCheckout(order: RazorpayOrder, onSuccess: (paymentId: string, orderId: string, signature: string) => void, onDismiss?: () => void) {
+  // ── Admin approval actions ───────────────────────────────────────────────
+
+  getPendingApprovals(token: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.base}/pending-approvals`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  approvePayment(token: string, id: number, adminNote?: string): Observable<any> {
+    return this.http.patch(`${this.base}/${id}/approve`, { adminNote }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  rejectPayment(token: string, id: number, reason: string): Observable<any> {
+    return this.http.patch(`${this.base}/${id}/reject`, { reason }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  requestInfo(token: string, id: number, message: string): Observable<any> {
+    return this.http.patch(`${this.base}/${id}/request-info`, { message }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  snoozePayment(token: string, id: number, hours: number): Observable<any> {
+    return this.http.patch(`${this.base}/${id}/snooze`, { hours }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  // ── Razorpay modal ───────────────────────────────────────────────────────
+
+  openCheckout(
+    order: RazorpayOrder,
+    customerName: string,
+    customerPhone: string,
+    onSuccess: (paymentId: string, orderId: string, signature: string) => void,
+    onDismiss?: () => void,
+  ) {
     const options = {
       key:         order.keyId,
       amount:      order.amount,
@@ -59,7 +99,7 @@ export class PaymentService {
       name:        'Karan Kapoor',
       description: order.name,
       order_id:    order.orderId,
-      prefill:     { email: order.email },
+      prefill:     { name: customerName, email: order.email, contact: customerPhone },
       theme:       { color: '#f59e0b' },
       handler: (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
         onSuccess(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);

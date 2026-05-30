@@ -21,6 +21,8 @@ export class VerifyPaymentCommand {
     public readonly orderId: string,
     public readonly paymentId: string,
     public readonly signature: string,
+    public readonly customerName?: string,
+    public readonly customerPhone?: string,
   ) {}
 }
 
