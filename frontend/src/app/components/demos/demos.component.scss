@@ -124,6 +124,16 @@
   backdrop-filter: blur(4px);
 }
 
+.dc-watermark {
+  position: absolute;
+  bottom: .5rem; left: .5rem;
+  font-size: .58rem; font-weight: 700; letter-spacing: .06em;
+  color: rgba(255,255,255,.35);
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  pointer-events: none;
+  user-select: none;
+}
+
 .dc-overlay {
   position: absolute;
   inset: 0;
@@ -227,6 +237,112 @@
   flex-shrink: 0;
 }
 
+/* ── Demo cards — protection ── */
+.demo-card { -webkit-user-select: none; user-select: none; }
+.dc-thumb img { pointer-events: none; -webkit-user-drag: none; }
+
+/* ── Modal overlay ── */
+.demo-modal-overlay {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,.88);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  animation: fadeIn .18s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.demo-modal-inner {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 100%; max-width: 900px;
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  animation: slideUp .22s ease;
+  user-select: none;
+}
+
+@keyframes slideUp { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+
+.dmi-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+  gap: 1rem; flex-shrink: 0;
+}
+.dmi-title { font-family: var(--font-head); font-weight: 700; font-size: 1rem; color: var(--text); }
+.dmi-meta  { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
+.dmi-cat   { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.dmi-protected { font-size: .65rem; color: var(--text-dim); background: rgba(255,255,255,.05); padding: .2rem .6rem; border-radius: 6px; }
+.dmi-close {
+  background: none; border: 1px solid var(--border); color: var(--text-muted);
+  width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: .85rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--t-fast);
+  &:hover { border-color: rgba(239,68,68,.4); color: #ef4444; }
+}
+
+.dmi-body { flex: 1; overflow: auto; position: relative; }
+
+/* Image viewer */
+.dmi-image-wrap {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 300px; background: #000;
+  overflow: hidden;
+}
+.dmi-image {
+  max-width: 100%; max-height: 70vh;
+  display: block; pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Video viewer */
+.dmi-video-wrap { position: relative; background: #000; }
+.dmi-video { width: 100%; max-height: 70vh; display: block; }
+
+/* Watermark overlay */
+.dmi-watermark-overlay {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: center;
+  gap: 2.5rem 4rem;
+  padding: 2rem;
+  span {
+    font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+    color: rgba(255,255,255,.12);
+    transform: rotate(-35deg);
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,.3);
+  }
+}
+
+/* PDF/File viewer */
+.dmi-file-wrap { display: flex; flex-direction: column; height: 70vh; }
+.dmi-iframe { flex: 1; border: none; width: 100%; }
+.dmi-file-note {
+  padding: .6rem 1rem; font-size: .72rem; color: var(--text-dim);
+  background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0;
+}
+
+/* Footer */
+.dmi-footer {
+  padding: .85rem 1.25rem; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; flex-shrink: 0;
+}
+.dmi-live-btn {
+  font-family: var(--font-head); font-size: .8rem; font-weight: 700;
+  background: var(--gradient-gold); color: #000;
+  padding: .55rem 1.25rem; border-radius: var(--radius);
+  text-decoration: none; transition: all var(--t-fast);
+  &:hover { box-shadow: 0 0 16px var(--accent-glow); }
+}
+
 @media (max-width: 600px) {
   .demos-cta { flex-direction: column; text-align: center; }
+  .demo-modal-overlay { padding: .5rem; }
+  .dmi-file-wrap { height: 60vh; }
 }

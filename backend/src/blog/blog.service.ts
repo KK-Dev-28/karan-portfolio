@@ -120,4 +120,16 @@ export class BlogService {
 
   getAllPostsAdmin() { return this.posts.find({ order: { createdAt: 'DESC' } }); }
   getAllUsersAdmin() { return this.users.find({ order: { createdAt: 'DESC' }, select: ['id','email','username','name','active','createdAt'] }); }
+
+  async createPostAdmin(dto: { title: string; body: string; excerpt?: string; coverImage?: string; tags?: string[]; published?: boolean }) {
+    const post = this.posts.create({
+      ...dto,
+      slug:        this.makeSlug(dto.title),
+      authorName:  'Karan Kapoor',
+      authorEmail: 'kk0888176@gmail.com',
+      published:   dto.published ?? true,
+      publishedAt: dto.published !== false ? new Date() : null,
+    });
+    return this.posts.save(post);
+  }
 }

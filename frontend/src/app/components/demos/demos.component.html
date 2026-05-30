@@ -14,27 +14,29 @@
       </button>
     </div>
 
-    <!-- Loading -->
     <div class="demos-loading" *ngIf="loading">
       <div class="dl-spinner"></div>
     </div>
 
-    <!-- Empty state -->
     <div class="demos-empty" *ngIf="!loading && filtered.length === 0">
       <span class="de-icon">📂</span>
       <p>No demos in this category yet — check back soon.</p>
     </div>
 
-    <!-- Grid -->
     <div class="demos-grid" *ngIf="!loading && filtered.length > 0">
-      <div class="demo-card" *ngFor="let demo of filtered" (click)="openDemo(demo)">
-        <div class="dc-thumb" [style.backgroundImage]="demo.thumbnailUrl ? 'url(' + demo.thumbnailUrl + ')' : 'none'">
+      <div class="demo-card" *ngFor="let demo of filtered"
+           (click)="openDemo(demo)"
+           (contextmenu)="$event.preventDefault()">
+        <div class="dc-thumb"
+             [style.backgroundImage]="demo.thumbnailUrl ? 'url(' + demo.thumbnailUrl + ')' : 'none'"
+             (contextmenu)="$event.preventDefault()">
           <div class="dc-thumb-placeholder" *ngIf="!demo.thumbnailUrl">
             <span class="dtp-icon">{{ typeIcon[demo.type] || '📁' }}</span>
           </div>
           <div class="dc-type-badge">{{ demo.type }}</div>
+          <div class="dc-watermark">© Karan Kapoor</div>
           <div class="dc-overlay">
-            <span class="dc-open-btn">{{ demo.liveUrl ? 'View Live →' : 'Open →' }}</span>
+            <span class="dc-open-btn">{{ demo.type === 'link' ? 'View Live →' : 'Preview →' }}</span>
           </div>
         </div>
         <div class="dc-body">
@@ -53,3 +55,62 @@
     </div>
   </div>
 </section>
+
+<!-- ── Protected Demo Modal ───────────────────────────────────────── -->
+<div class="demo-modal-overlay" *ngIf="modalOpen" (click)="closeModal()">
+  <div class="demo-modal-inner" (click)="$event.stopPropagation()" (contextmenu)="$event.preventDefault()">
+
+    <div class="dmi-header">
+      <div class="dmi-title">{{ modalDemo?.title }}</div>
+      <div class="dmi-meta">
+        <span class="dmi-cat">{{ modalDemo?.category }}</span>
+        <span class="dmi-protected">🔒 Protected Preview</span>
+        <button class="dmi-close" (click)="closeModal()">✕</button>
+      </div>
+    </div>
+
+    <div class="dmi-body">
+
+      <!-- Image viewer -->
+      <div class="dmi-image-wrap" *ngIf="modalDemo?.type === 'image'" (contextmenu)="$event.preventDefault()">
+        <img [src]="modalDemo?.url" [alt]="modalDemo?.title"
+             draggable="false"
+             (contextmenu)="$event.preventDefault()"
+             (dragstart)="$event.preventDefault()"
+             class="dmi-image" />
+        <div class="dmi-watermark-overlay">
+          <span *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">© Karan Kapoor</span>
+        </div>
+      </div>
+
+      <!-- Video viewer -->
+      <div class="dmi-video-wrap" *ngIf="modalDemo?.type === 'video'">
+        <video class="dmi-video" controls controlsList="nodownload nofullscreen" disablePictureInPicture
+               oncontextmenu="return false;">
+          <source [src]="modalDemo?.url" />
+        </video>
+        <div class="dmi-watermark-overlay">
+          <span *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">© Karan Kapoor</span>
+        </div>
+      </div>
+
+      <!-- PDF / Document viewer via Google Docs -->
+      <div class="dmi-file-wrap" *ngIf="modalDemo?.type === 'file'">
+        <iframe [src]="safeUrl" class="dmi-iframe"
+                sandbox="allow-scripts allow-same-origin allow-popups"
+                allow="autoplay"
+                frameborder="0">
+        </iframe>
+        <div class="dmi-file-note">📄 Document preview — download not available</div>
+      </div>
+
+    </div>
+
+    <div class="dmi-footer" *ngIf="modalDemo?.liveUrl">
+      <a [href]="modalDemo?.liveUrl" target="_blank" rel="noopener noreferrer" class="dmi-live-btn">
+        View Live Project →
+      </a>
+    </div>
+
+  </div>
+</div>

@@ -102,4 +102,9 @@ export class BlogController {
   @Get('admin/users')
   @UseGuards(JwtAuthGuard)
   adminUsers() { return this.svc.getAllUsersAdmin(); }
+
+  @Post('admin/post')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Admin: create blog post directly (no writer account needed)' })
+  createAdminPost(@Body() body: any) { return this.svc.createPostAdmin(body); }
 }
