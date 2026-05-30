@@ -1,16 +1,25 @@
 .marq {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  padding: .85rem 0;
+  padding: 1rem 0;
   overflow: hidden;
   background: var(--bg-2);
+  position: relative;
+  cursor: default;
+
+  /* Fade edges for seamless feel */
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+
+  /* Pause on hover */
+  &:hover .track { animation-play-state: paused; }
 }
 
 .track {
   display: flex;
   gap: 2.5rem;
   width: max-content;
-  animation: marq 35s linear infinite;
+  animation: marq 40s linear infinite;
 }
 
 @keyframes marq {
@@ -21,18 +30,22 @@
 .mi {
   display: flex;
   align-items: center;
-  gap: .65rem;
+  gap: .75rem;
   font-family: var(--font-body);
-  font-size: .65rem;
+  font-size: .68rem;
   font-weight: 500;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-muted);
   white-space: nowrap;
+  transition: color var(--t-fast);
+
+  &:hover { color: var(--text); }
 
   b {
     color: var(--accent);
     font-weight: 400;
-    font-size: .5rem;
+    font-size: .45rem;
+    opacity: .6;
   }
 }

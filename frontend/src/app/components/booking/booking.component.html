@@ -1,25 +1,59 @@
 <section class="booking-sec reveal" id="booking">
+  <div class="booking-glow"></div>
   <div class="container">
-    <div class="sec-label">Book a Session</div>
-    <h2 class="sec-title">Work with me <span class="italic">directly</span></h2>
-    <p class="booking-lead">Pick the session type that fits your need — pricing is discussed transparently on WhatsApp based on your exact topic.</p>
+
+    <div class="bk-header">
+      <div class="bk-header-left">
+        <div class="sec-label">Book a Session</div>
+        <h2 class="sec-title">Work with me <span class="italic">directly</span></h2>
+        <p class="booking-lead">1-on-1 sessions with real solutions. Pick the format that fits your need — pricing is always discussed transparently on WhatsApp.</p>
+      </div>
+      <div class="bk-avail">
+        <span class="bk-avail-dot"></span>
+        <div>
+          <div class="bk-avail-status">Available for sessions</div>
+          <div class="bk-avail-time">Weekends · Weeknights 10 PM IST</div>
+        </div>
+      </div>
+    </div>
 
     <div class="sessions-grid">
-      <div class="session-card" *ngFor="let s of sessions">
-        <div class="sc-duration">{{ s.duration }} min</div>
-        <h3 class="sc-label">{{ s.label }}</h3>
+      <div class="session-card" [class.featured]="s.featured" *ngFor="let s of sessions">
+        <div class="sc-popular" *ngIf="s.featured">Most Popular</div>
+
+        <div class="sc-head">
+          <div class="sc-icon-wrap">
+            <span class="sc-icon">{{ s.icon }}</span>
+          </div>
+          <div class="sc-meta">
+            <div class="sc-duration-row">
+              <span class="sc-mins">{{ s.duration }}</span>
+              <span class="sc-unit">min</span>
+            </div>
+            <h3 class="sc-label">{{ s.label }}</h3>
+          </div>
+        </div>
+
+        <div class="sc-divider"></div>
+
         <ul class="sc-bullets">
-          <li *ngFor="let b of s.bullets">{{ b }}</li>
+          <li *ngFor="let b of s.bullets">
+            <span class="sc-check">✓</span>
+            <span>{{ b }}</span>
+          </li>
         </ul>
+
         <a class="sc-btn" [href]="waUrl(s.waText)" target="_blank" rel="noopener">
-          <span class="wa-dot"></span> Chat on WhatsApp →
+          <span class="wa-live-dot"></span>
+          Chat on WhatsApp →
         </a>
       </div>
     </div>
 
     <div class="hire-note">
       <span class="note-icon">💬</span>
-      <p>Pricing is always discussed on WhatsApp first — no upfront payment, no surprises.</p>
+      <p>No upfront payment. Pricing discussed transparently on WhatsApp based on your exact requirements.</p>
     </div>
+
   </div>
 </section>

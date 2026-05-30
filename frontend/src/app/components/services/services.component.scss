@@ -98,10 +98,23 @@
   overflow: hidden;
   cursor: pointer;
   transition: all var(--t-mid);
+  box-shadow: var(--shadow-card);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(245,158,11,.7), rgba(245,158,11,.2), transparent 75%);
+    opacity: 0;
+    transition: opacity var(--t-mid);
+  }
+  &:hover::after { opacity: 1; }
 
   &.featured {
     padding: 2rem;
-    border-color: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.18);
+    &::after { opacity: 0.6; }
   }
 
   &.more {
@@ -119,21 +132,22 @@
   text-transform: uppercase;
   padding: .25rem .65rem;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--gradient-gold);
   color: #000;
 }
 
 /* Featured card elements */
 .svc-icon-wrap {
-  width: 54px;
-  height: 54px;
+  width: 56px;
+  height: 56px;
   border-radius: 14px;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(245,158,11,.06));
+  border: 1px solid rgba(245, 158, 11, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
+  box-shadow: 0 0 20px rgba(245,158,11,.08);
 }
 
 .svc-icon { font-size: 1.6rem; }

@@ -9,7 +9,7 @@
 }
 
 .est-progress-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.est-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s ease; }
+.est-fill { height: 100%; background: var(--gradient-gold); border-radius: 2px; transition: width .4s ease; }
 
 .est-meta { font-size: .65rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); }
 .est-q { font-family: var(--font-head); font-size: 1.05rem; font-weight: 800; color: var(--text); margin: 0; }
@@ -31,7 +31,7 @@
 
 .est-nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .est-back { background: transparent; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); font-size: .78rem; padding: .5rem 1rem; cursor: pointer; font-family: var(--font-body); &:hover { color: var(--text); } }
-.est-next { padding: .65rem 1.5rem; background: var(--accent); border: none; border-radius: var(--radius); color: #000; font-family: var(--font-head); font-size: .82rem; font-weight: 700; cursor: pointer; transition: all var(--t-fast); margin-left: auto; &:hover:not(:disabled) { background: var(--accent-2); } &:disabled { opacity: .4; cursor: not-allowed; } }
+.est-next { padding: .65rem 1.5rem; background: var(--gradient-gold); border: none; border-radius: var(--radius); color: #000; font-family: var(--font-head); font-size: .82rem; font-weight: 700; cursor: pointer; transition: all var(--t-fast); margin-left: auto; &:hover:not(:disabled) { box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-1px); } &:disabled { opacity: .4; cursor: not-allowed; } }
 
 /* ── result ── */
 .est-result {

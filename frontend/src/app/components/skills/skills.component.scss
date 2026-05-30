@@ -93,6 +93,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &:hover .orbit-1 { animation-play-state: paused; }
+  &:hover .orbit-2 { animation-play-state: paused; }
 }
 
 .wheel-orbit {

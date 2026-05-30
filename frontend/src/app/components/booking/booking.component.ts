@@ -5,8 +5,10 @@ interface Session {
   id: string;
   label: string;
   duration: number;
+  icon: string;
   bullets: string[];
   waText: string;
+  featured?: boolean;
 }
 
 @Component({
@@ -22,10 +24,11 @@ export class BookingComponent {
       id: 'quick-call',
       label: 'Quick Call',
       duration: 30,
+      icon: '⚡',
       bullets: [
-        'Ideal for quick questions & advice',
+        'Quick questions & expert advice',
         'Bug diagnosis or code review',
-        'Career / tech guidance',
+        'Career & tech guidance',
       ],
       waText: 'Hi Karan, I\'d like to book a Quick Call (30 min) to discuss: ',
     },
@@ -33,6 +36,8 @@ export class BookingComponent {
       id: 'strategy',
       label: 'Strategy Session',
       duration: 60,
+      icon: '🎯',
+      featured: true,
       bullets: [
         'Architecture & tech stack planning',
         'Project scoping & estimation',
@@ -44,9 +49,10 @@ export class BookingComponent {
       id: 'deep-dive',
       label: 'Deep Dive',
       duration: 90,
+      icon: '🚀',
       bullets: [
         'Full project discovery & roadmap',
-        'Team onboarding & handoff planning',
+        'Team onboarding & handoff',
         'End-to-end system design',
       ],
       waText: 'Hi Karan, I\'d like to book a Deep Dive Session (90 min) to discuss: ',

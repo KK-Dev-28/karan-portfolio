@@ -83,7 +83,18 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.5rem;
-  transition: all var(--t-mid);
+  transition: transform var(--t-mid), border-color var(--t-mid), box-shadow var(--t-mid);
+
+  &:hover {
+    transform: translateX(4px);
+    border-color: rgba(245,158,11,.3);
+    box-shadow: 0 4px 24px rgba(0,0,0,.25), -2px 0 0 var(--accent);
+  }
+}
+
+.tl-item.edu .tl-card:hover {
+  border-color: rgba(167,139,250,.3);
+  box-shadow: 0 4px 24px rgba(0,0,0,.25), -2px 0 0 #a78bfa;
 }
 
 .tl-card-header {

@@ -18,7 +18,40 @@
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  transition: all var(--t-mid);
+  transition: transform var(--t-mid), border-color var(--t-mid), box-shadow var(--t-mid);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '\201C';
+    position: absolute;
+    top: .5rem;
+    right: 1.25rem;
+    font-family: Georgia, serif;
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--accent);
+    opacity: .06;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), transparent);
+    opacity: 0;
+    transition: opacity var(--t-mid);
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: rgba(245,158,11,.3);
+    box-shadow: 0 20px 48px rgba(0,0,0,.3), var(--shadow-glow);
+
+    &::after { opacity: 1; }
+  }
 }
 
 .test-stars {

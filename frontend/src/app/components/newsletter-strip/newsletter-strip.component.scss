@@ -52,13 +52,18 @@
     font-size: .85rem;
     border-radius: var(--radius);
     box-sizing: border-box;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
 
     &::placeholder { color: var(--text-dim); }
+    &:focus { outline: none; border-color: rgba(245,158,11,.5); box-shadow: 0 0 0 3px rgba(245,158,11,.1); }
   }
 
   button {
     padding: .7rem 1.5rem;
-    background: var(--accent);
+    background: var(--gradient-gold);
     color: #000;
     border: none;
     border-radius: var(--radius);
@@ -69,7 +74,7 @@
     white-space: nowrap;
     transition: all var(--t-fast);
 
-    &:hover:not(:disabled) { background: var(--accent-2); box-shadow: 0 0 16px var(--accent-glow); }
+    &:hover:not(:disabled) { box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-1px); }
     &:disabled { opacity: .5; cursor: not-allowed; }
   }
 }

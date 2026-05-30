@@ -137,12 +137,15 @@
 
 .dc-open-btn {
   padding: .55rem 1.25rem;
-  background: var(--accent);
+  background: var(--gradient-gold);
   color: #000;
   font-size: .8rem;
   font-weight: 700;
   border-radius: 8px;
   font-family: var(--font-head);
+  transition: all var(--t-fast);
+
+  &:hover { box-shadow: 0 0 16px var(--accent-glow); transform: translateY(-1px); }
 }
 
 .dc-body {

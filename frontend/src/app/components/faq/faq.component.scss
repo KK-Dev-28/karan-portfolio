@@ -1,5 +1,5 @@
 .faq-sec {
-  padding: 7rem 0;
+  padding: 8rem 0;
   background: var(--bg-2);
 }
 
@@ -13,9 +13,9 @@
 .faq-header { position: sticky; top: 6rem; }
 
 .faq-sub {
-  font-size: .85rem;
+  font-size: .88rem;
   color: var(--text-muted);
-  line-height: 1.7;
+  line-height: 1.8;
   margin-top: .75rem;
 }
 
@@ -30,9 +30,16 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color var(--t-fast);
+  transition: border-color var(--t-mid), box-shadow var(--t-mid);
+  box-shadow: var(--shadow-card);
 
-  &.open { border-color: rgba(245, 158, 11, 0.35); }
+  &.open {
+    border-color: rgba(245,158,11,.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(245,158,11,.08);
+
+    .faq-icon { transform: rotate(45deg); color: var(--accent); }
+    .faq-q { color: var(--text); }
+  }
 }
 
 .faq-q {
@@ -40,45 +47,49 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   text-align: left;
   font-family: var(--font-body);
-  font-size: .88rem;
+  font-size: .9rem;
   font-weight: 500;
-  color: var(--text);
-  padding: 1.25rem 1.5rem;
+  color: var(--text-muted);
+  padding: 1.35rem 1.5rem;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: background var(--t-fast);
+  transition: color var(--t-fast), background var(--t-fast);
 
-  &:hover { background: rgba(245, 158, 11, 0.03); }
+  &:hover {
+    color: var(--text);
+    background: rgba(255,255,255,.02);
+  }
 }
 
 .faq-icon {
-  color: var(--accent);
-  font-size: 1.3rem;
+  color: var(--text-dim);
+  font-size: 1.2rem;
   font-weight: 300;
   line-height: 1;
   flex-shrink: 0;
+  transition: transform var(--t-mid), color var(--t-mid);
 }
 
 .faq-a {
-  font-size: .82rem;
+  font-size: .84rem;
   color: var(--text-muted);
-  line-height: 1.85;
-  padding: 0 1.5rem 1.25rem;
+  line-height: 1.9;
+  padding: 1rem 1.5rem 1.4rem;
   border-top: 1px solid var(--border);
-  padding-top: 1rem;
-  animation: faq-in .25s ease both;
+  animation: faq-in .22s cubic-bezier(.16,1,.3,1) both;
 }
 
 @keyframes faq-in {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 900px) {
   .faq-layout { grid-template-columns: 1fr; gap: 2.5rem; }
   .faq-header { position: static; }
+  .faq-sec { padding: 5rem 0; }
 }

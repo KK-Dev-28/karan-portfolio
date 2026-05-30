@@ -63,6 +63,19 @@
   overflow: hidden;
   cursor: pointer;
   transition: transform var(--t-mid), border-color var(--t-mid), box-shadow var(--t-mid);
+  box-shadow: var(--shadow-card);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), rgba(245,158,11,.35), transparent 80%);
+    opacity: 0;
+    transition: opacity var(--t-mid);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  &:hover::after { opacity: 1; }
 
   &.featured, &.wide { grid-column: span 2; }
 }
@@ -191,13 +204,13 @@
   position: absolute;
   bottom: -60px;
   right: -60px;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   transition: opacity var(--t-mid);
-  opacity: 0;
+  opacity: 0.25;
 }
 
 .bento-card:hover .card-glow { opacity: 1; }
