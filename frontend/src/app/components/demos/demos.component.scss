@@ -1,6 +1,18 @@
 .demos-sec {
   padding: 7rem 0;
   background: var(--bg);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse at center, rgba(245,158,11,.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
 }
 
 .demos-lead {
@@ -133,16 +145,21 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: pointer;
-  transition: all var(--t-mid);
+  transition: transform 0.45s cubic-bezier(.23,1,.32,1), box-shadow 0.45s ease, border-color 0.3s ease;
   -webkit-user-select: none;
   user-select: none;
+  transform-style: preserve-3d;
+  will-change: transform;
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: var(--cat-color, rgba(245, 158, 11, 0.4));
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    border-color: var(--cat-color, rgba(245,158,11,.5));
+    box-shadow:
+      0 30px 60px rgba(0,0,0,.4),
+      0 0 0 1px var(--cat-color, rgba(245,158,11,.2)),
+      0 0 40px color-mix(in srgb, var(--cat-color, #f59e0b) 15%, transparent);
 
     .dc-overlay { opacity: 1; }
+    .dc-watermark { opacity: .5; }
   }
 }
 
@@ -152,6 +169,15 @@
   background: var(--bg-2);
   background-size: cover;
   background-position: center;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.6) 100%);
+    pointer-events: none;
+  }
 }
 
 .dc-thumb-placeholder {
@@ -212,12 +238,14 @@
 .dc-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.52);
+  background: linear-gradient(135deg, rgba(0,0,0,.7) 0%, rgba(0,0,0,.5) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: opacity var(--t-fast);
+  backdrop-filter: blur(2px);
+  z-index: 2;
 }
 
 .dc-open-btn {

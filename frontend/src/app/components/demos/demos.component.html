@@ -31,7 +31,9 @@
         <div class="demo-card demo-card--featured"
              [style.--cat-color]="catColors[filtered[0].category] || 'var(--accent)'"
              (click)="openDemo(filtered[0])"
-             (contextmenu)="$event.preventDefault()">
+             (contextmenu)="$event.preventDefault()"
+             (mousemove)="onCardMove($event, $any($event.currentTarget))"
+             (mouseleave)="onCardLeave($any($event.currentTarget))">
           <div class="dc-thumb"
                [style.backgroundImage]="filtered[0].thumbnailUrl ? 'url(' + filtered[0].thumbnailUrl + ')' : 'none'"
                (contextmenu)="$event.preventDefault()">
@@ -67,7 +69,9 @@
              *ngFor="let demo of filtered.slice(1)"
              [style.--cat-color]="catColors[demo.category] || 'var(--accent)'"
              (click)="openDemo(demo)"
-             (contextmenu)="$event.preventDefault()">
+             (contextmenu)="$event.preventDefault()"
+             (mousemove)="onCardMove($event, $any($event.currentTarget))"
+             (mouseleave)="onCardLeave($any($event.currentTarget))">
           <div class="dc-thumb"
                [style.backgroundImage]="demo.thumbnailUrl ? 'url(' + demo.thumbnailUrl + ')' : 'none'"
                (contextmenu)="$event.preventDefault()">

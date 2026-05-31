@@ -78,6 +78,22 @@ export class DemosComponent implements OnInit {
     return this.demos.filter(d => d.category === key).length;
   }
 
+  // ── 3D card tilt ──────────────────────────────────────
+  onCardMove(e: MouseEvent, card: HTMLElement) {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top)  / r.height;
+    const rx = (y - 0.5) * -14;
+    const ry = (x - 0.5) *  14;
+    card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-10px) scale(1.02)`;
+    card.style.transition = 'transform 0.05s ease';
+  }
+
+  onCardLeave(card: HTMLElement) {
+    card.style.transform = '';
+    card.style.transition = 'transform 0.45s cubic-bezier(.23,1,.32,1)';
+  }
+
   openDemo(demo: Demo) {
     if (demo.type === 'link') {
       window.open(demo.liveUrl || demo.url, '_blank', 'noopener,noreferrer');
