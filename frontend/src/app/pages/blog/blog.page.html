@@ -8,13 +8,13 @@
         <div class="blog-hero-text">
           <div class="sec-label">Community Blog</div>
           <h1 class="blog-title">Ideas worth <span class="italic">reading</span></h1>
-          <p class="blog-sub">Real posts from real builders — powered by AI, published by humans.</p>
+          <p class="blog-sub">An open community blog — register free, write and publish instantly.</p>
         </div>
         <div class="blog-cta-card">
           <ng-container *ngIf="!isLoggedIn">
-            <div class="bcc-price">{{ fmtAmount }}<span class="bcc-freq"> one-time</span></div>
-            <div class="bcc-desc">Lifetime writer access · Unlimited posts · AI generation</div>
-            <button class="bcc-btn" (click)="openPay()">Start Writing →</button>
+            <div class="bcc-free-badge">Free to Join</div>
+            <div class="bcc-desc">Create an account · Write unlimited posts · Publish instantly</div>
+            <button class="bcc-btn" (click)="openRegister()">Start Writing — It's Free →</button>
             <button class="bcc-login" (click)="openLogin()">Already a member? Sign in</button>
           </ng-container>
           <ng-container *ngIf="isLoggedIn">
@@ -46,16 +46,15 @@
       </div>
 
       <div class="posts-empty" *ngIf="!loading && filtered.length === 0">
-        <p>No posts yet — be the first!</p>
-        <button class="bcc-btn" (click)="openPay()" *ngIf="!isLoggedIn" style="width:auto;padding:.75rem 1.75rem">Get Writer Access →</button>
+        <p>No posts yet — be the first to write!</p>
+        <button class="bcc-btn" (click)="openRegister()" *ngIf="!isLoggedIn" style="width:auto;padding:.75rem 1.75rem">Start Writing Free →</button>
         <a class="bcc-btn" routerLink="/blog-write" *ngIf="isLoggedIn" style="width:auto;padding:.75rem 1.75rem;text-decoration:none">Write First Post →</a>
       </div>
 
       <ng-container *ngIf="!loading && filtered.length > 0">
 
         <!-- Featured first post -->
-        <a class="post-featured" *ngIf="!activeTag && page === 1 && featured"
-          [routerLink]="['/blog/posts', featured.slug]">
+        <a class="post-featured" *ngIf="!activeTag && page === 1 && featured" [routerLink]="['/blog/posts', featured.slug]">
           <div class="pf-cover" *ngIf="featured.coverImage">
             <img [src]="featured.coverImage" [alt]="featured.title" loading="lazy" />
           </div>
@@ -114,63 +113,41 @@
 
       <!-- Login -->
       <ng-container *ngIf="modalView === 'login'">
-        <h3 class="m-title">Sign in to Blog</h3>
+        <h3 class="m-title">Sign in</h3>
         <p class="m-sub">Welcome back, writer.</p>
         <div class="m-form">
           <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="loginForm.email" placeholder="you@email.com" /></div>
-          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="loginForm.password" placeholder="••••••••" /></div>
+          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="loginForm.password" placeholder="••••••••" (keydown.enter)="doLogin()" /></div>
           <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
-          <button class="m-btn" (click)="doLogin()" [disabled]="busy">
-            <ng-container *ngIf="!busy">Sign In →</ng-container>
-            <ng-container *ngIf="busy">Signing in…</ng-container>
-          </button>
-          <p class="m-switch">New here? <button class="m-lnk" (click)="openRegFree()">Create free account</button></p>
+          <button class="m-btn" (click)="doLogin()" [disabled]="busy">{{ busy ? 'Signing in…' : 'Sign In →' }}</button>
+          <p class="m-switch">New here? <button class="m-lnk" (click)="openRegister()">Create free account</button></p>
         </div>
       </ng-container>
 
-      <!-- Register Free -->
-      <ng-container *ngIf="modalView === 'register-free'">
+      <!-- Register (free) -->
+      <ng-container *ngIf="modalView === 'register'">
         <h3 class="m-title">Create Account</h3>
-        <p class="m-sub">Free to join — write and publish your blogs instantly.</p>
+        <p class="m-sub">100% free — write and publish immediately.</p>
         <div class="m-form">
-          <div class="mf-row"><label class="mf-lbl">Full Name</label><input class="mf-input" [(ngModel)]="freeRegForm.name" placeholder="Your name" /></div>
-          <div class="mf-row"><label class="mf-lbl">Username</label><input class="mf-input" [(ngModel)]="freeRegForm.username" placeholder="yourusername" /></div>
-          <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="freeRegForm.email" placeholder="you@email.com" /></div>
-          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="freeRegForm.password" placeholder="Min 6 characters" /></div>
-          <div class="mf-row"><label class="mf-lbl">Confirm Password</label><input class="mf-input" type="password" [(ngModel)]="freeRegForm.confirm" placeholder="Repeat password" /></div>
-          <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
-          <button class="m-btn" (click)="doRegisterFree()" [disabled]="busy">
-            <ng-container *ngIf="!busy">Create Account →</ng-container>
-            <ng-container *ngIf="busy">Creating account…</ng-container>
-          </button>
-          <p class="m-switch">Already a member? <button class="m-lnk" (click)="modalView='login'">Sign in</button></p>
-        </div>
-      </ng-container>
-
-      <!-- Register form (after payment - kept for existing paid users) -->
-      <ng-container *ngIf="modalView === 'register-form'">
-        <h3 class="m-title">Complete Registration</h3>
-        <p class="m-sub">Create your writer account to get started.</p>
-        <div class="m-form">
-          <div class="mf-row"><label class="mf-lbl">Display Name</label><input class="mf-input" [(ngModel)]="regForm.name" placeholder="Your name" /></div>
-          <div class="mf-row"><label class="mf-lbl">Username</label><input class="mf-input" [(ngModel)]="regForm.username" placeholder="yourusername" /></div>
+          <div class="mf-row"><label class="mf-lbl">Full Name</label><input class="mf-input" [(ngModel)]="regForm.name" placeholder="Your name" /></div>
+          <div class="mf-row"><label class="mf-lbl">Username</label><input class="mf-input" [(ngModel)]="regForm.username" placeholder="yourusername (no spaces)" /></div>
           <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="regForm.email" placeholder="you@email.com" /></div>
-          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="regForm.password" placeholder="Min 8 characters" /></div>
-          <div class="mf-row"><label class="mf-lbl">Confirm Password</label><input class="mf-input" type="password" [(ngModel)]="regForm.confirm" placeholder="Repeat password" /></div>
+          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="regForm.password" placeholder="Min 6 characters" /></div>
+          <div class="mf-row"><label class="mf-lbl">Confirm Password</label><input class="mf-input" type="password" [(ngModel)]="regForm.confirm" placeholder="Repeat password" (keydown.enter)="doRegister()" /></div>
           <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
-          <button class="m-btn" (click)="doRegister()" [disabled]="busy">
-            <ng-container *ngIf="!busy">Create Account →</ng-container>
-            <ng-container *ngIf="busy">Creating account…</ng-container>
-          </button>
+          <button class="m-btn" (click)="doRegister()" [disabled]="busy">{{ busy ? 'Creating account…' : 'Create Account →' }}</button>
+          <p class="m-switch">Already a member? <button class="m-lnk" (click)="openLogin()">Sign in</button></p>
         </div>
       </ng-container>
 
       <!-- Success -->
       <ng-container *ngIf="modalView === 'success'">
-        <div class="m-success-icon">✓</div>
+        <div class="m-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
         <h3 class="m-title">Account created!</h3>
-        <p class="m-sub">You're all set. Head to the editor and start writing your first post.</p>
-        <a class="m-btn" routerLink="/blog-write" (click)="closeModal()" style="text-decoration:none">Go to Editor →</a>
+        <p class="m-sub">You're all set. Head to the editor and write your first post.</p>
+        <a class="m-btn" routerLink="/blog-write" (click)="closeModal()" style="text-decoration:none;display:block;text-align:center">Go to Editor →</a>
       </ng-container>
 
     </div>
