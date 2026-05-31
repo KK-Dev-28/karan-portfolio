@@ -9,6 +9,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
     "@nestjs/axios": "^4.0.1",
+    "@nestjs/cli": "^10.3.2",
     "@nestjs/common": "^10.3.0",
     "@nestjs/config": "^3.2.0",
     "@nestjs/core": "^10.3.0",
@@ -33,9 +34,9 @@
     "pg": "^8.11.3",
     "razorpay": "^2.9.6",
     "reflect-metadata": "^0.2.1",
+    "resend": "^6.12.4",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.20",
-    "@nestjs/cli": "^10.3.2"
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
