@@ -83,6 +83,12 @@ export class PaymentService {
     });
   }
 
+  createPaymentLink(token: string, body: { amount: number; description: string; customerName: string; customerEmail: string; customerPhone?: string }): Observable<{ url: string; id: string; amount: number }> {
+    return this.http.post<any>(`${this.base}/create-link`, body, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
   // ── Razorpay modal ───────────────────────────────────────────────────────
 
   openCheckout(

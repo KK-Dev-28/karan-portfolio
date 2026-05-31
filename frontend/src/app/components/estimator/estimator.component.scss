@@ -47,4 +47,27 @@
 .er-restart { background: transparent; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); font-size: .78rem; padding: .8rem 1.25rem; cursor: pointer; font-family: var(--font-body); &:hover { color: var(--text); } }
 .er-disclaimer { font-size: .68rem; color: var(--text-dim); margin: 0; }
 
+/* ── contact form ── */
+.est-sub { font-size: .82rem; color: var(--text-muted); line-height: 1.7; margin: -.25rem 0; }
+.est-contact-form { display: flex; flex-direction: column; gap: .9rem; }
+.ecf-row { display: flex; flex-direction: column; gap: .35rem; }
+.ecf-lbl { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+.ecf-input, .ecf-textarea {
+  width: 100%; box-sizing: border-box;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text);
+  font-family: var(--font-body); font-size: .85rem; padding: .65rem .9rem;
+  transition: border-color var(--t-fast); resize: vertical;
+  &:focus { outline: none; border-color: rgba(245,158,11,.5); }
+  &::placeholder { color: var(--text-dim); }
+}
+.est-err { font-size: .75rem; color: #ef4444; }
+
+/* ── done state ── */
+.er-done-icon {
+  width: 56px; height: 56px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #22c55e;
+}
+.er-done-title { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; color: var(--text); margin: 0; }
+
 @media (max-width: 500px) { .est-options.multi { grid-template-columns: 1fr; } }

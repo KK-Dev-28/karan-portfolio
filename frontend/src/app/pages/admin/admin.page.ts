@@ -15,7 +15,7 @@ import { DemosService }    from '../../services/demos.service';
 import { BookingService }  from '../../services/booking.service';
 import { PaymentService }  from '../../services/payment.service';
 
-type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'newsletter' | 'journal' | 'cms' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
+type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
 type DateFilter = 'today' | 'week' | 'month' | 'custom' | 'all';
 
 @Component({
@@ -34,6 +34,67 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   dateFilter: DateFilter = 'all';
   customFrom = '';
   customTo   = '';
+
+  // ── Search state ──────────────────────────────────────
+  searchQuery = '';
+
+  get filteredMessagesSearch() {
+    const q = this.searchQuery.toLowerCase();
+    return this.filteredMessages.filter(m =>
+      !q || m.name?.toLowerCase().includes(q) || m.email?.toLowerCase().includes(q) || m.subject?.toLowerCase().includes(q) || m.message?.toLowerCase().includes(q)
+    );
+  }
+  get filteredPaymentsSearch() {
+    const q = this.searchQuery.toLowerCase();
+    return this.filteredPayments.filter(p =>
+      !q || p.customerName?.toLowerCase().includes(q) || p.customerEmail?.toLowerCase().includes(q) || p.tier?.toLowerCase().includes(q)
+    );
+  }
+  get filteredVisitorsSearch() {
+    const q = this.searchQuery.toLowerCase();
+    return this.filteredVisitors.filter(v =>
+      !q || v.ip?.toLowerCase().includes(q) || v.city?.toLowerCase().includes(q) || v.country?.toLowerCase().includes(q) || v.page?.toLowerCase().includes(q)
+    );
+  }
+  get filteredOrdersSearch() {
+    const q = this.searchQuery.toLowerCase();
+    return (this.data?.serviceOrders ?? []).filter((o: any) =>
+      !q || o.customerName?.toLowerCase().includes(q) || o.customerEmail?.toLowerCase().includes(q) || o.serviceType?.toLowerCase().includes(q)
+    );
+  }
+
+  // ── Payment link generator ─────────────────────────────
+  payLinkForm = { amount: 0, description: '', customerName: '', customerEmail: '', customerPhone: '' };
+  payLinkBusy = false;
+  payLinkResult: { url: string; id: string } | null = null;
+  payLinkErr = '';
+  payLinkCopied = false;
+
+  generatePaymentLink() {
+    if (!this.payLinkForm.amount || !this.payLinkForm.customerEmail || !this.payLinkForm.customerName) {
+      this.payLinkErr = 'Amount, name and email are required.'; return;
+    }
+    this.payLinkBusy = true; this.payLinkErr = ''; this.payLinkResult = null;
+    const token = this.auth.getToken() ?? '';
+    const body = {
+      amount:        Math.round(this.payLinkForm.amount * 100),
+      description:   this.payLinkForm.description || 'Project Payment',
+      customerName:  this.payLinkForm.customerName,
+      customerEmail: this.payLinkForm.customerEmail,
+      customerPhone: this.payLinkForm.customerPhone || undefined,
+    };
+    this.paymentSvc.createPaymentLink(token, body).subscribe({
+      next: r => { this.payLinkBusy = false; this.payLinkResult = { url: r.url, id: r.id }; },
+      error: (e: any) => { this.payLinkBusy = false; this.payLinkErr = e?.error?.message || 'Could not create link. Check Razorpay config.'; },
+    });
+  }
+
+  copyPayLink() {
+    if (!this.payLinkResult?.url) return;
+    navigator.clipboard.writeText(this.payLinkResult.url);
+    this.payLinkCopied = true;
+    setTimeout(() => this.payLinkCopied = false, 2000);
+  }
 
   // ── Approvals state ───────────────────────────────────
   pendingApprovals: any[] = [];

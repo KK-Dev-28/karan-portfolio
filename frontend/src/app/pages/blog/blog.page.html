@@ -147,26 +147,9 @@
         </div>
       </ng-container>
 
-      <!-- Pay -->
-      <ng-container *ngIf="modalView === 'pay'">
-        <h3 class="m-title">Get Writer Access</h3>
-        <p class="m-sub">{{ fmtAmount }} · lifetime · unlimited posts · AI generation</p>
-        <div class="m-form">
-          <div class="mf-row"><label class="mf-lbl">Your Name</label><input class="mf-input" [(ngModel)]="payForm.name" placeholder="Your full name" /></div>
-          <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="payForm.email" placeholder="you@email.com" /></div>
-          <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
-          <button class="m-btn" (click)="startPay()" [disabled]="busy">
-            <ng-container *ngIf="!busy">Pay {{ fmtAmount }} &amp; Continue →</ng-container>
-            <ng-container *ngIf="busy">Opening payment…</ng-container>
-          </button>
-          <p class="m-switch">Already a member? <button class="m-lnk" (click)="modalView='login'">Sign in</button></p>
-        </div>
-      </ng-container>
-
-      <!-- Register form (after payment) -->
+      <!-- Register form (after payment - kept for existing paid users) -->
       <ng-container *ngIf="modalView === 'register-form'">
-        <div class="m-success-icon">🎉</div>
-        <h3 class="m-title">Payment successful!</h3>
+        <h3 class="m-title">Complete Registration</h3>
         <p class="m-sub">Create your writer account to get started.</p>
         <div class="m-form">
           <div class="mf-row"><label class="mf-lbl">Display Name</label><input class="mf-input" [(ngModel)]="regForm.name" placeholder="Your name" /></div>

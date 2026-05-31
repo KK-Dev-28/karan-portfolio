@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
-interface Step { key: string; label: string; multi?: boolean; options: { value: string; label: string; paise: number }[]; }
+interface Step { key: string; label: string; multi?: boolean; options: { value: string; label: string }[]; }
 
 @Component({
   selector: 'app-estimator',
@@ -13,56 +15,67 @@ interface Step { key: string; label: string; multi?: boolean; options: { value: 
 })
 export class EstimatorComponent {
   step = 0;
-  answers: Record<string, string[]> = { type: [], features: [], timeline: [], pages: [] };
-  showResult = false;
+  answers: Record<string, string[]> = {};
+  phase: 'quiz' | 'contact' | 'done' = 'quiz';
+  submitting = false;
+  submitErr = '';
+
+  contact = { name: '', email: '', phone: '', notes: '' };
 
   steps: Step[] = [
     {
-      key: 'type', label: 'What do you need built?',
+      key: 'type', label: 'What do you need?',
       options: [
-        { value: 'landing',    label: 'Landing Page',          paise: 500_000  },
-        { value: 'portfolio',  label: 'Portfolio / Blog',       paise: 800_000  },
-        { value: 'webapp',     label: 'Full-Stack Web App',     paise: 2_000_000 },
-        { value: 'api',        label: 'REST API / Backend Only',paise: 1_200_000 },
-        { value: 'ecommerce',  label: 'E-Commerce Store',       paise: 2_500_000 },
-        { value: 'dashboard',  label: 'Admin / Dashboard',      paise: 1_500_000 },
+        { value: 'landing',    label: 'Landing / Portfolio Page'   },
+        { value: 'webapp',     label: 'Full-Stack Web App'          },
+        { value: 'api',        label: 'REST API / Backend Only'     },
+        { value: 'ecommerce',  label: 'E-Commerce Store'            },
+        { value: 'dashboard',  label: 'Admin / Dashboard'           },
+        { value: 'ppt',        label: 'Presentation / PPT'         },
+        { value: 'report',     label: 'Report / Document'           },
+        { value: 'desktop',    label: 'Desktop Application'         },
+        { value: 'other',      label: 'Something else'              },
       ],
     },
     {
-      key: 'features', label: 'Which features do you need?', multi: true,
+      key: 'features', label: 'Which features are important?', multi: true,
       options: [
-        { value: 'auth',     label: 'Login / Auth',        paise: 300_000 },
-        { value: 'payment',  label: 'Payments (Razorpay)', paise: 400_000 },
-        { value: 'cms',      label: 'CMS / Admin panel',   paise: 500_000 },
-        { value: 'api',      label: 'Third-party APIs',    paise: 300_000 },
-        { value: 'realtime', label: 'Real-time / Chat',    paise: 600_000 },
-        { value: 'ai',       label: 'AI Integration',      paise: 700_000 },
+        { value: 'auth',     label: 'Login / User Accounts' },
+        { value: 'payment',  label: 'Payments Integration'  },
+        { value: 'cms',      label: 'Content Management'    },
+        { value: 'api',      label: 'Third-party APIs'      },
+        { value: 'realtime', label: 'Real-time / Chat'      },
+        { value: 'ai',       label: 'AI / Automation'       },
+        { value: 'mobile',   label: 'Mobile Responsive'     },
+        { value: 'analytics',label: 'Analytics / Reports'   },
       ],
     },
     {
-      key: 'timeline', label: 'When do you need it?',
+      key: 'timeline', label: 'When do you need it ready?',
       options: [
-        { value: 'asap',    label: 'ASAP (rush)',    paise: 500_000 },
-        { value: '1month',  label: 'Within 1 month', paise: 0       },
-        { value: '3months', label: '1–3 months',     paise: -200_000 },
-        { value: 'flexible',label: 'Flexible',       paise: -300_000 },
+        { value: 'urgent',   label: 'Urgent — within a week' },
+        { value: '1month',   label: 'Within 1 month'         },
+        { value: '3months',  label: '1–3 months'             },
+        { value: 'flexible', label: 'Flexible / No rush'     },
       ],
     },
     {
-      key: 'pages', label: 'Roughly how many screens / pages?',
+      key: 'budget', label: 'Roughly what budget do you have in mind?',
       options: [
-        { value: '1-5',   label: '1–5 screens',   paise: 0        },
-        { value: '6-10',  label: '6–10 screens',   paise: 400_000  },
-        { value: '11-20', label: '11–20 screens',  paise: 900_000  },
-        { value: '20+',   label: '20+ screens',    paise: 1_500_000 },
+        { value: 'discuss', label: 'Discuss after scoping' },
+        { value: 'small',   label: 'Small project'         },
+        { value: 'medium',  label: 'Medium project'        },
+        { value: 'large',   label: 'Large / Long-term'     },
       ],
     },
   ];
 
-  get currentStep() { return this.steps[this.step]; }
-  get progress() { return Math.round((this.step / this.steps.length) * 100); }
+  constructor(private http: HttpClient) {}
 
-  isSelected(key: string, value: string) { return this.answers[key]?.includes(value); }
+  get currentStep() { return this.steps[this.step]; }
+  get progress()    { return Math.round(((this.step + 1) / (this.steps.length + 1)) * 100); }
+
+  isSelected(key: string, value: string) { return this.answers[key]?.includes(value) ?? false; }
 
   toggle(key: string, value: string, multi = false) {
     if (!this.answers[key]) this.answers[key] = [];
@@ -72,40 +85,61 @@ export class EstimatorComponent {
     } else {
       this.answers[key] = [value];
       if (this.step < this.steps.length - 1) setTimeout(() => this.step++, 180);
-      else this.showResult = true;
+      else this.phase = 'contact';
     }
   }
 
   nextStep() {
     if (this.step < this.steps.length - 1) this.step++;
-    else this.showResult = true;
-  }
-
-  get estimate(): { low: string; high: string } {
-    let base = 0;
-    for (const s of this.steps) {
-      const vals = this.answers[s.key] ?? [];
-      for (const v of vals) {
-        const opt = s.options.find(o => o.value === v);
-        if (opt) base += opt.paise;
-      }
-    }
-    base = Math.max(base, 500_000);
-    const low  = base * 0.8;
-    const high = base * 1.3;
-    const fmt  = (n: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n / 100);
-    return { low: fmt(low), high: fmt(high) };
+    else this.phase = 'contact';
   }
 
   get waMessage() {
-    const type     = this.answers['type']?.[0]     ?? 'project';
+    const type     = this.answers['type']?.[0]      ?? 'project';
     const features = this.answers['features']?.join(', ') || 'TBD';
-    const timeline = this.answers['timeline']?.[0] ?? 'flexible';
-    const pages    = this.answers['pages']?.[0]    ?? 'TBD';
+    const timeline = this.answers['timeline']?.[0]  ?? 'flexible';
+    const budget   = this.answers['budget']?.[0]    ?? 'TBD';
+    const notes    = this.contact.notes ? `\nNotes: ${this.contact.notes}` : '';
     return encodeURIComponent(
-      `Hi Karan, I used your estimator and got an estimate of ${this.estimate.low}–${this.estimate.high}.\nProject type: ${type}\nFeatures: ${features}\nTimeline: ${timeline}\nScreens: ${pages}\nLet's discuss further.`
+      `Hi Karan, I submitted a project inquiry.\nName: ${this.contact.name}\nType: ${type}\nFeatures: ${features}\nTimeline: ${timeline}\nBudget: ${budget}${notes}\nPlease reach out to discuss further.`,
     );
   }
 
-  restart() { this.step = 0; this.answers = { type: [], features: [], timeline: [], pages: [] }; this.showResult = false; }
+  submit() {
+    if (!this.contact.name.trim() || !this.contact.email.trim()) {
+      this.submitErr = 'Name and email are required.'; return;
+    }
+    this.submitting = true; this.submitErr = '';
+
+    const requirements = {
+      type:     this.answers['type'],
+      features: this.answers['features'],
+      timeline: this.answers['timeline'],
+      budget:   this.answers['budget'],
+      notes:    this.contact.notes,
+    };
+
+    this.http.post(`${environment.apiUrl}/service-orders`, {
+      serviceType:   this.answers['type']?.[0] ?? 'general',
+      customerName:  this.contact.name.trim(),
+      customerEmail: this.contact.email.trim(),
+      customerPhone: this.contact.phone.trim() || undefined,
+      requirements,
+      status: 'inquiry',
+    }).subscribe({
+      next: () => { this.submitting = false; this.phase = 'done'; },
+      error: () => {
+        // Still show done — save to WA as fallback
+        this.submitting = false; this.phase = 'done';
+      },
+    });
+  }
+
+  restart() {
+    this.step = 0;
+    this.answers = {};
+    this.contact = { name: '', email: '', phone: '', notes: '' };
+    this.phase = 'quiz';
+    this.submitErr = '';
+  }
 }

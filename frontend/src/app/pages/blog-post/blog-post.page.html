@@ -83,6 +83,9 @@
           </div>
         </div>
 
+        <!-- Reactions & Comments -->
+        <app-reaction-bar *ngIf="post" [section]="'blog:' + post.slug"></app-reaction-bar>
+
         <!-- Back -->
         <a class="pp-back-link" routerLink="/blog">← All Posts</a>
 

@@ -458,6 +458,14 @@
   &:focus { border-color: rgba(245,158,11,.5); outline: none; }
 }
 .df-sep { color: var(--text-dim); font-size: .8rem; }
+.df-search {
+  flex: 1; max-width: 260px;
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  font-family: var(--font-body); font-size: .78rem; padding: .38rem .75rem;
+  border-radius: 8px;
+  &:focus { border-color: rgba(245,158,11,.5); outline: none; }
+  &::placeholder { color: var(--text-dim); }
+}
 
 /* ── Approval cards ──────────────────────────────────── */
 .approval-card {
@@ -503,6 +511,18 @@
   &.aag-info    { background: rgba(59,130,246,.1); color: #3b82f6;  border: 1px solid rgba(59,130,246,.3); &:hover:not(:disabled) { background: rgba(59,130,246,.2); } }
   &.aag-snooze  { background: rgba(139,92,246,.1); color: #8b5cf6;  border: 1px solid rgba(139,92,246,.3); &:hover:not(:disabled) { background: rgba(139,92,246,.2); } }
 }
+
+/* ── Payment link result ─────────────────────────────── */
+.paylink-result {
+  display: flex; align-items: flex-start; gap: 1rem;
+  background: rgba(34,197,94,.06); border: 1px solid rgba(34,197,94,.25);
+  border-radius: var(--radius); padding: 1.25rem; margin-top: 1.25rem; max-width: 520px;
+}
+.plr-icon { color: #22c55e; flex-shrink: 0; margin-top: 2px; }
+.plr-body { display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+.plr-label { font-size: .72rem; font-weight: 700; letter-spacing: .06em; color: #22c55e; }
+.plr-url { font-size: .78rem; color: var(--accent); word-break: break-all; font-family: monospace; }
+.plr-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
 
 /* ── Empty states ────────────────────────────────────── */
 .empty {

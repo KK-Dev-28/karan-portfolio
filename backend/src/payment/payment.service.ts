@@ -402,6 +402,30 @@ export class PaymentService {
     return this.repo.find({ order: { createdAt: 'DESC' }, take: 200 });
   }
 
+  async createPaymentLink(opts: {
+    amount: number;
+    description: string;
+    customerName: string;
+    customerEmail: string;
+    customerPhone?: string;
+  }) {
+    if (!this.rzp) throw new BadRequestException('Razorpay not configured.');
+    const link = await (this.rzp as any).paymentLink.create({
+      amount:      opts.amount,
+      currency:    this.currency,
+      accept_partial: false,
+      description: opts.description,
+      customer: {
+        name:    opts.customerName,
+        email:   opts.customerEmail,
+        contact: opts.customerPhone ?? '',
+      },
+      notify: { sms: !!opts.customerPhone, email: true },
+      reminder_enable: true,
+    });
+    return { id: link.id, url: link.short_url, amount: link.amount };
+  }
+
   async paymentStats() {
     const raw = await this.repo
       .createQueryBuilder('p')

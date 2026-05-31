@@ -145,6 +145,14 @@ export class PaymentController {
 
   // ── Admin read endpoints ──────────────────────────────────────────────────
 
+  @Post('create-link')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create Razorpay payment link for a client' })
+  createLink(
+    @Body() body: { amount: number; description: string; customerName: string; customerEmail: string; customerPhone?: string },
+  ) { return this.svc.createPaymentLink(body); }
+
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { BlogApiService } from '../../services/blog.service';
+import { ReactionBarComponent } from '../../components/reaction-bar/reaction-bar.component';
 
 @Component({
   selector: 'app-blog-post-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReactionBarComponent],
   templateUrl: './blog-post.page.html',
   styleUrls: ['./blog-post.page.scss'],
 })
