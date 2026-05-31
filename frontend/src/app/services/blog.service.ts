@@ -34,6 +34,9 @@ export class BlogApiService {
 
   // ── Auth ─────────────────────────────────────────────
   register(body: any): Observable<{ token: string; user: any }> { return this.http.post<any>(`${this.base}/auth/register`, body); }
+  registerFree(body: { email: string; username: string; name: string; password: string }): Observable<{ token: string; user: any }> {
+    return this.http.post<any>(`${this.base}/auth/register-free`, body);
+  }
   login(email: string, password: string): Observable<{ token: string; user: any }> { return this.http.post<any>(`${this.base}/auth/login`, { email, password }); }
   getMe(): Observable<any>                    { return this.http.get<any>(`${this.base}/auth/me`, this.authHeader()); }
   updateMe(body: any): Observable<any>        { return this.http.patch<any>(`${this.base}/auth/me`, body, this.authHeader()); }

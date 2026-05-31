@@ -21,7 +21,6 @@
 
     <!-- Right controls -->
     <div class="nav-controls">
-      <a class="nav-blog-link" routerLink="/ai-tools">AI Tools</a>
       <a class="nav-blog-link" routerLink="/blog">Blog</a>
       <button class="theme-toggle" (click)="toggleTheme()" [title]="theme === 'dark' ? 'Light mode' : 'Dark mode'">
         {{ theme === 'dark' ? '☀' : '🌙' }}
@@ -43,9 +42,7 @@
     <li *ngFor="let l of links">
       <a [href]="'#'+l.id" (click)="scrollTo(l.id, $event); menuOpen=false">{{ l.label }}</a>
     </li>
-    <li><a routerLink="/ai-tools" (click)="menuOpen=false">AI Tools</a></li>
     <li><a routerLink="/blog" (click)="menuOpen=false">Blog</a></li>
-    <li><a routerLink="/resume-review" (click)="menuOpen=false">Resume Check</a></li>
     <li><a href="/insights" (click)="menuOpen=false">Visitor Logs</a></li>
   </ul>
   <div class="mobile-footer">

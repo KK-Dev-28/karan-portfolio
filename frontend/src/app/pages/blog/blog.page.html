@@ -124,7 +124,26 @@
             <ng-container *ngIf="!busy">Sign In →</ng-container>
             <ng-container *ngIf="busy">Signing in…</ng-container>
           </button>
-          <p class="m-switch">Don't have access? <button class="m-lnk" (click)="modalView='pay'">Get writer access</button></p>
+          <p class="m-switch">New here? <button class="m-lnk" (click)="openRegFree()">Create free account</button></p>
+        </div>
+      </ng-container>
+
+      <!-- Register Free -->
+      <ng-container *ngIf="modalView === 'register-free'">
+        <h3 class="m-title">Create Account</h3>
+        <p class="m-sub">Free to join — write and publish your blogs instantly.</p>
+        <div class="m-form">
+          <div class="mf-row"><label class="mf-lbl">Full Name</label><input class="mf-input" [(ngModel)]="freeRegForm.name" placeholder="Your name" /></div>
+          <div class="mf-row"><label class="mf-lbl">Username</label><input class="mf-input" [(ngModel)]="freeRegForm.username" placeholder="yourusername" /></div>
+          <div class="mf-row"><label class="mf-lbl">Email</label><input class="mf-input" type="email" [(ngModel)]="freeRegForm.email" placeholder="you@email.com" /></div>
+          <div class="mf-row"><label class="mf-lbl">Password</label><input class="mf-input" type="password" [(ngModel)]="freeRegForm.password" placeholder="Min 6 characters" /></div>
+          <div class="mf-row"><label class="mf-lbl">Confirm Password</label><input class="mf-input" type="password" [(ngModel)]="freeRegForm.confirm" placeholder="Repeat password" /></div>
+          <div class="m-err" *ngIf="modalErr">{{ modalErr }}</div>
+          <button class="m-btn" (click)="doRegisterFree()" [disabled]="busy">
+            <ng-container *ngIf="!busy">Create Account →</ng-container>
+            <ng-container *ngIf="busy">Creating account…</ng-container>
+          </button>
+          <p class="m-switch">Already a member? <button class="m-lnk" (click)="modalView='login'">Sign in</button></p>
         </div>
       </ng-container>
 

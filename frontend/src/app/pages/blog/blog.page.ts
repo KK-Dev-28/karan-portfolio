@@ -6,7 +6,7 @@ import { BlogApiService } from '../../services/blog.service';
 
 declare const Razorpay: any;
 
-type ModalView = 'login' | 'register' | 'pay' | 'register-form' | 'success';
+type ModalView = 'login' | 'register' | 'register-free' | 'pay' | 'register-form' | 'success';
 
 @Component({
   selector: 'app-blog-page',
@@ -32,9 +32,10 @@ export class BlogPageComponent implements OnInit {
   modalErr = '';
   busy = false;
 
-  loginForm   = { email: '', password: '' };
-  payForm     = { name: '', email: '' };
-  regForm     = { registrationToken: '', email: '', username: '', name: '', password: '', confirm: '' };
+  loginForm    = { email: '', password: '' };
+  payForm      = { name: '', email: '' };
+  regForm      = { registrationToken: '', email: '', username: '', name: '', password: '', confirm: '' };
+  freeRegForm  = { email: '', username: '', name: '', password: '', confirm: '' };
 
   constructor(
     private blog: BlogApiService,
@@ -97,9 +98,22 @@ export class BlogPageComponent implements OnInit {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(this.accessInfo.amount / 100);
   }
 
-  openLogin()    { this.modalView = 'login';  this.modalErr = ''; this.showModal = true; }
-  openPay()      { this.modalView = 'pay';    this.modalErr = ''; this.showModal = true; }
+  openLogin()    { this.modalView = 'login';         this.modalErr = ''; this.showModal = true; }
+  openPay()      { this.modalView = 'pay';           this.modalErr = ''; this.showModal = true; }
+  openRegFree()  { this.modalView = 'register-free'; this.modalErr = ''; this.showModal = true; }
   closeModal()   { if (!this.busy) this.showModal = false; }
+
+  doRegisterFree() {
+    const f = this.freeRegForm;
+    if (!f.email || !f.username || !f.name || !f.password) { this.modalErr = 'All fields are required.'; return; }
+    if (f.password !== f.confirm) { this.modalErr = 'Passwords do not match.'; return; }
+    if (f.password.length < 6)   { this.modalErr = 'Password must be at least 6 characters.'; return; }
+    this.busy = true; this.modalErr = '';
+    this.blog.registerFree({ email: f.email, username: f.username, name: f.name, password: f.password }).subscribe({
+      next: r => { this.blog.saveToken(r.token); this.isLoggedIn = true; this.busy = false; this.modalView = 'success'; },
+      error: (e: any) => { this.busy = false; this.modalErr = e?.error?.message || 'Registration failed. Try a different username.'; },
+    });
+  }
 
   doLogin() {
     if (!this.loginForm.email || !this.loginForm.password) { this.modalErr = 'Email and password required.'; return; }

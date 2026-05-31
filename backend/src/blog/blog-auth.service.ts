@@ -54,6 +54,30 @@ export class BlogAuthService {
     return { token: this.sign(user), user: this.safeUser(user) };
   }
 
+  async registerFree(dto: { email: string; username: string; name: string; password: string }) {
+    const email    = dto.email.toLowerCase().trim();
+    const username = dto.username.toLowerCase().trim().replace(/[^a-z0-9_]/g, '');
+
+    if (!email || !username || !dto.name?.trim() || !dto.password) {
+      throw new BadRequestException('All fields are required.');
+    }
+    if (dto.password.length < 6) throw new BadRequestException('Password must be at least 6 characters.');
+
+    const emailTaken = await this.users.findOneBy({ email });
+    if (emailTaken) {
+      const token = this.sign(emailTaken);
+      return { token, user: this.safeUser(emailTaken) };
+    }
+    const usernameTaken = await this.users.findOneBy({ username });
+    if (usernameTaken) throw new ConflictException('Username already taken. Try another.');
+
+    const passwordHash = await bcrypt.hash(dto.password, 12);
+    const user = await this.users.save(
+      this.users.create({ email, username, name: dto.name.trim(), passwordHash }),
+    );
+    return { token: this.sign(user), user: this.safeUser(user) };
+  }
+
   async getMe(userId: number) {
     const user = await this.users.findOneBy({ id: userId });
     if (!user) throw new UnauthorizedException();

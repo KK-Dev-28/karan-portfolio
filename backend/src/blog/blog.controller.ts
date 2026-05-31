@@ -53,6 +53,12 @@ export class BlogController {
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   register(@Body() body: BlogRegisterDto) { return this.auth.register(body); }
 
+  @Post('auth/register-free')
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  registerFree(@Body() body: { email: string; username: string; name: string; password: string }) {
+    return this.auth.registerFree(body);
+  }
+
   @Post('auth/login')
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   login(@Body() body: BlogLoginDto) { return this.auth.login(body.email, body.password); }
