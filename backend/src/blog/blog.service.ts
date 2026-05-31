@@ -121,6 +121,21 @@ export class BlogService {
   getAllPostsAdmin() { return this.posts.find({ order: { createdAt: 'DESC' } }); }
   getAllUsersAdmin() { return this.users.find({ order: { createdAt: 'DESC' }, select: ['id','email','username','name','active','createdAt'] }); }
 
+  async updatePostAdmin(id: number, dto: any) {
+    const post = await this.posts.findOneBy({ id });
+    if (!post) throw new NotFoundException('Post not found.');
+    if (dto.published && !post.published) dto.publishedAt = new Date();
+    Object.assign(post, dto);
+    return this.posts.save(post);
+  }
+
+  async deletePostAdmin(id: number) {
+    const post = await this.posts.findOneBy({ id });
+    if (!post) throw new NotFoundException('Post not found.');
+    await this.posts.remove(post);
+    return { ok: true };
+  }
+
   async createPostAdmin(dto: { title: string; body: string; excerpt?: string; coverImage?: string; tags?: string[]; published?: boolean }) {
     const post = this.posts.create({
       ...dto,

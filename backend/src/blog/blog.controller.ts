@@ -112,4 +112,12 @@ export class BlogController {
   @Post('admin/post')
   @UseGuards(JwtAuthGuard)
   createAdminPost(@Body() body: any) { return this.svc.createPostAdmin(body); }
+
+  @Patch('admin/post/:id')
+  @UseGuards(JwtAuthGuard)
+  updateAdminPost(@Param('id', ParseIntPipe) id: number, @Body() body: any) { return this.svc.updatePostAdmin(id, body); }
+
+  @Delete('admin/post/:id')
+  @UseGuards(JwtAuthGuard)
+  deleteAdminPost(@Param('id', ParseIntPipe) id: number) { return this.svc.deletePostAdmin(id); }
 }
