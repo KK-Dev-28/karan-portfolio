@@ -24,6 +24,7 @@ import { BlogAccess }    from './blog/blog-access.entity';
 import { BlogUser }      from './blog/blog-user.entity';
 import { FreeUsage }          from './ai-tools/free-usage.entity';
 import { EmailVerification }  from './ai-tools/email-verification.entity';
+import { Reaction }           from './reactions/reaction.entity';
 
 import { VisitorModule } from './visitor/visitor.module';
 import { ContactModule } from './contact/contact.module';
@@ -43,6 +44,7 @@ import { DemoModule }   from './demos/demo.module';
 import { BookingModule } from './booking/booking.module';
 import { BlogModule }   from './blog/blog.module';
 import { AiToolsModule } from './ai-tools/ai-tools.module';
+import { ReactionModule } from './reactions/reaction.module';
 import { parseDatabaseUrl } from './database/parse-database-url';
 
 @Module({
@@ -112,6 +114,7 @@ import { parseDatabaseUrl } from './database/parse-database-url';
           BlogUser,
           FreeUsage,
           EmailVerification,
+          Reaction,
         ],
         synchronize,
         logging:     false,
@@ -140,6 +143,7 @@ import { parseDatabaseUrl } from './database/parse-database-url';
     BookingModule,
     BlogModule,
     AiToolsModule,
+    ReactionModule,
     AdminModule,
   ],
 })

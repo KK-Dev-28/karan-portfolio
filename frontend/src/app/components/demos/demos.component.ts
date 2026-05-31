@@ -2,11 +2,12 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DemosService, Demo } from '../../services/demos.service';
+import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
 
 @Component({
   selector: 'app-demos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactionBarComponent],
   templateUrl: './demos.component.html',
   styleUrls: ['./demos.component.scss'],
 })

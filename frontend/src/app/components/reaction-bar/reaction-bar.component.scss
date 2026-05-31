@@ -1,0 +1,175 @@
+.reaction-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .75rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.rb-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.rb-btn {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: .42rem .9rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: .78rem;
+  font-weight: 600;
+  transition: all var(--t-fast);
+
+  &:hover {
+    border-color: rgba(245,158,11,.4);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+
+  &.liked {
+    background: rgba(239,68,68,.1);
+    border-color: rgba(239,68,68,.3);
+    color: #ef4444;
+
+    .rb-icon { fill: #ef4444; stroke: #ef4444; }
+  }
+
+  &.active {
+    background: rgba(245,158,11,.1);
+    border-color: rgba(245,158,11,.3);
+    color: var(--accent);
+  }
+
+  &:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+}
+
+.rb-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  transition: all var(--t-fast);
+}
+
+.rb-count {
+  min-width: 1ch;
+  text-align: center;
+}
+
+/* ── Comments panel ── */
+.rb-comments-panel {
+  width: 100%;
+  max-width: 560px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  animation: slideDown .18s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.rb-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.rb-comment {
+  display: flex;
+  gap: .75rem;
+  padding: .85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  &:last-child { border-bottom: none; }
+}
+
+.rbc-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #f97316);
+  color: #000;
+  font-weight: 800;
+  font-size: .78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rbc-body { flex: 1; min-width: 0; }
+.rbc-name { font-size: .72rem; font-weight: 700; color: var(--text); margin-bottom: .2rem; }
+.rbc-text { font-size: .8rem; color: var(--text-muted); line-height: 1.6; word-break: break-word; }
+
+.rb-no-comments {
+  padding: 1rem;
+  font-size: .78rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* ── Form ── */
+.rb-form {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  padding: .85rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.rb-input, .rb-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .8rem;
+  padding: .5rem .75rem;
+  resize: none;
+  transition: border-color var(--t-fast);
+
+  &:focus { outline: none; border-color: rgba(245,158,11,.5); }
+  &::placeholder { color: var(--text-dim); }
+}
+
+.rb-submit {
+  align-self: flex-end;
+  font-family: var(--font-head);
+  font-size: .75rem;
+  font-weight: 700;
+  background: var(--gradient-gold);
+  color: #000;
+  border: none;
+  padding: .45rem 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover:not(:disabled) { box-shadow: 0 0 12px var(--accent-glow); }
+  &:disabled { opacity: .45; cursor: not-allowed; }
+}
+
+.rb-success {
+  padding: .75rem 1rem;
+  font-size: .78rem;
+  color: #22c55e;
+  font-weight: 600;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}

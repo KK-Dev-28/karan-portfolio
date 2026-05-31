@@ -12,10 +12,12 @@ interface Service {
   badge?: string;
 }
 
+import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
+
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactionBarComponent],
   templateUrl: './services.component.html',
   styleUrls: ['./services.component.scss'],
 })

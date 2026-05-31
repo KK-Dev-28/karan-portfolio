@@ -1,0 +1,54 @@
+<div class="reaction-bar">
+  <div class="rb-actions">
+
+    <!-- Like button -->
+    <button class="rb-btn" [class.liked]="data.hasLiked" (click)="toggleLike()" [disabled]="liking" aria-label="Like this section">
+      <svg class="rb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <span class="rb-count">{{ data.likes || 0 }}</span>
+    </button>
+
+    <!-- Comments button -->
+    <button class="rb-btn" [class.active]="showComments" (click)="toggleComments()" aria-label="View comments">
+      <svg class="rb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span class="rb-count">{{ data.commentCount || 0 }}</span>
+    </button>
+
+  </div>
+
+  <!-- Comments panel -->
+  <div class="rb-comments-panel" *ngIf="showComments">
+
+    <!-- Existing comments -->
+    <div class="rb-comments-list" *ngIf="data.comments.length > 0">
+      <div class="rb-comment" *ngFor="let c of data.comments">
+        <div class="rbc-avatar">{{ (c.name || 'A')[0].toUpperCase() }}</div>
+        <div class="rbc-body">
+          <div class="rbc-name">{{ c.name || 'Anonymous' }}</div>
+          <div class="rbc-text">{{ c.content }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rb-no-comments" *ngIf="data.comments.length === 0">
+      No comments yet — be the first!
+    </div>
+
+    <!-- Add comment form -->
+    <div class="rb-form" *ngIf="!submitted">
+      <input class="rb-input" [(ngModel)]="commentName" placeholder="Your name (optional)" maxlength="80" />
+      <textarea class="rb-textarea" [(ngModel)]="commentText" placeholder="Leave a comment…" maxlength="500" rows="2"></textarea>
+      <button class="rb-submit" (click)="submitComment()" [disabled]="submitting || !commentText.trim()">
+        {{ submitting ? 'Posting…' : 'Post Comment' }}
+      </button>
+    </div>
+
+    <div class="rb-success" *ngIf="submitted">
+      Thanks for your comment!
+    </div>
+
+  </div>
+</div>
