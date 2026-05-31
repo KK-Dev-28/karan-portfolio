@@ -40,19 +40,19 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   get filteredMessagesSearch() {
     const q = this.searchQuery.toLowerCase();
-    return this.filteredMessages.filter(m =>
+    return (this.filteredMessages as any[]).filter(m =>
       !q || m.name?.toLowerCase().includes(q) || m.email?.toLowerCase().includes(q) || m.subject?.toLowerCase().includes(q) || m.message?.toLowerCase().includes(q)
     );
   }
   get filteredPaymentsSearch() {
     const q = this.searchQuery.toLowerCase();
-    return this.filteredPayments.filter(p =>
+    return (this.filteredPayments as any[]).filter(p =>
       !q || p.customerName?.toLowerCase().includes(q) || p.customerEmail?.toLowerCase().includes(q) || p.tier?.toLowerCase().includes(q)
     );
   }
   get filteredVisitorsSearch() {
     const q = this.searchQuery.toLowerCase();
-    return this.filteredVisitors.filter(v =>
+    return (this.filteredVisitors as any[]).filter(v =>
       !q || v.ip?.toLowerCase().includes(q) || v.city?.toLowerCase().includes(q) || v.country?.toLowerCase().includes(q) || v.page?.toLowerCase().includes(q)
     );
   }
