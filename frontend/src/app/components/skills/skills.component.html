@@ -3,7 +3,7 @@
     <div class="sec-label">My Toolkit</div>
     <div class="skills-layout">
 
-      <!-- Left: bars + cards -->
+      <!-- Left: bars -->
       <div class="skills-left">
         <h2 class="sec-title">Skills &amp; <span class="italic">Technologies</span></h2>
         <p class="skills-sub">Real-world stack I use daily on production systems — not just tutorial projects.</p>
@@ -20,34 +20,59 @@
           </div>
         </div>
 
+        <div class="award-card" *ngIf="award">
+          <span class="award-icon">🏆</span>
+          <div>
+            <div class="award-title">{{ award.title }}</div>
+            <p class="award-desc">{{ award.desc }}</p>
+          </div>
+        </div>
       </div>
 
-      <!-- Right: tech wheel + tags -->
+      <!-- Right: tech icon grid -->
       <div class="skills-right">
-        <div class="wheel-wrapper">
-          <div class="wheel-orbit orbit-1">
-            <div class="orbit-ring"></div>
-            <div class="orbit-tag" *ngFor="let t of tags.slice(0, 6); let i = index"
-                 [style.transform]="'rotate(' + (i * 60) + 'deg) translateX(120px) rotate(-' + (i * 60) + 'deg)'">
-              {{ t }}
+
+        <div class="tech-header">
+          <div class="th-title">Technologies I Work With</div>
+          <div class="th-sub">Tools powering real production projects</div>
+        </div>
+
+        <!-- Category tabs -->
+        <div class="tech-cat-tabs">
+          <button
+            *ngFor="let cat of techCategories"
+            class="tct-btn"
+            [class.active]="activeTechCat === cat.key"
+            (click)="activeTechCat = cat.key">
+            {{ cat.label }}
+          </button>
+        </div>
+
+        <!-- Icon grid -->
+        <div class="tech-icon-grid">
+          <div class="tech-tile" *ngFor="let tech of activeCatItems">
+            <div class="tt-logo">
+              <img
+                *ngIf="tech.icon"
+                [src]="deviconUrl(tech.icon, tech.variant)"
+                [alt]="tech.name"
+                class="tt-img"
+                loading="lazy"
+                (error)="$any($event.target).style.display='none'; $any($event.target).nextElementSibling.style.display='flex'"
+              />
+              <div class="tt-fallback" [style.display]="tech.icon ? 'none' : 'flex'">
+                {{ tech.name.charAt(0) }}
+              </div>
             </div>
-          </div>
-          <div class="wheel-orbit orbit-2">
-            <div class="orbit-ring"></div>
-            <div class="orbit-tag" *ngFor="let t of tags.slice(6, 12); let i = index"
-                 [style.transform]="'rotate(' + (i * 60) + 'deg) translateX(200px) rotate(-' + (i * 60) + 'deg)'">
-              {{ t }}
-            </div>
-          </div>
-          <div class="wheel-center">
-            <span class="center-label">STACK</span>
+            <span class="tt-name">{{ tech.name }}</span>
           </div>
         </div>
 
-        <div class="also-familiar" *ngIf="tags.length > 12">
+        <!-- Also familiar from CMS -->
+        <div class="also-familiar" *ngIf="tags.length > 0">
           <div class="af-label">Also Familiar With</div>
           <div class="af-tags">
-            <span class="af-tag" *ngFor="let t of tags.slice(12)">{{ t }}</span>
+            <span class="af-tag" *ngFor="let t of tags">{{ t }}</span>
           </div>
         </div>
 
@@ -58,6 +83,7 @@
             <p class="ai-desc">Claude &amp; ChatGPT as dev tools — faster debugging, cleaner code, better docs.</p>
           </div>
         </div>
+
       </div>
     </div>
   </div>
