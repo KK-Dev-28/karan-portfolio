@@ -43,7 +43,13 @@ export class EmailService {
 
   private async send(to: string, subject: string, html: string): Promise<void> {
     if (this.transporter) {
-      await this.transporter.sendMail({ from: this.from, to, subject, html });
+      try {
+        const info = await this.transporter.sendMail({ from: this.from, to, subject, html });
+        this.logger.log(`[EMAIL] Sent to ${to} — Message-ID: ${info.messageId}`);
+      } catch (err: any) {
+        this.logger.error(`[EMAIL] Failed to send to ${to}: ${err?.message ?? err}`);
+        // Do NOT rethrow — email failure must never break the HTTP response
+      }
     } else {
       this.logger.log(`[DEV EMAIL] To: ${to} | Subject: ${subject}`);
     }
