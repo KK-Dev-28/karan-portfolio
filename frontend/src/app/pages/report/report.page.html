@@ -1,0 +1,127 @@
+<div class="report-wrap" *ngIf="report; else notFound">
+
+  <!-- Cover page -->
+  <div class="report-cover">
+    <div class="rc-bg"></div>
+    <div class="rc-content">
+      <div class="rc-studio">{{ report.company }}</div>
+      <h1 class="rc-title">{{ report.title }}</h1>
+      <p class="rc-sub">{{ report.subtitle }}</p>
+      <div class="rc-divider"></div>
+      <div class="rc-meta">
+        <span>{{ report.date }}</span>
+        <span class="rc-dot">·</span>
+        <span>Prepared by Karan Kapoor</span>
+        <span class="rc-dot">·</span>
+        <span>Confidential</span>
+      </div>
+    </div>
+    <div class="rc-watermark">© {{ report.company }} — All rights reserved</div>
+  </div>
+
+  <!-- Report body -->
+  <div class="report-body">
+
+    <ng-container *ngFor="let sec of report.sections">
+
+      <!-- Skip hero (already rendered as cover) -->
+      <ng-container *ngIf="sec.type !== 'hero'">
+
+        <!-- Divider -->
+        <div class="rep-divider" *ngIf="sec.type === 'divider'"></div>
+
+        <!-- Metrics grid -->
+        <section class="rep-section" *ngIf="sec.type === 'metrics'">
+          <div class="rep-tag" *ngIf="sec.tag">{{ sec.tag }}</div>
+          <h2 class="rep-title" *ngIf="sec.title">{{ sec.title }}</h2>
+          <div class="metrics-grid">
+            <div class="metric-card" *ngFor="let m of sec.metrics">
+              <div class="mc-value" [style.color]="m.color">{{ m.value }}</div>
+              <div class="mc-label">{{ m.label }}</div>
+              <div class="mc-change" *ngIf="m.change" [class.up]="m.up" [class.neutral]="!m.up && m.up !== false">
+                <span *ngIf="m.up">↑</span>
+                {{ m.change }}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Text / paragraphs -->
+        <section class="rep-section" *ngIf="sec.type === 'text'">
+          <div class="rep-tag" *ngIf="sec.tag">{{ sec.tag }}</div>
+          <h2 class="rep-title" *ngIf="sec.title">{{ sec.title }}</h2>
+          <div class="rep-body">
+            <p *ngFor="let p of sec.body">{{ p }}</p>
+          </div>
+        </section>
+
+        <!-- Bar chart -->
+        <section class="rep-section" *ngIf="sec.type === 'bars'">
+          <div class="rep-tag" *ngIf="sec.tag">{{ sec.tag }}</div>
+          <h2 class="rep-title" *ngIf="sec.title">{{ sec.title }}</h2>
+          <div class="rep-bars">
+            <div class="rb-row" *ngFor="let b of sec.bars">
+              <div class="rb-meta">
+                <span class="rb-label">{{ b.label }}</span>
+                <span class="rb-value" [style.color]="b.color">{{ b.value }}</span>
+              </div>
+              <div class="rb-track">
+                <div class="rb-fill" [style.width]="b.pct + '%'" [style.background]="b.color"></div>
+                <span class="rb-pct">{{ b.pct }}%</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Table -->
+        <section class="rep-section" *ngIf="sec.type === 'table'">
+          <div class="rep-tag" *ngIf="sec.tag">{{ sec.tag }}</div>
+          <h2 class="rep-title" *ngIf="sec.title">{{ sec.title }}</h2>
+          <div class="rep-table-wrap">
+            <table class="rep-table">
+              <thead>
+                <tr>
+                  <th *ngFor="let h of sec.headers">{{ h }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of sec.rows" [class.highlighted]="row.highlight">
+                  <td *ngFor="let cell of row.cells">{{ cell }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Quote -->
+        <section class="rep-quote-section" *ngIf="sec.type === 'quote'">
+          <div class="rqs-bar"></div>
+          <blockquote>{{ sec.quote }}</blockquote>
+          <div class="rqs-by">— {{ sec.quoteBy }}</div>
+        </section>
+
+      </ng-container>
+    </ng-container>
+
+    <!-- Footer -->
+    <footer class="report-footer">
+      <div class="rf-left">
+        <span class="rf-logo">KK<span>.</span></span>
+        <span>{{ report.company }}</span>
+      </div>
+      <div class="rf-center">This report is confidential and prepared exclusively for client review purposes.</div>
+      <div class="rf-right">
+        <a routerLink="/" class="rf-link">karan-portfolio-six-sigma.vercel.app</a>
+      </div>
+    </footer>
+  </div>
+
+</div>
+
+<ng-template #notFound>
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#080810;color:#f5f5f5;flex-direction:column;gap:1rem">
+    <div style="font-size:3rem">404</div>
+    <div>Report not found</div>
+    <a routerLink="/" style="color:#f59e0b">← Back to Portfolio</a>
+  </div>
+</ng-template>

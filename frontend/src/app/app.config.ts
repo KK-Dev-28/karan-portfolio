@@ -15,6 +15,8 @@ import { BlogWritePageComponent } from './pages/blog-write/blog-write.page';
 import { BlogProfilePageComponent } from './pages/blog-profile/blog-profile.page';
 import { BlogPostPageComponent } from './pages/blog-post/blog-post.page';
 import { AiToolsPageComponent } from './pages/ai-tools/ai-tools.page';
+import { DeckPageComponent }   from './pages/deck/deck.page';
+import { ReportPageComponent } from './pages/report/report.page';
 
 const routes = [
   { path: '', component: HomePageComponent },
@@ -28,6 +30,8 @@ const routes = [
   { path: 'blog/u/:username', component: BlogProfilePageComponent },
   { path: 'blog/posts/:slug', component: BlogPostPageComponent },
   { path: 'ai-tools', component: AiToolsPageComponent },
+  { path: 'deck/:slug',   component: DeckPageComponent },
+  { path: 'report/:slug', component: ReportPageComponent },
   { path: '**', redirectTo: '' },
 ];
 
