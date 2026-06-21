@@ -1,0 +1,192 @@
+<div class="site-wrap" [class]="'tpl-' + site.template" [style.--accent]="site.accent" *ngIf="site; else notFound">
+
+  <!-- ════════ RESTAURANT TEMPLATE ════════ -->
+  <ng-container *ngIf="site.template === 'restaurant'">
+
+    <header class="r-header">
+      <div class="r-logo">{{ site.name }}</div>
+      <nav class="r-nav" [class.open]="navOpen">
+        <a href="#about">About</a>
+        <a href="#menu">Menu</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#reserve" class="r-cta">Reserve a Table</a>
+      </nav>
+      <button class="r-burger" (click)="toggleNav()">☰</button>
+    </header>
+
+    <section class="r-hero" [style.background-image]="'linear-gradient(180deg, rgba(10,8,6,.35), rgba(10,8,6,.85)), url(' + site.heroImage + ')'">
+      <div class="r-hero-inner">
+        <div class="r-tag">Est. 2014 · Downtown</div>
+        <h1>{{ site.name }}</h1>
+        <p>{{ site.tagline }}</p>
+        <a href="#reserve" class="r-hero-btn">Reserve a Table</a>
+      </div>
+    </section>
+
+    <section class="r-section r-about" id="about">
+      <div class="r-about-grid">
+        <div class="r-about-text">
+          <div class="r-kicker">Our Story</div>
+          <h2>A Taste of Paris, Reimagined</h2>
+          <p>{{ site.about }}</p>
+        </div>
+        <div class="r-about-img" [style.background-image]="'url(' + site.gallery![0] + ')'"></div>
+      </div>
+    </section>
+
+    <section class="r-section r-menu" id="menu">
+      <div class="r-kicker center">Seasonal Menu</div>
+      <h2 class="center">What We're Serving</h2>
+      <div class="r-menu-grid">
+        <div class="r-menu-cat" *ngFor="let cat of site.menu">
+          <h3>{{ cat.name }}</h3>
+          <div class="r-menu-item" *ngFor="let item of cat.items">
+            <div class="r-menu-item-head">
+              <span class="r-item-name">{{ item.name }}</span>
+              <span class="r-item-dots"></span>
+              <span class="r-item-price">{{ item.price }}</span>
+            </div>
+            <p class="r-item-desc">{{ item.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="r-gallery" id="gallery">
+      <div class="r-gallery-grid">
+        <div class="r-gallery-img" *ngFor="let g of site.gallery" [style.background-image]="'url(' + g + ')'"></div>
+      </div>
+    </section>
+
+    <section class="r-section r-reviews" id="reviews">
+      <div class="r-kicker center">Guest Reviews</div>
+      <h2 class="center">What People Are Saying</h2>
+      <div class="r-reviews-grid">
+        <div class="r-review-card" *ngFor="let t of site.testimonials">
+          <div class="r-stars">★★★★★</div>
+          <p>"{{ t.quote }}"</p>
+          <div class="r-review-author">{{ t.author }} <span>· {{ t.role }}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="r-reserve" id="reserve">
+      <div class="r-reserve-inner">
+        <h2>Reserve Your Table</h2>
+        <p>Walk-ins welcome, but reservations are recommended for weekend evenings.</p>
+        <div class="r-reserve-details">
+          <div><strong>Hours</strong><span *ngFor="let h of site.hours">{{ h }}</span></div>
+          <div><strong>Location</strong><span>{{ site.address }}</span></div>
+          <div><strong>Phone</strong><span>{{ site.phone }}</span></div>
+        </div>
+        <a class="r-reserve-btn" href="/api/wa?text=Hi! I'd like to book a table at Lumière Bistro." target="_blank" rel="noopener">Book via WhatsApp</a>
+      </div>
+    </section>
+
+    <footer class="r-footer">
+      <div>{{ site.name }} · {{ year }} — a demo concept site by Karan Kapoor</div>
+      <a routerLink="/">← Back to Portfolio</a>
+    </footer>
+
+  </ng-container>
+
+  <!-- ════════ AGENCY TEMPLATE ════════ -->
+  <ng-container *ngIf="site.template === 'agency'">
+
+    <header class="a-header">
+      <div class="a-logo">{{ site.name }}</div>
+      <nav class="a-nav" [class.open]="navOpen">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#process">Process</a>
+        <a href="#contact" class="a-cta">Start a Project</a>
+      </nav>
+      <button class="a-burger" (click)="toggleNav()">☰</button>
+    </header>
+
+    <section class="a-hero">
+      <div class="a-hero-glow"></div>
+      <div class="a-hero-inner">
+        <div class="a-tag">Digital Product Studio</div>
+        <h1>{{ site.tagline }}</h1>
+        <div class="a-hero-actions">
+          <a href="#work" class="a-btn a-btn-primary">View Our Work</a>
+          <a href="#contact" class="a-btn a-btn-ghost">Start a Project →</a>
+        </div>
+      </div>
+      <div class="a-hero-img" [style.background-image]="'url(' + site.heroImage + ')'"></div>
+    </section>
+
+    <section class="a-section a-services" id="services">
+      <div class="a-kicker">What We Do</div>
+      <h2>Services built for momentum</h2>
+      <div class="a-services-grid">
+        <div class="a-service-card" *ngFor="let s of site.services">
+          <div class="a-service-icon" [ngSwitch]="s.icon">
+            <svg *ngSwitchCase="'spark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg>
+            <svg *ngSwitchCase="'layers'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 2 7l10 5 10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            <svg *ngSwitchCase="'code'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
+            <svg *ngSwitchCase="'target'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+          </div>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.desc }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="a-section a-work" id="work">
+      <div class="a-kicker">Selected Work</div>
+      <h2>Projects we're proud of</h2>
+      <div class="a-work-grid">
+        <div class="a-work-card" *ngFor="let p of site.portfolio" [style.background-image]="'url(' + p.image + ')'">
+          <div class="a-work-overlay">
+            <div class="a-work-cat">{{ p.category }}</div>
+            <div class="a-work-title">{{ p.title }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="a-section a-process" id="process">
+      <div class="a-kicker">How We Work</div>
+      <h2>A process built on momentum</h2>
+      <div class="a-process-grid">
+        <div class="a-process-step" *ngFor="let p of site.process">
+          <div class="a-process-num">{{ p.num }}</div>
+          <h3>{{ p.title }}</h3>
+          <p>{{ p.desc }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="a-section a-testimonials">
+      <div class="a-testimonials-grid">
+        <div class="a-testimonial-card" *ngFor="let t of site.testimonials">
+          <p>"{{ t.quote }}"</p>
+          <div class="a-testimonial-author">{{ t.author }}<span>{{ t.role }}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="a-contact" id="contact">
+      <h2>Let's build something people remember.</h2>
+      <a class="a-btn a-btn-primary" href="/api/wa?text=Hi! I'd like to start a project with Nova Digital." target="_blank" rel="noopener">Start a Project</a>
+    </section>
+
+    <footer class="a-footer">
+      <div>{{ site.name }} · {{ year }} — a demo concept site by Karan Kapoor</div>
+      <a routerLink="/">← Back to Portfolio</a>
+    </footer>
+
+  </ng-container>
+
+</div>
+
+<ng-template #notFound>
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0a0a;color:#f5f5f5;flex-direction:column;gap:1rem;font-family:sans-serif">
+    <div style="font-size:3rem">404</div>
+    <div>Demo site not found</div>
+    <a routerLink="/" style="color:#f59e0b">← Back to Portfolio</a>
+  </div>
+</ng-template>

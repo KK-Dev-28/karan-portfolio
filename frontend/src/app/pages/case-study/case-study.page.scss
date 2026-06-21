@@ -1,0 +1,108 @@
+:host { display: block; background: #0e0e0e; color: #f5f5f5; font-family: 'Inter', sans-serif; }
+
+.cs-wrap { min-height: 100vh; }
+
+/* ── Hero ── */
+.cs-hero {
+  min-height: 70vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; padding: 4rem 2rem; text-align: center;
+  background: linear-gradient(135deg, #0e0e0e 0%, #1d1d1d 100%);
+}
+.cs-hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 30%, rgba(245,158,11,.14) 0%, transparent 55%),
+              radial-gradient(ellipse at 75% 70%, rgba(168,85,247,.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+.cs-hero-content { position: relative; z-index: 1; max-width: 760px; }
+.cs-tag {
+  font-size: .72rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+  color: #f59e0b; margin-bottom: 1.5rem; display: inline-block;
+}
+.cs-title { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.25rem; letter-spacing: -.02em; }
+.cs-sub { font-size: 1.05rem; color: #b5b5b5; line-height: 1.65; margin-bottom: 2.25rem; }
+.cs-cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.cs-btn {
+  font-family: inherit; font-size: .88rem; font-weight: 700; padding: .85rem 1.75rem;
+  border-radius: 999px; border: none; cursor: pointer; transition: transform .2s, box-shadow .2s;
+  &.primary { background: linear-gradient(to right, #f59e0b, #fbbf24); color: #0e0e0e; }
+  &.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.35); }
+  &.ghost { background: transparent; color: #f5f5f5; border: 1px solid rgba(255,255,255,.18); text-decoration: none; display: inline-flex; align-items: center; }
+  &.ghost:hover { border-color: rgba(255,255,255,.4); }
+  &.large { padding: 1.1rem 2.5rem; font-size: 1rem; }
+}
+
+/* ── Sections ── */
+.cs-section { max-width: 760px; margin: 0 auto; padding: 3.5rem 1.5rem; }
+.cs-label {
+  font-size: .68rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+  color: #f59e0b; margin-bottom: 1.25rem;
+}
+.cs-body p { font-size: .98rem; line-height: 1.8; color: #ccc; margin-bottom: 1.2rem; }
+
+/* ── Highlights ── */
+.cs-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+.cs-highlight {
+  display: flex; align-items: center; gap: .6rem; background: #161616; border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 1rem 1.1rem;
+}
+.hl-icon { font-size: 1.3rem; }
+.hl-label { font-size: .82rem; color: #ddd; font-weight: 600; }
+
+/* ── Paths ── */
+.cs-paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+.cs-path-card {
+  background: #161616; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 1.75rem;
+  transition: border-color .2s, transform .2s;
+}
+.cs-path-card:hover { border-color: rgba(245,158,11,.4); transform: translateY(-3px); }
+.pc-icon { font-size: 2rem; margin-bottom: .75rem; }
+.cs-path-card h3 { font-size: 1.05rem; margin-bottom: .5rem; }
+.cs-path-card p { font-size: .88rem; color: #aaa; line-height: 1.6; }
+
+/* ── Embed ── */
+.cs-embed-section { text-align: center; }
+.cs-embed-note { color: #999; font-size: .9rem; margin-bottom: 1.5rem; }
+.cs-embed-frame {
+  width: 100%; max-width: 420px; height: 640px; margin: 0 auto 1.75rem;
+  border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.cs-embed-frame iframe { width: 100%; height: 100%; border: none; background: #fff; }
+.cs-embed-cta { display: inline-block; }
+
+/* ── Chips ── */
+.cs-chips { display: flex; gap: .6rem; flex-wrap: wrap; }
+.cs-chip {
+  font-size: .8rem; font-weight: 600; color: #ddd; background: #1d1d1d;
+  border: 1px solid rgba(255,255,255,.1); border-radius: 999px; padding: .45rem 1rem;
+}
+
+/* ── Closing ── */
+.cs-closing {
+  text-align: center; max-width: 640px; margin: 1rem auto 0; padding: 4rem 1.5rem;
+}
+.cs-closing h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 800; margin-bottom: .9rem; }
+.cs-closing p { color: #b5b5b5; margin-bottom: 2rem; font-size: 1rem; }
+
+/* ── Footer ── */
+.cs-footer {
+  display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem; font-size: .8rem; color: #888;
+  span { font-weight: 800; color: #f5f5f5; }
+  .gold { color: #f59e0b; }
+  a { color: #888; text-decoration: none; &:hover { color: #f59e0b; } }
+}
+
+/* ── 404 ── */
+.cs-404 {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1rem; background: #0e0e0e; color: #f5f5f5;
+  a { color: #f59e0b; }
+}
+.cs-404-code { font-size: 3rem; font-weight: 800; }
+
+@media (max-width: 600px) {
+  .cs-embed-frame { height: 540px; }
+}

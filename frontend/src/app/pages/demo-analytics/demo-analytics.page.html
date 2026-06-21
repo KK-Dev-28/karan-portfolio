@@ -1,0 +1,156 @@
+<div class="dash-wrap">
+
+  <!-- Sidebar -->
+  <aside class="dash-sidebar">
+    <a routerLink="/" class="dash-logo">KK<span>.</span> <small>Analytics</small></a>
+
+    <nav class="dash-nav">
+      <a *ngFor="let item of navItems" class="dash-nav-item" [class.active]="item.active">
+        <span class="dni-icon" [ngSwitch]="item.icon">
+          <svg *ngSwitchCase="'grid'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <svg *ngSwitchCase="'chart'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-6 4 3 5-8"/></svg>
+          <svg *ngSwitchCase="'users'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.3 3-5 7-5s7 1.7 7 5"/><circle cx="17" cy="7" r="3"/><path d="M16 13.2c2.7.4 5 1.9 5 4.8"/></svg>
+          <svg *ngSwitchCase="'cart'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.5L21 8H6"/></svg>
+          <svg *ngSwitchCase="'box'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+          <svg *ngSwitchCase="'wallet'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="17" cy="14.5" r="1.2" fill="currentColor"/></svg>
+          <svg *ngSwitchCase="'file'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>
+          <svg *ngSwitchCase="'gear'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1z"/></svg>
+        </span>
+        {{ item.label }}
+      </a>
+    </nav>
+
+    <div class="dash-sidebar-foot">
+      <div class="dsf-row">Demo Dashboard</div>
+      <div class="dsf-sub">Built by Karan Kapoor</div>
+      <a routerLink="/" class="dsf-back">← Back to Portfolio</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="dash-main">
+
+    <!-- Top bar -->
+    <header class="dash-topbar">
+      <div>
+        <h1>Overview</h1>
+        <p class="topbar-sub">Welcome back — here's what's happening today.</p>
+      </div>
+      <div class="topbar-right">
+        <div class="live-badge"><span class="live-dot"></span> Live data</div>
+        <div class="topbar-clock">{{ clockStr }}</div>
+        <div class="topbar-avatar">KK</div>
+      </div>
+    </header>
+
+    <!-- KPI cards -->
+    <section class="kpi-row">
+      <div class="kpi-card" *ngFor="let k of kpis">
+        <div class="kpi-label">{{ k.label }}</div>
+        <div class="kpi-value" [style.color]="k.color">{{ fmtKpi(k) }}</div>
+        <div class="kpi-change" [class.down]="k.change < 0">
+          <span>{{ k.change >= 0 ? '▲' : '▼' }}</span> {{ (k.change >= 0 ? '+' : '') + k.change }}% vs last month
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts row -->
+    <section class="charts-row">
+
+      <div class="chart-card revenue-card">
+        <div class="chart-head">
+          <h3>Revenue Trend</h3>
+          <span class="chart-tag">Last 12 months</span>
+        </div>
+        <svg class="revenue-svg" viewBox="0 0 600 200" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path [attr.d]="areaPath()" fill="url(#revFill)"/>
+          <path [attr.d]="linePath()" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+        <div class="revenue-months">
+          <span *ngFor="let m of months">{{ m }}</span>
+        </div>
+      </div>
+
+      <div class="chart-card donut-card">
+        <div class="chart-head">
+          <h3>Traffic Sources</h3>
+        </div>
+        <div class="donut" [style.background]="donutGradient()">
+          <div class="donut-hole">
+            <div class="donut-total">100%</div>
+            <div class="donut-sub">Total visits</div>
+          </div>
+        </div>
+        <ul class="donut-legend">
+          <li *ngFor="let s of traffic">
+            <span class="dl-dot" [style.background]="s.color"></span>
+            <span class="dl-label">{{ s.label }}</span>
+            <span class="dl-pct">{{ s.pct }}%</span>
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- Bottom row -->
+    <section class="bottom-row">
+
+      <div class="chart-card bars-card">
+        <div class="chart-head">
+          <h3>Sales by Category</h3>
+        </div>
+        <div class="bars-list">
+          <div class="bar-row" *ngFor="let c of categories; let i = index">
+            <div class="bar-label">{{ c.label }}</div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width]="c.pct + '%'" [style.background]="c.color" [style.animation-delay]="(i * 0.08) + 's'"></div>
+            </div>
+            <div class="bar-pct" [style.color]="c.color">{{ c.pct }}%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card table-card">
+        <div class="chart-head">
+          <h3>Recent Orders</h3>
+          <span class="chart-tag">{{ orders.length }} new</span>
+        </div>
+        <div class="table-wrap">
+          <table class="orders-table">
+            <thead>
+              <tr><th>Order</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of orders">
+                <td class="mono">{{ o.id }}</td>
+                <td>{{ o.customer }}</td>
+                <td>{{ o.product }}</td>
+                <td class="mono">{{ o.amount }}</td>
+                <td><span class="status-badge" [class]="o.status.toLowerCase()">{{ o.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Live feed -->
+    <section class="live-feed-card">
+      <div class="lf-head"><span class="live-dot"></span> Activity Feed</div>
+      <ul class="lf-list">
+        <li *ngFor="let f of liveFeed">{{ f }}</li>
+      </ul>
+    </section>
+
+    <div class="dash-watermark">© Karan Kapoor · Demo Dashboard · karan-portfolio-six-sigma.vercel.app/demo/analytics</div>
+
+  </main>
+
+</div>

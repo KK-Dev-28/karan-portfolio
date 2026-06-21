@@ -142,10 +142,10 @@ export class ServicesComponent {
     },
     {
       label: 'Instagram',
-      value: '@__k__k_28',
+      value: '@k_rn.void',
       icon: '📸',
       color: 'insta',
-      href: 'https://instagram.com/__k__k_28',
+      href: 'https://instagram.com/k_rn.void',
       note: 'DM for quick chat',
     },
     {

@@ -1,0 +1,85 @@
+<div class="cs-wrap" *ngIf="study; else notFound">
+
+  <!-- Hero -->
+  <header class="cs-hero">
+    <div class="cs-hero-bg"></div>
+    <div class="cs-hero-content">
+      <div class="cs-tag">{{ study.tag }}</div>
+      <h1 class="cs-title">{{ study.title }}</h1>
+      <p class="cs-sub">{{ study.subtitle }}</p>
+      <div class="cs-cta-row">
+        <button class="cs-btn primary" (click)="openLive()">Take the Survey ↗</button>
+        <a routerLink="/" class="cs-btn ghost">← Back to Portfolio</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Story -->
+  <section class="cs-section">
+    <div class="cs-label">The Research</div>
+    <div class="cs-body">
+      <p *ngFor="let p of study.story">{{ p }}</p>
+    </div>
+  </section>
+
+  <!-- Highlights -->
+  <section class="cs-section">
+    <div class="cs-highlights">
+      <div class="cs-highlight" *ngFor="let h of study.highlights">
+        <span class="hl-icon">{{ h.icon }}</span>
+        <span class="hl-label">{{ h.label }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Paths -->
+  <section class="cs-section">
+    <div class="cs-label">How It Works</div>
+    <div class="cs-paths">
+      <div class="cs-path-card" *ngFor="let p of study.paths">
+        <div class="pc-icon">{{ p.icon }}</div>
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.desc }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Embed -->
+  <section class="cs-section cs-embed-section">
+    <div class="cs-label">Try It Yourself</div>
+    <p class="cs-embed-note">Takes about 2 minutes — every response helps this research.</p>
+    <div class="cs-embed-frame">
+      <iframe *ngIf="safeUrl" [src]="safeUrl" loading="lazy" title="Local Shopping Research Survey"></iframe>
+    </div>
+    <button class="cs-btn primary cs-embed-cta" (click)="openLive()">Open Full Survey ↗</button>
+  </section>
+
+  <!-- Built with -->
+  <section class="cs-section">
+    <div class="cs-label">Built With</div>
+    <div class="cs-chips">
+      <span class="cs-chip" *ngFor="let t of study.builtWith">{{ t }}</span>
+    </div>
+  </section>
+
+  <!-- Closing CTA -->
+  <section class="cs-closing">
+    <h2>{{ study.ctaTitle }}</h2>
+    <p>{{ study.ctaSubtitle }}</p>
+    <button class="cs-btn primary large" (click)="openLive()">Take the 2-Minute Survey ↗</button>
+  </section>
+
+  <footer class="cs-footer">
+    <span>KK<span class="gold">.</span></span>
+    <a routerLink="/">karan-portfolio-six-sigma.vercel.app</a>
+  </footer>
+
+</div>
+
+<ng-template #notFound>
+  <div class="cs-404">
+    <div class="cs-404-code">404</div>
+    <div>Case study not found</div>
+    <a routerLink="/">← Back to Portfolio</a>
+  </div>
+</ng-template>

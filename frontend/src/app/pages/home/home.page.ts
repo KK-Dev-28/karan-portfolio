@@ -23,6 +23,7 @@ import { DemosComponent } from '../../components/demos/demos.component';
 import { BookingComponent } from '../../components/booking/booking.component';
 import { EstimatorComponent } from '../../components/estimator/estimator.component';
 import { DigitalProductsComponent } from '../../components/digital-products/digital-products.component';
+import { SurveyBannerComponent } from '../../components/survey-banner/survey-banner.component';
 
 @Component({
   selector: 'app-home-page',
@@ -49,6 +50,7 @@ import { DigitalProductsComponent } from '../../components/digital-products/digi
     Cursor3dComponent,
     SourceOfferingComponent,
     DemosComponent,
+    SurveyBannerComponent,
     BookingComponent,
     EstimatorComponent,
     DigitalProductsComponent,
@@ -63,6 +65,7 @@ import { DigitalProductsComponent } from '../../components/digital-products/digi
     <app-skills></app-skills>
     <app-projects></app-projects>
     <app-demos></app-demos>
+    <app-survey-banner></app-survey-banner>
     <app-journal-feed></app-journal-feed>
     <app-experience></app-experience>
     <app-gigs></app-gigs>

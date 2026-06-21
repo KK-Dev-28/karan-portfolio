@@ -17,6 +17,9 @@ import { BlogPostPageComponent } from './pages/blog-post/blog-post.page';
 import { AiToolsPageComponent } from './pages/ai-tools/ai-tools.page';
 import { DeckPageComponent }   from './pages/deck/deck.page';
 import { ReportPageComponent } from './pages/report/report.page';
+import { SitePageComponent } from './pages/site/site.page';
+import { DemoAnalyticsPageComponent } from './pages/demo-analytics/demo-analytics.page';
+import { CaseStudyPageComponent } from './pages/case-study/case-study.page';
 
 const routes = [
   { path: '', component: HomePageComponent },
@@ -32,6 +35,9 @@ const routes = [
   { path: 'ai-tools', component: AiToolsPageComponent },
   { path: 'deck/:slug',   component: DeckPageComponent },
   { path: 'report/:slug', component: ReportPageComponent },
+  { path: 'site/:slug',   component: SitePageComponent },
+  { path: 'demo/analytics', component: DemoAnalyticsPageComponent },
+  { path: 'case-study/:slug', component: CaseStudyPageComponent },
   { path: '**', redirectTo: '' },
 ];
 
