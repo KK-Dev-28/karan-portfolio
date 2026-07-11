@@ -113,6 +113,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer-text 5s linear 1s infinite;
+  filter: drop-shadow(1.5px 0 0 rgba(255,60,80,.18)) drop-shadow(-1.5px 0 0 rgba(0,180,255,.18));
 }
 
 @keyframes shimmer-text {
@@ -262,8 +263,26 @@
   border-radius: 20px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 40px rgba(0,0,0,.3), 0 1px 0 rgba(255,255,255,.06) inset;
-  animation: hero-fade 0.8s 1s both;
+  box-shadow:
+    0 8px 40px rgba(0,0,0,.3),
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 0 0 1px rgba(245,158,11,.06) inset;
+  animation: hero-fade 0.8s 1s both, stats-float 8s 1.5s ease-in-out infinite;
+  transform-style: preserve-3d;
+  transition: box-shadow .3s;
+
+  &:hover {
+    box-shadow:
+      0 20px 60px rgba(0,0,0,.4),
+      0 1px 0 rgba(255,255,255,.08) inset,
+      0 0 0 1px rgba(245,158,11,.15) inset,
+      0 0 40px rgba(245,158,11,.08);
+  }
+}
+
+@keyframes stats-float {
+  0%,100% { transform: translateY(0) translateZ(0); }
+  50%      { transform: translateY(-5px) translateZ(12px); }
 }
 
 .stat { text-align: center; }

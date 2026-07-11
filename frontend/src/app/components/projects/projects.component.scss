@@ -62,7 +62,8 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: transform var(--t-mid), border-color var(--t-mid), box-shadow var(--t-mid);
+  transform-style: preserve-3d;
+  transition: transform .15s ease, border-color var(--t-mid), box-shadow var(--t-mid);
   box-shadow: var(--shadow-card);
 
   &::after {
@@ -77,8 +78,38 @@
   }
   &:hover::after { opacity: 1; }
 
+  &:hover {
+    transform: perspective(900px)
+               rotateX(var(--rx, 0deg))
+               rotateY(var(--ry, 0deg))
+               translateZ(32px)
+               translateY(-6px);
+    box-shadow:
+      0 32px 80px rgba(0,0,0,.5),
+      0 0 0 1px rgba(245,158,11,.35),
+      0 0 48px rgba(245,158,11,.12);
+  }
+
   &.featured, &.wide { grid-column: span 2; }
 }
+
+/* Mouse-tracked highlight */
+.card-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--sx, 50%) var(--sy, 50%),
+    rgba(255,255,255,.11) 0%,
+    transparent 62%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+  z-index: 0;
+}
+
+.bento-card:hover .card-shine { opacity: 1; }
 
 .card-inner {
   position: relative;

@@ -24,6 +24,7 @@ import { BookingComponent } from '../../components/booking/booking.component';
 import { EstimatorComponent } from '../../components/estimator/estimator.component';
 import { DigitalProductsComponent } from '../../components/digital-products/digital-products.component';
 import { SurveyBannerComponent } from '../../components/survey-banner/survey-banner.component';
+import { StoryComponent } from '../../components/story/story.component';
 
 @Component({
   selector: 'app-home-page',
@@ -51,6 +52,7 @@ import { SurveyBannerComponent } from '../../components/survey-banner/survey-ban
     SourceOfferingComponent,
     DemosComponent,
     SurveyBannerComponent,
+    StoryComponent,
     BookingComponent,
     EstimatorComponent,
     DigitalProductsComponent,
@@ -64,6 +66,7 @@ import { SurveyBannerComponent } from '../../components/survey-banner/survey-ban
     <app-services></app-services>
     <app-skills></app-skills>
     <app-projects></app-projects>
+    <app-story></app-story>
     <app-demos></app-demos>
     <app-survey-banner></app-survey-banner>
     <app-journal-feed></app-journal-feed>

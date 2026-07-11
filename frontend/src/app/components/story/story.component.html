@@ -1,0 +1,70 @@
+<section class="story-sec reveal" id="story">
+
+  <!-- Immersive background -->
+  <div class="story-bg">
+    <div class="grid-floor"></div>
+    <div class="story-stars"></div>
+    <div class="s-orb s-orb-a"></div>
+    <div class="s-orb s-orb-b"></div>
+    <div class="s-orb s-orb-c"></div>
+  </div>
+
+  <div class="container">
+
+    <div class="story-head">
+      <span class="sec-label">The Journey</span>
+      <h2 class="sec-title">How I got <span class="italic">here</span></h2>
+      <p class="story-sub">Seven chapters. One direction. Forward.</p>
+    </div>
+
+    <div class="s-timeline">
+      <div class="t-rail">
+        <div class="rail-glow"></div>
+      </div>
+
+      <div class="chapter"
+           *ngFor="let ch of chapters; let i = index"
+           [class.even]="i % 2 === 1">
+
+        <!-- Ghost year floating in bg -->
+        <div class="ghost-year" aria-hidden="true">{{ ch.year }}</div>
+
+        <!-- Timeline node -->
+        <div class="t-node" [style.--node-color]="ch.accent">
+          <span class="node-icon">{{ ch.icon }}</span>
+          <div class="node-pulse"></div>
+          <div class="node-pulse node-pulse-2"></div>
+        </div>
+
+        <!-- 3D Card -->
+        <div class="chapter-card"
+             [style.--card-accent]="ch.accent">
+          <div class="card-shine"></div>
+          <div class="card-holo"></div>
+          <div class="card-content">
+            <div class="year-pill">{{ ch.year }}</div>
+            <h3 class="ch-title">{{ ch.title }}</h3>
+            <p class="ch-body">{{ ch.body }}</p>
+            <div class="ch-tags">
+              <span class="ctag" *ngFor="let t of ch.tags">{{ t }}</span>
+            </div>
+          </div>
+          <div class="card-edge"></div>
+          <div class="card-corner-glow"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CTA at bottom -->
+    <div class="story-cta">
+      <a href="#contact" class="btn-story-cta" onclick="document.querySelector('#contact')?.scrollIntoView({behavior:'smooth'});return false;">
+        Let's write the next chapter together
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>
