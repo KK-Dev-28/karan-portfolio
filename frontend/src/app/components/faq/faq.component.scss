@@ -30,8 +30,14 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color var(--t-mid), box-shadow var(--t-mid);
+  transition: border-color var(--t-mid), box-shadow var(--t-mid), transform var(--t-mid);
   box-shadow: var(--shadow-card);
+
+  &:hover:not(.open) {
+    border-color: rgba(245,158,11,.2);
+    transform: perspective(900px) translateZ(8px);
+    box-shadow: 0 10px 30px rgba(2,2,14,.4);
+  }
 
   &.open {
     border-color: rgba(245,158,11,.35);

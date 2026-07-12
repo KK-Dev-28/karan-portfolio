@@ -398,7 +398,7 @@
   text-decoration: none;
   transition: all var(--t-mid);
 
-  &:hover { transform: translateY(-3px); }
+  &:hover { transform: perspective(800px) translateZ(14px) translateY(-3px); border-color: rgba(245,158,11,.35); box-shadow: 0 14px 36px rgba(2,2,14,.4); }
 }
 
 .ch-icon { font-size: 1.6rem; flex-shrink: 0; }

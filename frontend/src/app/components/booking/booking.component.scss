@@ -91,7 +91,7 @@
   box-shadow: var(--shadow-card);
 
   &:hover {
-    transform: translateY(-6px);
+    transform: perspective(1000px) translateZ(22px) translateY(-6px);
     border-color: rgba(245,158,11,.4);
     box-shadow: var(--shadow-glow);
   }

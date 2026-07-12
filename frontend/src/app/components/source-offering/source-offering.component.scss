@@ -210,7 +210,7 @@
   gap: .75rem;
   transition: all var(--t-mid);
 
-  &:hover { transform: translateY(-3px); border-color: rgba(245, 158, 11, 0.35); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25); }
+  &:hover { transform: perspective(1000px) translateZ(16px) translateY(-3px); border-color: rgba(245, 158, 11, 0.35); box-shadow: 0 20px 48px rgba(2, 2, 14, 0.45), 0 0 24px rgba(245,158,11,.08); }
 
   &.featured {
     border-color: rgba(245, 158, 11, 0.4);

@@ -38,7 +38,7 @@
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  transition: border-color var(--t-fast);
+  transition: border-color var(--t-fast), transform var(--t-mid), box-shadow var(--t-mid);
 
   &::before {
     content: '';
@@ -53,7 +53,7 @@
     box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
   }
 
-  &:hover { border-color: rgba(245, 158, 11, 0.3); }
+  &:hover { border-color: rgba(245, 158, 11, 0.3); transform: perspective(800px) translateZ(12px); box-shadow: 0 14px 36px rgba(2,2,14,.4); }
 }
 
 .meta {

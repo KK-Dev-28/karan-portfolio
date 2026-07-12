@@ -86,7 +86,7 @@
   transition: all var(--t-mid);
 
   &:hover {
-    transform: translateY(-4px);
+    transform: perspective(1000px) translateZ(18px) translateY(-4px);
     border-color: rgba(245, 158, 11, 0.4);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   }
