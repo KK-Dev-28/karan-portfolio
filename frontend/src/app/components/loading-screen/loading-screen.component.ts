@@ -15,13 +15,13 @@ export class LoadingScreenComponent implements OnInit {
   hiding = false;
 
   ngOnInit() {
-    // Simulate brief loading time, then fade out
+    // Brief brand moment only — never make visitors wait on fake loading
     setTimeout(() => {
       this.hiding = true;
       setTimeout(() => {
         this.visible = false;
         this.done.emit();
-      }, 700);
-    }, 1800);
+      }, 500);
+    }, 900);
   }
 }

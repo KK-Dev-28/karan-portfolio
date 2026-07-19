@@ -64,8 +64,19 @@ export class DemosComponent implements OnInit {
 
   ngOnInit() {
     this.demosService.getAll().subscribe({
-      next: d => { this.demos = d; this.loading = false; },
+      next: d => { this.demos = d; this.loading = false; this.verifyThumbnails(); },
       error: () => { this.loading = false; },
+    });
+  }
+
+  /* Dead thumbnail URLs render as an empty dark card (CSS background-image
+     has no error event) — preload each and fall back to the placeholder icon */
+  private verifyThumbnails() {
+    this.demos.forEach(demo => {
+      if (!demo.thumbnailUrl) return;
+      const img = new Image();
+      img.onerror = () => { demo.thumbnailUrl = undefined; };
+      img.src = demo.thumbnailUrl;
     });
   }
 

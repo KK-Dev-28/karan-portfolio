@@ -60,6 +60,7 @@ import { StoryComponent } from '../../components/story/story.component';
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
     <app-cursor-3d></app-cursor-3d>
+    <div class="global-stars" aria-hidden="true"></div>
     <app-navbar></app-navbar>
     <app-hero></app-hero>
     <app-marquee></app-marquee>

@@ -47,12 +47,18 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const colors = ['rgba(245,158,11,', 'rgba(251,191,36,', 'rgba(217,119,6,', 'rgba(139,92,246,', 'rgba(59,130,246,'];
 
+    // Render at native device resolution (capped at 2x) so particles stay crisp on HiDPI
+    let vw = 0, vh = 0;
     const resize = () => {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-      this.particles = Array.from({ length: 280 }, () => ({
-        x:       Math.random() * canvas.width,
-        y:       Math.random() * canvas.height,
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      vw = window.innerWidth;
+      vh = window.innerHeight;
+      canvas.width  = vw * dpr;
+      canvas.height = vh * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      this.particles = Array.from({ length: vw < 768 ? 110 : 280 }, () => ({
+        x:       Math.random() * vw,
+        y:       Math.random() * vh,
         vx:      (Math.random() - 0.5) * 0.4,
         vy:      -(Math.random() * 0.5 + 0.1),
         r:       Math.random() * 2 + 0.4,
@@ -64,15 +70,15 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     window.addEventListener('resize', resize);
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, vw, vh);
 
       // Central aurora glow
-      const grd = ctx.createRadialGradient(canvas.width / 2, canvas.height * 0.45, 0, canvas.width / 2, canvas.height * 0.45, canvas.width * 0.55);
+      const grd = ctx.createRadialGradient(vw / 2, vh * 0.45, 0, vw / 2, vh * 0.45, vw * 0.55);
       grd.addColorStop(0, 'rgba(245,158,11,0.06)');
       grd.addColorStop(0.5, 'rgba(139,92,246,0.03)');
       grd.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, vw, vh);
 
       this.particles.forEach(p => {
         // Mouse attraction
@@ -93,9 +99,9 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
+        if (p.y < -10) { p.y = vh + 10; p.x = Math.random() * vw; }
+        if (p.x < -10) p.x = vw + 10;
+        if (p.x > vw + 10) p.x = -10;
 
         // Glow
         const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);

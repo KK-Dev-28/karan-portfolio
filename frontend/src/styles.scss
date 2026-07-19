@@ -347,3 +347,118 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
   50%     { box-shadow: 0 0 28px var(--accent), 0 0 0 1px rgba(245,158,11,.6); }
 }
 .neon-border { animation: neon-pulse 2.5s ease-in-out infinite; }
+
+/* ─────────────────────────────────────────────────────
+   RHYTHM & MOTION PASS
+───────────────────────────────────────────────────── */
+
+/* Consistent, tighter vertical rhythm — sections were drowning in padding.
+   Component styles win on specificity, hence the !important. */
+section[class*="-sec"]  { padding: 5.5rem 0 !important; }
+section.story-sec       { padding: 7rem 0 8rem !important; }
+
+/* Skip rendering off-screen sections entirely — massive scroll/initial-paint win */
+section[class*="-sec"] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+/* Global drifting starfield (sits above section backgrounds, below content glows) */
+.global-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background-repeat: repeat;
+  }
+
+  &::before {
+    background-image:
+      radial-gradient(1px 1px at 20px 30px,  rgba(255,255,255,.5), transparent 100%),
+      radial-gradient(1px 1px at 140px 80px, rgba(255,255,255,.35), transparent 100%),
+      radial-gradient(1.5px 1.5px at 240px 190px, rgba(245,158,11,.45), transparent 100%),
+      radial-gradient(1px 1px at 330px 120px, rgba(255,255,255,.3), transparent 100%);
+    background-size: 380px 260px;
+    opacity: .35;
+    animation: stars-drift-a 160s linear infinite;
+  }
+
+  &::after {
+    background-image:
+      radial-gradient(1px 1px at 60px 150px,  rgba(124,58,237,.5), transparent 100%),
+      radial-gradient(1px 1px at 200px 40px,  rgba(255,255,255,.28), transparent 100%),
+      radial-gradient(1.5px 1.5px at 300px 220px, rgba(6,182,212,.4), transparent 100%);
+    background-size: 460px 320px;
+    opacity: .28;
+    animation: stars-drift-b 220s linear infinite;
+  }
+}
+
+@keyframes stars-drift-a { to { transform: translate3d(-380px, -260px, 0); } }
+@keyframes stars-drift-b { to { transform: translate3d(460px, -320px, 0); } }
+
+body.light-theme .global-stars { opacity: .25; }
+
+/* Staggered card entrances — cards cascade in instead of appearing at once.
+   Uses animation (not transition) so hover transforms take over cleanly after. */
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(30px) scale(.97); }
+}
+
+.reveal.visible .bento-card,
+.reveal.visible .tech-tile,
+.reveal.visible .chapter {
+  animation: card-in .65s cubic-bezier(.16,1,.3,1) backwards;
+}
+
+@for $i from 1 through 12 {
+  .reveal.visible .bento-card:nth-child(#{$i}),
+  .reveal.visible .tech-tile:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 0.06}s;
+  }
+  .reveal.visible .chapter:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 0.12}s;
+  }
+}
+
+/* Scroll-driven cinematics — titles rise in 3D, ghost years parallax.
+   Progressive enhancement: browsers without scroll timelines ignore this. */
+@supports (animation-timeline: view()) {
+  .sec-title {
+    animation: title-rise both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 70%;
+  }
+
+  .ghost-year {
+    animation: ghost-parallax linear both !important;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+}
+
+@keyframes title-rise {
+  from { opacity: 0; transform: perspective(700px) translateY(56px) rotateX(14deg); }
+  to   { opacity: 1; transform: perspective(700px) translateY(0) rotateX(0deg); }
+}
+
+@keyframes ghost-parallax {
+  from { transform: translateY(90px); }
+  to   { transform: translateY(-90px); }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .global-stars, body::after { display: none; }
+  .reveal { opacity: 1; transform: none; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
