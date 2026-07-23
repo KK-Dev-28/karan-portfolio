@@ -5,7 +5,7 @@
 
 ## 🏢 Enterprise Status (Now Included)
 
-- ✅ Stripe Checkout + webhook-based payment tracking
+- ✅ Razorpay Checkout + webhook-based payment tracking
 - ✅ Newsletter subscription + admin visibility
 - ✅ Security middleware (`helmet`, `compression`)
 - ✅ Health endpoint: `/api/health`
@@ -227,7 +227,7 @@ Open your browser at: **http://localhost:4200**
 | DELETE | `/api/updates/:id` | Admin JWT | Remove entry |
 | GET | `/api/payments/insights/catalog` | Public | Subscription pricing for visitor logs |
 | POST | `/api/payments/insights/checkout` | Public | Start paid logs access checkout |
-| POST | `/api/payments/insights/activate` | Public | Exchange Stripe session for access token |
+| POST | `/api/payments/insights/activate` | Public | Exchange Razorpay order for access token |
 | GET | `/api/visitors/premium-analytics` | Paid Token | Access visitor analytics with subscription token |
 
 **Swagger UI:** http://localhost:3000/api/docs

@@ -7,7 +7,7 @@ This guide makes your portfolio production-ready with CI/CD, domain, SSL, and op
 - Frontend: Vercel (`frontend`)
 - Backend API: Railway (`backend`)
 - Database: Railway PostgreSQL
-- Payments: Stripe Checkout + Webhooks
+- Payments: Razorpay Checkout + Webhooks
 - DNS + domain: Vercel Domains (or external registrar)
 
 ## 2) Buy Domain on Vercel + DNS Setup
@@ -67,24 +67,24 @@ Set these env vars in Railway:
 - `ADMIN_PASSWORD` (strong password)
 - `PORT=3000`
 - `FRONTEND_URL=https://www.yourdomain.com`
-- `STRIPE_SECRET_KEY`
-- `STRIPE_WEBHOOK_SECRET`
-- Optional: `STRIPE_CURRENCY`, `STRIPE_STARTER_AMOUNT`, `STRIPE_STANDARD_AMOUNT`, `STRIPE_ENTERPRISE_AMOUNT`
+- `RAZORPAY_KEY_ID`
+- `RAZORPAY_KEY_SECRET`
+- `RAZORPAY_WEBHOOK_SECRET`
+- Optional: `RAZORPAY_CURRENCY`, `RAZORPAY_STARTER_AMOUNT`, `RAZORPAY_STANDARD_AMOUNT`, `RAZORPAY_ENTERPRISE_AMOUNT`
 
 Notes:
 - `synchronize` is now auto-disabled in production (`NODE_ENV=production`).
 - API health endpoint: `GET /api/health`
 - Helmet + compression are enabled.
 
-## 6) Stripe Production Setup
+## 6) Razorpay Production Setup
 
-1. Switch Stripe keys from test to live in Railway.
-2. Create production webhook endpoint:
+1. Switch Razorpay keys from test to live in Railway (`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`).
+2. Create production webhook endpoint in the Razorpay dashboard:
    - `https://api.yourdomain.com/api/payments/webhook`
 3. Listen to:
-   - `checkout.session.completed`
-   - `checkout.session.expired`
-4. Put webhook signing secret in `STRIPE_WEBHOOK_SECRET`.
+   - `payment.captured`
+4. Put the webhook signing secret in `RAZORPAY_WEBHOOK_SECRET` — verified via `validateWebhookSignature` against the `x-razorpay-signature` header.
 
 ## 6.1) Paid Visitor Logs Subscription
 
@@ -94,7 +94,7 @@ This project includes subscription-gated logs access:
 - Premium analytics endpoint: `GET /api/visitors/premium-analytics` (Bearer paid token)
 
 Set env vars:
-- `STRIPE_INSIGHTS_AMOUNT` (default `9900` = 99.00)
+- `RAZORPAY_INSIGHTS_AMOUNT` (amount in paise, e.g. `49900` = ₹499.00)
 - `INSIGHTS_ACCESS_DAYS` (default `30`)
 
 ## 7) Frontend Production Setup
@@ -110,7 +110,7 @@ Set env vars:
 - Open homepage and check all sections.
 - Submit contact form.
 - Subscribe newsletter.
-- Complete Stripe test/live checkout.
+- Complete Razorpay test/live checkout.
 - Verify Admin Dashboard tabs:
   - Visitors, Messages, Analytics, Payments, Newsletter, Journal
 - Verify premium flow:
@@ -119,7 +119,7 @@ Set env vars:
   - Activate token
   - Confirm paid analytics load
 - Verify `https://api.yourdomain.com/api/health`.
-- Verify webhook events are received in Stripe dashboard.
+- Verify webhook events are received in Razorpay dashboard.
 
 ## 9) Enterprise Hardening Next Steps
 
@@ -135,7 +135,7 @@ Set env vars:
 Primary remote for this workspace: `https://github.com/KK-Dev-28/karan-portfolio.git`
 
 - Keep the repository **private** until you intentionally publish or sell a snapshot.
-- Grant access via **GitHub → Settings → Collaborators** (or org team) — never commit personal Stripe/DB passwords into git.
+- Grant access via **GitHub → Settings → Collaborators** (or org team) — never commit personal Razorpay/DB credentials into git.
 - Branch flow: feature branches → **`dev`** → PR → **`main`** (protect `main` with required PR + CI).
 
 ## 11) Python resume analyzer (optional microservice)
@@ -172,14 +172,14 @@ If `RESUME_SERVICE_URL` is unset, the API returns **503** with a clear message (
 
 ## 12) CQRS in the Nest API
 
-Writes for **payments** (checkout + Stripe webhook) and **portfolio journal** (create / patch / delete), plus the public **list published updates** read path, go through **`@nestjs/cqrs`** command/query handlers that delegate to the existing services. This keeps room for domain events and sagas later without rewriting business logic.
+Writes for **payments** (checkout + Razorpay webhook) and **portfolio journal** (create / patch / delete), plus the public **list published updates** read path, go through **`@nestjs/cqrs`** command/query handlers that delegate to the existing services. This keeps room for domain events and sagas later without rewriting business logic.
 
 ## 13) Buyer / licensee setup (no secrets in git)
 
 Whoever receives a **source license** must still:
 
 1. Create their own **PostgreSQL** (Railway/Neon/etc.) and set `DB_*` on the backend.
-2. Create **Stripe** account → API keys → webhook to `https://<api-host>/api/payments/webhook` with the same events as §6.
+2. Create **Razorpay** account → API keys → webhook to `https://<api-host>/api/payments/webhook` with the same events as §6.
 3. Deploy **backend** (Railway) and **frontend** (Vercel); set `FRONTEND_URL`, `apiUrl` in `environment.prod.ts`, `JWT_SECRET`, `ADMIN_PASSWORD`.
 4. Optionally deploy **`services/resume-analyzer`** and set `RESUME_SERVICE_URL`.
 
@@ -198,7 +198,7 @@ Deliver **`.env.example`** and this document as the handoff; rotate all secrets 
 ### B) Nest API (Railway — same project)
 
 1. **New Service** → Deploy from GitHub → pick this repo → set **Root Directory** to **`backend`**.
-2. Generate once: strong `JWT_SECRET`, `ADMIN_PASSWORD`; paste **Stripe** keys and webhook secret.
+2. Generate once: strong `JWT_SECRET`, `ADMIN_PASSWORD`; paste **Razorpay** keys and webhook secret.
 3. Required env (minimum):
 
 | Variable | Purpose |
@@ -209,10 +209,10 @@ Deliver **`.env.example`** and this document as the handoff; rotate all secrets 
 | `FRONTEND_URL` | `https://your-frontend.vercel.app` or custom domain (**required** — CORS) |
 | `DB_*` | From Postgres service |
 | `JWT_SECRET`, `ADMIN_PASSWORD` | Auth |
-| `STRIPE_*` | Payments (optional until you enable checkout live) |
+| `RAZORPAY_*` | Payments (optional until you enable checkout live) |
 
 4. Deploy → copy public URL e.g. `https://backend-production-xxxx.up.railway.app`.
-5. In Stripe Dashboard → **Webhooks** → endpoint `https://<your-backend-host>/api/payments/webhook` with events from §6.
+5. In Razorpay Dashboard → **Webhooks** → endpoint `https://<your-backend-host>/api/payments/webhook` with events from §6.
 6. **Swagger**: disabled in production by default. Temporary docs: `ENABLE_SWAGGER=true` (disable again after debugging).
 
 ### C) Frontend (Vercel)
@@ -242,7 +242,7 @@ Deliver **`.env.example`** and this document as the handoff; rotate all secrets 
 | CORS | **Production**: only `FRONTEND_URL` + `ADDITIONAL_CORS_ORIGINS`. Fails startup if unset (fail-closed). **Dev**: localhost Angular + `FRONTEND_URL`. |
 | DB | Schema sync **`synchronize` off** when `NODE_ENV=production`; use migrations for evolving schema in serious deployments |
 | Admin | JWT after password; bcrypt not used for password (single admin — rotate `ADMIN_PASSWORD`; consider hashing in a future iteration) |
-| Payments | Stripe signature verification on webhooks |
+| Payments | Razorpay signature verification on webhooks (`x-razorpay-signature`) |
 | Frontend | Security headers in `frontend/vercel.json` (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, DNS prefetch control) |
 | Docs | Swagger off in prod unless `ENABLE_SWAGGER=true` |
 | Secrets | Never commit `.env`; use Railway/Vercel/GitHub Secrets |
