@@ -12,7 +12,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(245,158,11,.06), transparent);
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(var(--accent-rgb),.06), transparent);
     pointer-events: none;
   }
 
@@ -45,7 +45,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 30px rgba(245,158,11,.25));
+  filter: drop-shadow(0 0 30px rgba(var(--accent-rgb),.25));
 }
 
 .loader-bar {

@@ -34,14 +34,14 @@
   box-shadow: var(--shadow-card);
 
   &:hover:not(.open) {
-    border-color: rgba(245,158,11,.2);
+    border-color: rgba(var(--accent-rgb),.2);
     transform: perspective(900px) translateZ(8px);
     box-shadow: 0 10px 30px rgba(2,2,14,.4);
   }
 
   &.open {
-    border-color: rgba(245,158,11,.35);
-    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(245,158,11,.08);
+    border-color: rgba(var(--accent-rgb),.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,.25), 0 0 0 1px rgba(var(--accent-rgb),.08);
 
     .faq-icon { transform: rotate(45deg); color: var(--accent); }
     .faq-q { color: var(--text); }

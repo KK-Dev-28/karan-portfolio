@@ -64,7 +64,7 @@
 /* ── Featured cards (3-col) ──────────────────────────── */
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-3), 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -82,7 +82,7 @@
 
 .more-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-4), 1fr);
   gap: 1rem;
   margin-bottom: 5rem;
 }
@@ -105,7 +105,7 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, rgba(245,158,11,.7), rgba(245,158,11,.2), transparent 75%);
+    background: linear-gradient(90deg, rgba(var(--accent-rgb),.7), rgba(var(--accent-rgb),.2), transparent 75%);
     opacity: 0;
     transition: opacity var(--t-mid);
   }
@@ -113,7 +113,7 @@
 
   &.featured {
     padding: 2rem;
-    border-color: rgba(245, 158, 11, 0.18);
+    border-color: rgba(var(--accent-rgb), 0.18);
     &::after { opacity: 0.6; }
   }
 
@@ -141,13 +141,13 @@
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(245,158,11,.06));
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),.15), rgba(var(--accent-rgb),.06));
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
-  box-shadow: 0 0 20px rgba(245,158,11,.08);
+  box-shadow: 0 0 20px rgba(var(--accent-rgb),.08);
 }
 
 .svc-icon { font-size: 1.6rem; }
@@ -320,14 +320,14 @@
   position: relative;
   transition: all var(--t-mid);
 
-  &:hover { border-color: rgba(245, 158, 11, 0.35); }
+  &:hover { border-color: rgba(var(--accent-rgb), 0.35); }
 }
 
 .step-num {
   font-family: var(--font-head);
   font-size: 2rem;
   font-weight: 800;
-  color: rgba(245, 158, 11, 0.15);
+  color: rgba(var(--accent-rgb), 0.15);
   line-height: 1;
   flex-shrink: 0;
 }
@@ -383,7 +383,7 @@
 
 .channels-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-3), 1fr);
   gap: 1rem;
 }
 
@@ -398,7 +398,7 @@
   text-decoration: none;
   transition: all var(--t-mid);
 
-  &:hover { transform: perspective(800px) translateZ(14px) translateY(-3px); border-color: rgba(245,158,11,.35); box-shadow: 0 14px 36px rgba(2,2,14,.4); }
+  &:hover { transform: perspective(800px) translateZ(14px) translateY(-3px); border-color: rgba(var(--accent-rgb),.35); box-shadow: 0 14px 36px rgba(2,2,14,.4); }
 }
 
 .ch-icon { font-size: 1.6rem; flex-shrink: 0; }
@@ -428,7 +428,7 @@
 .ch-teams   { border-color: rgba(100, 100, 255, 0.2); .ch-label { color: #6264a7; } .ch-value { color: var(--text); } .ch-note { color: rgba(100, 100, 255, 0.7); } &:hover { border-color: rgba(100, 100, 255, 0.5); background: rgba(100, 100, 255, 0.04); } }
 .ch-insta   { border-color: rgba(225, 48, 108, 0.2); .ch-label { color: #e1306c; } .ch-value { color: var(--text-muted); } .ch-note { color: rgba(225, 48, 108, 0.7); } &:hover { border-color: rgba(225, 48, 108, 0.5); background: rgba(225, 48, 108, 0.04); } }
 .ch-fb      { border-color: rgba(24, 119, 242, 0.2);  .ch-label { color: #1877f2; } .ch-value { color: var(--text-muted); } .ch-note { color: rgba(24, 119, 242, 0.7); } &:hover { border-color: rgba(24, 119, 242, 0.5); background: rgba(24, 119, 242, 0.04); } }
-.ch-gh      { border-color: var(--border); .ch-label { color: var(--text); } .ch-value { color: var(--text-muted); } .ch-note { color: var(--text-dim); } &:hover { border-color: var(--accent); background: rgba(245, 158, 11, 0.04); .ch-label { color: var(--accent); } } }
+.ch-gh      { border-color: var(--border); .ch-label { color: var(--text); } .ch-value { color: var(--text-muted); } .ch-note { color: var(--text-dim); } &:hover { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.04); .ch-label { color: var(--accent); } } }
 .ch-li      { border-color: rgba(10, 102, 194, 0.2); .ch-label { color: #0a66c2; } .ch-value { color: var(--text-muted); } .ch-note { color: rgba(10, 102, 194, 0.7); } &:hover { border-color: rgba(10, 102, 194, 0.5); background: rgba(10, 102, 194, 0.04); } }
 
 /* ── Responsive ──────────────────────────────────────── */

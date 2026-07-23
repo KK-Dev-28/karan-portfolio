@@ -10,7 +10,7 @@
   top: -120px; left: 50%;
   transform: translateX(-50%);
   width: 900px; height: 600px;
-  background: radial-gradient(ellipse, rgba(245,158,11,.05) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(var(--accent-rgb),.05) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -72,7 +72,7 @@
 /* ── Cards grid ──────────────────────────────────── */
 .sessions-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-3), 1fr);
   gap: 1.5rem;
   align-items: start;
 }
@@ -92,13 +92,13 @@
 
   &:hover {
     transform: perspective(1000px) translateZ(22px) translateY(-6px);
-    border-color: rgba(245,158,11,.4);
+    border-color: rgba(var(--accent-rgb),.4);
     box-shadow: var(--shadow-glow);
   }
 
   &.featured {
-    border-color: rgba(245,158,11,.3);
-    background: linear-gradient(160deg, rgba(245,158,11,.07) 0%, var(--card) 65%);
+    border-color: rgba(var(--accent-rgb),.3);
+    background: linear-gradient(160deg, rgba(var(--accent-rgb),.07) 0%, var(--card) 65%);
     margin-top: -12px;
     padding-top: 2.75rem;
 
@@ -112,7 +112,7 @@
     }
 
     &:hover {
-      box-shadow: 0 0 0 1px rgba(245,158,11,.25), 0 0 50px rgba(245,158,11,.12), 0 28px 60px rgba(0,0,0,.4);
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),.25), 0 0 50px rgba(var(--accent-rgb),.12), 0 28px 60px rgba(0,0,0,.4);
     }
   }
 }
@@ -143,14 +143,14 @@
 .sc-icon-wrap {
   width: 52px; height: 52px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(245,158,11,.06));
-  border: 1px solid rgba(245,158,11,.22);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),.15), rgba(var(--accent-rgb),.06));
+  border: 1px solid rgba(var(--accent-rgb),.22);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   font-size: 1.5rem;
-  box-shadow: 0 0 20px rgba(245,158,11,.07);
+  box-shadow: 0 0 20px rgba(var(--accent-rgb),.07);
 }
 
 .sc-meta { display: flex; flex-direction: column; gap: .2rem; }
@@ -222,8 +222,8 @@
 .sc-check {
   width: 17px; height: 17px;
   border-radius: 50%;
-  background: rgba(245,158,11,.12);
-  border: 1px solid rgba(245,158,11,.2);
+  background: rgba(var(--accent-rgb),.12);
+  border: 1px solid rgba(var(--accent-rgb),.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -280,8 +280,8 @@
   gap: 1.1rem;
   margin-top: 3rem;
   padding: 1.25rem 1.75rem;
-  background: rgba(245,158,11,.03);
-  border: 1px solid rgba(245,158,11,.12);
+  background: rgba(var(--accent-rgb),.03);
+  border: 1px solid rgba(var(--accent-rgb),.12);
   border-radius: var(--radius);
 
   .note-icon { font-size: 1.3rem; flex-shrink: 0; }

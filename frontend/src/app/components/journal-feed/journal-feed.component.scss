@@ -50,10 +50,10 @@
     border-radius: 50%;
     background: var(--accent);
     border: 2px solid var(--bg-2);
-    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.4);
   }
 
-  &:hover { border-color: rgba(245, 158, 11, 0.3); transform: perspective(800px) translateZ(12px); box-shadow: 0 14px 36px rgba(2,2,14,.4); }
+  &:hover { border-color: rgba(var(--accent-rgb), 0.3); transform: perspective(800px) translateZ(12px); box-shadow: 0 14px 36px rgba(2,2,14,.4); }
 }
 
 .meta {
@@ -70,10 +70,10 @@
   letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--accent);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
   border-radius: 999px;
   padding: .18rem .55rem;
-  background: rgba(245, 158, 11, 0.08);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 time {

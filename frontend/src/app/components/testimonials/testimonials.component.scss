@@ -5,7 +5,7 @@
 
 .test-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-3), 1fr);
   gap: 1.5rem;
   margin-top: 3.5rem;
 }
@@ -47,7 +47,7 @@
 
   &:hover {
     transform: perspective(1000px) translateZ(20px) translateY(-6px);
-    border-color: rgba(245,158,11,.3);
+    border-color: rgba(var(--accent-rgb),.3);
     box-shadow: 0 20px 48px rgba(0,0,0,.3), var(--shadow-glow);
 
     &::after { opacity: 1; }
@@ -86,8 +86,8 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(var(--accent-rgb), 0.15);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
   display: flex;
   align-items: center;
   justify-content: center;

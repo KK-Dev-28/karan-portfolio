@@ -6,7 +6,7 @@
 
 .dp-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-3), 1fr);
   gap: 1.5rem;
   align-items: start;
 }
@@ -24,14 +24,14 @@
 
   &:hover {
     transform: perspective(1000px) translateZ(18px) translateY(-5px);
-    border-color: rgba(245,158,11,.35);
+    border-color: rgba(var(--accent-rgb),.35);
     box-shadow: 0 20px 50px rgba(0,0,0,.3);
   }
 
   &.dp-featured {
-    border-color: rgba(245,158,11,.5);
-    background: linear-gradient(135deg, var(--card) 0%, rgba(245,158,11,.04) 100%);
-    box-shadow: 0 0 0 1px rgba(245,158,11,.2), 0 20px 60px rgba(0,0,0,.3);
+    border-color: rgba(var(--accent-rgb),.5);
+    background: linear-gradient(135deg, var(--card) 0%, rgba(var(--accent-rgb),.04) 100%);
+    box-shadow: 0 0 0 1px rgba(var(--accent-rgb),.2), 0 20px 60px rgba(0,0,0,.3);
   }
 }
 

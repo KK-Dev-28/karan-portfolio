@@ -36,7 +36,7 @@
   align-items: baseline;
   gap: .4rem;
 
-  span { color: #f59e0b; }
+  span { color: var(--accent); }
   small { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 700; color: #666; letter-spacing: .12em; text-transform: uppercase; }
 }
 
@@ -52,8 +52,8 @@
   &:hover { background: rgba(255,255,255,.04); color: #ccc; }
 
   &.active {
-    background: rgba(245,158,11,.1);
-    color: #f59e0b;
+    background: rgba(var(--accent-rgb),.1);
+    color: var(--accent);
   }
 }
 
@@ -69,7 +69,7 @@
 }
 .dsf-row { font-weight: 700; color: #ccc; }
 .dsf-sub { color: #666; margin-top: .15rem; margin-bottom: .85rem; }
-.dsf-back { color: #f59e0b; text-decoration: none; font-weight: 600; &:hover { text-decoration: underline; } }
+.dsf-back { color: var(--accent); text-decoration: none; font-weight: 600; &:hover { text-decoration: underline; } }
 
 /* ── Main ── */
 .dash-main {
@@ -108,7 +108,7 @@
 .topbar-avatar {
   width: 38px; height: 38px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #0a0a0f; font-weight: 800; font-size: .85rem;
 }
 
@@ -122,7 +122,7 @@
   background: #131319; border: 1px solid rgba(255,255,255,.06); border-radius: 14px;
   padding: 1.4rem;
   transition: border-color .2s;
-  &:hover { border-color: rgba(245,158,11,.3); }
+  &:hover { border-color: rgba(var(--accent-rgb),.3); }
 }
 .kpi-label { font-size: .8rem; color: #888; margin-bottom: .6rem; }
 .kpi-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.85rem; font-weight: 800; margin-bottom: .5rem; transition: color .3s; }
@@ -146,8 +146,8 @@
   h3 { font-size: 1rem; font-weight: 700; margin: 0; }
 }
 .chart-tag {
-  font-size: .72rem; font-weight: 700; color: #f59e0b;
-  background: rgba(245,158,11,.1); border-radius: 999px; padding: .25rem .7rem;
+  font-size: .72rem; font-weight: 700; color: var(--accent);
+  background: rgba(var(--accent-rgb),.1); border-radius: 999px; padding: .25rem .7rem;
 }
 
 /* ── Revenue line chart ── */
@@ -213,7 +213,7 @@
 .status-badge {
   font-size: .7rem; font-weight: 700; padding: .25rem .65rem; border-radius: 999px;
   &.completed { background: rgba(34,197,94,.12); color: #22c55e; }
-  &.pending   { background: rgba(245,158,11,.12); color: #f59e0b; }
+  &.pending   { background: rgba(var(--accent-rgb),.12); color: var(--accent); }
   &.failed    { background: rgba(239,68,68,.12); color: #ef4444; }
 }
 
@@ -229,7 +229,7 @@
 .lf-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .55rem; }
 .lf-list li {
   font-size: .8rem; color: #999; padding-left: 1rem; position: relative;
-  &::before { content: '•'; position: absolute; left: 0; color: #f59e0b; }
+  &::before { content: '•'; position: absolute; left: 0; color: var(--accent); }
 }
 
 .dash-watermark {

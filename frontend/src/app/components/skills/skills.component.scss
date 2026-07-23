@@ -10,6 +10,13 @@
   align-items: start;
 }
 
+/* Dossier's 880px container is too narrow for a comfortable 1fr/1fr split —
+   stack it, consistent with that layout's single-column editorial thesis. */
+html[data-layout="dossier"] .skills-layout {
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
 /* ── Left column ─────────────────────────────────── */
 .skills-sub {
   font-size: .85rem;
@@ -117,14 +124,14 @@
   cursor: pointer;
   transition: all var(--t-fast);
 
-  &:hover  { color: var(--text); border-color: rgba(245,158,11,.35); }
-  &.active { background: rgba(245,158,11,.12); border-color: var(--accent); color: var(--accent); }
+  &:hover  { color: var(--text); border-color: rgba(var(--accent-rgb),.35); }
+  &.active { background: rgba(var(--accent-rgb),.12); border-color: var(--accent); color: var(--accent); }
 }
 
 /* Icon grid */
 .tech-icon-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-4), 1fr);
   gap: .75rem;
 }
 
@@ -141,10 +148,10 @@
   transition: all var(--t-fast);
 
   &:hover {
-    border-color: rgba(245,158,11,.45);
-    background: rgba(245,158,11,.04);
+    border-color: rgba(var(--accent-rgb),.45);
+    background: rgba(var(--accent-rgb),.04);
     transform: perspective(600px) translateZ(16px) rotateX(5deg) translateY(-4px);
-    box-shadow: 0 14px 36px rgba(2,2,14,.45), 0 0 20px rgba(245,158,11,.08);
+    box-shadow: 0 14px 36px rgba(2,2,14,.45), 0 0 20px rgba(var(--accent-rgb),.08);
   }
 }
 
@@ -166,8 +173,8 @@
 .tt-fallback {
   width: 32px;
   height: 32px;
-  background: rgba(245,158,11,.12);
-  border: 1px solid rgba(245,158,11,.25);
+  background: rgba(var(--accent-rgb),.12);
+  border: 1px solid rgba(var(--accent-rgb),.25);
   border-radius: 8px;
   color: var(--accent);
   font-family: var(--font-head);
@@ -223,8 +230,8 @@
   display: flex;
   gap: 1rem;
   align-items: flex-start;
-  background: linear-gradient(135deg, rgba(245,158,11,.06) 0%, rgba(251,191,36,.02) 100%);
-  border: 1px solid rgba(245,158,11,.2);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),.06) 0%, rgba(var(--accent-2-rgb),.02) 100%);
+  border: 1px solid rgba(var(--accent-rgb),.2);
   border-radius: var(--radius);
   padding: 1.25rem;
 

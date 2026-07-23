@@ -67,7 +67,7 @@
     transition: border-color var(--t-fast), box-shadow var(--t-fast);
 
     &::placeholder { color: var(--text-dim); }
-    &:focus { outline: none; border-color: rgba(245,158,11,.5); box-shadow: 0 0 0 3px rgba(245,158,11,.1); }
+    &:focus { outline: none; border-color: rgba(var(--accent-rgb),.5); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.1); }
   }
 
   textarea { resize: vertical; min-height: 120px; }

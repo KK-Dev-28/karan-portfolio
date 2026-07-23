@@ -63,7 +63,7 @@
 /* â”€â”€ Cards grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gigs-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-3), 1fr);
   gap: 1.5rem;
   margin-bottom: 2.5rem;
 }
@@ -82,9 +82,9 @@
   transition: all var(--t-mid);
 
   &.featured {
-    border-color: rgba(245, 158, 11, 0.4);
-    background: linear-gradient(145deg, rgba(245, 158, 11, 0.04) 0%, var(--card) 60%);
-    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.15), 0 16px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(var(--accent-rgb), 0.4);
+    background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.04) 0%, var(--card) 60%);
+    box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.15), 0 16px 40px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -108,8 +108,8 @@
   width: 50px;
   height: 50px;
   border-radius: 12px;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,8 +131,8 @@
   text-transform: uppercase;
   padding: .25rem .6rem;
   border-radius: 999px;
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
   color: var(--accent);
 }
 
@@ -283,7 +283,7 @@
   max-width: 520px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(245, 158, 11, 0.1);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(var(--accent-rgb), 0.1);
 }
 
 .order-modal-hdr {
@@ -375,7 +375,7 @@
     color: var(--text);
     transition: border-color var(--t-fast), box-shadow var(--t-fast);
 
-    &:focus { outline: none; border-color: rgba(245,158,11,.5); box-shadow: 0 0 0 3px rgba(245,158,11,.1); }
+    &:focus { outline: none; border-color: rgba(var(--accent-rgb),.5); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.1); }
     &::placeholder { color: var(--text-dim); }
   }
 }

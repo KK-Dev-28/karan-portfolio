@@ -14,19 +14,19 @@
 
 .rc-bg {
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 30% 50%, rgba(245,158,11,.08) 0%, transparent 60%),
+  background: radial-gradient(ellipse at 30% 50%, rgba(var(--accent-rgb),.08) 0%, transparent 60%),
               radial-gradient(ellipse at 80% 20%, rgba(139,92,246,.06) 0%, transparent 50%);
   pointer-events: none;
 }
 
 .rc-content { position: relative; z-index: 1; max-width: 800px; }
-.rc-studio { font-family: sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #f59e0b; margin-bottom: 2.5rem; }
+.rc-studio { font-family: sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 2.5rem; }
 .rc-title {
   font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 700; color: #f5f5f5;
   line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -.02em;
 }
 .rc-sub { font-size: 1rem; color: #888; margin-bottom: 3rem; line-height: 1.6; font-style: italic; }
-.rc-divider { width: 80px; height: 3px; background: linear-gradient(to right, #f59e0b, #a855f7); border-radius: 2px; margin-bottom: 2.5rem; }
+.rc-divider { width: 80px; height: 3px; background: linear-gradient(to right, var(--accent), #a855f7); border-radius: 2px; margin-bottom: 2.5rem; }
 .rc-meta { display: flex; align-items: center; gap: .75rem; font-family: sans-serif; font-size: .78rem; color: #666; }
 .rc-dot { color: #333; }
 .rc-watermark {
@@ -97,9 +97,9 @@
   border-radius: 16px; padding: 3rem; margin-bottom: 4rem;
   position: relative; overflow: hidden;
 }
-.rqs-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, #f59e0b, #a855f7); }
+.rqs-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, var(--accent), #a855f7); }
 blockquote { font-size: 1.15rem; line-height: 1.75; color: #e0e0e0; font-style: italic; margin: 0 0 1.5rem; }
-.rqs-by { font-family: sans-serif; font-size: .75rem; color: #f59e0b; font-weight: 700; letter-spacing: .06em; }
+.rqs-by { font-family: sans-serif; font-size: .75rem; color: var(--accent); font-weight: 700; letter-spacing: .06em; }
 
 /* ── Divider ── */
 .rep-divider { border: none; border-top: 1px solid #e5e5e5; margin: 3rem 0; }

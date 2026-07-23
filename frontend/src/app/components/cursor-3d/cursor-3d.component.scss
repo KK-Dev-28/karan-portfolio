@@ -17,7 +17,7 @@
   position: fixed;
   width: 38px;
   height: 38px;
-  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  border: 1.5px solid rgba(var(--accent-rgb), 0.5);
   border-radius: 50%;
   pointer-events: none;
   z-index: 10049;
@@ -35,7 +35,7 @@
   &.hovering {
     width: 64px;
     height: 64px;
-    background: rgba(245, 158, 11, 0.08);
+    background: rgba(var(--accent-rgb), 0.08);
     border-color: var(--accent);
   }
 

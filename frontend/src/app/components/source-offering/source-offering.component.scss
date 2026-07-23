@@ -77,8 +77,8 @@
   transition: all var(--t-fast);
   font-family: var(--font-body);
 
-  &:hover { border-color: rgba(245, 158, 11, 0.4); color: var(--text); }
-  &.selected { border-color: var(--accent); background: rgba(245, 158, 11, 0.08); color: var(--accent); font-weight: 600; }
+  &:hover { border-color: rgba(var(--accent-rgb), 0.4); color: var(--text); }
+  &.selected { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.08); color: var(--accent); font-weight: 600; }
 }
 
 .sq-steps {
@@ -95,13 +95,13 @@
   transition: all var(--t-fast);
 
   &.active { background: var(--accent); transform: scale(1.4); }
-  &.done { background: rgba(245, 158, 11, 0.5); }
+  &.done { background: rgba(var(--accent-rgb), 0.5); }
 }
 
 /* ── survey result ── */
 .survey-result {
   background: var(--card);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
   border-radius: var(--radius-lg);
   padding: 2rem;
   display: flex;
@@ -195,7 +195,7 @@
 /* ── offering cards ── */
 .offer-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-3), 1fr);
   gap: 1.5rem;
 }
 
@@ -210,11 +210,11 @@
   gap: .75rem;
   transition: all var(--t-mid);
 
-  &:hover { transform: perspective(1000px) translateZ(16px) translateY(-3px); border-color: rgba(245, 158, 11, 0.35); box-shadow: 0 20px 48px rgba(2, 2, 14, 0.45), 0 0 24px rgba(245,158,11,.08); }
+  &:hover { transform: perspective(1000px) translateZ(16px) translateY(-3px); border-color: rgba(var(--accent-rgb), 0.35); box-shadow: 0 20px 48px rgba(2, 2, 14, 0.45), 0 0 24px rgba(var(--accent-rgb),.08); }
 
   &.featured {
-    border-color: rgba(245, 158, 11, 0.4);
-    background: linear-gradient(145deg, rgba(245, 158, 11, 0.04) 0%, var(--card) 60%);
+    border-color: rgba(var(--accent-rgb), 0.4);
+    background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.04) 0%, var(--card) 60%);
   }
 }
 
