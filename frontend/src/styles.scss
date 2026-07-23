@@ -1,28 +1,57 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; font-size: 16px; }
 
+/* ═════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   Full reference: /DESIGN_SYSTEM.md at the repo root.
+
+   Four palettes, one shape. Every theme below defines the SAME variable
+   set, so every effect built on these vars (glow cards, holo overlay,
+   starfield, ambient wash, selection color) reskins automatically —
+   nothing downstream needs a `[data-theme]` override of its own.
+
+   Selected via `html[data-theme="…"]`, set by ThemeService. Default
+   (no attribute, or "midnight-gold") falls through to :root.
+═════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  /* Midnight + Gold theme — deep space blue-black, gold & violet light */
+  /* ── Midnight Gold (default) — deep space blue-black, gold & violet light ── */
   --bg:        #07070e;
   --bg-2:      #0c0c16;
   --bg-3:      #12121e;
   --card:      #0f0f1a;
   --border:    #23233a;
-  --accent:    #f59e0b;
-  --accent-2:  #fbbf24;
+  --accent:      #f59e0b;
+  --accent-rgb:  245,158,11;
+  --accent-2:    #fbbf24;
+  --accent-2-rgb: 251,191,36;
   --accent-glow: rgba(245, 158, 11, 0.22);
 
   --text:      #f5f5f7;
   --text-muted:#9aa5bc;
   --text-dim:  #646e88;
 
+  /* Extended palette — feeds the ambient wash + starfield (3 accent dots) */
+  --violet:      #7c3aed;
+  --violet-rgb:  124,58,237;
+  --violet-glow: rgba(124,58,237,.22);
+  --electric:      #06b6d4;
+  --electric-rgb:  6,182,212;
+  --electric-glow: rgba(6,182,212,.18);
+  --emerald:   #10b981;
+  --crimson:   #e11d48;
+
+  --ambient-1: var(--violet-rgb);
+  --ambient-2: var(--accent-rgb);
+  --ambient-3: var(--electric-rgb);
+
   --font-head: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
-  --container: 1200px;
   --radius:    12px;
   --radius-lg: 20px;
 
@@ -31,27 +60,171 @@ html { scroll-behavior: smooth; font-size: 16px; }
   --t-mid:   0.3s;
   --t-slow:  0.6s;
 
-  /* Extras */
-  --gradient-gold:  linear-gradient(135deg, #f59e0b 0%, #fde68a 100%);
+  /* Gradients / shadows / glass */
+  --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #fde68a 100%);
   --shadow-card:    0 2px 24px rgba(2,2,12,.55), 0 1px 0 rgba(255,255,255,.045) inset;
   --shadow-glow:    0 0 0 1px rgba(245,158,11,.22), 0 0 40px rgba(245,158,11,.1), 0 24px 56px rgba(2,2,14,.6), 0 0 64px rgba(124,58,237,.06);
+  --holo: linear-gradient(135deg,
+    rgba(255,100,165,.55) 0%, rgba(255,215,0,.55) 20%, rgba(0,255,160,.55) 40%,
+    rgba(0,160,255,.55) 60%, rgba(200,80,255,.55) 80%, rgba(255,100,165,.55) 100%);
+  --glass-bg:     rgba(255,255,255,.03);
+  --glass-border: rgba(255,255,255,.07);
+  --noise-opacity:   .25;
+  --ambient-opacity: .75;
+  --star-opacity:    .35;
+
+  /* ── Layout: Standard (default) — see /DESIGN_SYSTEM.md §Layouts ── */
+  --container:   1200px;
+  --layout-gap:  2rem;
+  --section-py:  5.5rem;
+  --grid-cols-2: 2;
+  --grid-cols-3: 3;
+  --grid-cols-4: 4;
+  --grid-tile-min: 280px; /* base tile width for repeat(auto-fill/auto-fit, minmax(--grid-tile-min, 1fr)) grids */
 }
 
-body.light-theme {
-  --bg:        #f5f5f0;
-  --bg-2:      #efefea;
-  --bg-3:      #e8e8e3;
+/* ── Blueprint — schematic navy canvas, cyan ink ── */
+html[data-theme="blueprint"] {
+  --bg:        #060b16;
+  --bg-2:      #0a1224;
+  --bg-3:      #0e1830;
+  --card:      #0b1526;
+  --border:    #1e3252;
+  --accent:      #38bdf8;
+  --accent-rgb:  56,189,248;
+  --accent-2:    #7dd3fc;
+  --accent-2-rgb: 125,211,252;
+  --accent-glow: rgba(56,189,248,.22);
+
+  --text:      #eaf2fb;
+  --text-muted:#8ca3c4;
+  --text-dim:  #55688a;
+
+  --violet:      #6366f1;
+  --violet-rgb:  99,102,241;
+  --violet-glow: rgba(99,102,241,.2);
+  --electric:      #38bdf8;
+  --electric-rgb:  56,189,248;
+  --electric-glow: rgba(56,189,248,.18);
+
+  --ambient-1: var(--violet-rgb);
+  --ambient-2: var(--accent-rgb);
+  --ambient-3: 125,211,252;
+
+  --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #7dd3fc 100%);
+  --shadow-card: 0 2px 24px rgba(2,6,16,.6), 0 1px 0 rgba(255,255,255,.04) inset;
+  --shadow-glow: 0 0 0 1px rgba(56,189,248,.25), 0 0 40px rgba(56,189,248,.12), 0 24px 56px rgba(2,6,20,.6), 0 0 64px rgba(99,102,241,.06);
+  --holo: linear-gradient(135deg,
+    rgba(56,189,248,.55) 0%, rgba(125,211,252,.55) 25%, rgba(99,102,241,.55) 50%,
+    rgba(56,189,248,.55) 75%, rgba(224,242,254,.5) 100%);
+}
+
+/* ── Terminal — console-dark charcoal-green, muted jade signal ── */
+html[data-theme="terminal"] {
+  --bg:        #0a100d;
+  --bg-2:      #0e1712;
+  --bg-3:      #121f18;
+  --card:      #0d1a14;
+  --border:    #24392e;
+  --accent:      #6ee7b7;
+  --accent-rgb:  110,231,183;
+  --accent-2:    #34d399;
+  --accent-2-rgb: 52,211,153;
+  --accent-glow: rgba(110,231,183,.2);
+
+  --text:      #e7f5ec;
+  --text-muted:#8fae9c;
+  --text-dim:  #5a7368;
+
+  --violet:      #34d399;
+  --violet-rgb:  52,211,153;
+  --violet-glow: rgba(52,211,153,.2);
+  --electric:      #a3e635;
+  --electric-rgb:  163,230,53;
+  --electric-glow: rgba(163,230,53,.16);
+
+  --ambient-1: var(--accent-rgb);
+  --ambient-2: 52,211,153;
+  --ambient-3: 163,230,53;
+
+  --gradient-accent: linear-gradient(135deg, #34d399 0%, #6ee7b7 100%);
+  --shadow-card: 0 2px 24px rgba(2,10,6,.6), 0 1px 0 rgba(255,255,255,.04) inset;
+  --shadow-glow: 0 0 0 1px rgba(110,231,183,.25), 0 0 40px rgba(110,231,183,.12), 0 24px 56px rgba(2,10,6,.6), 0 0 64px rgba(52,211,153,.06);
+  --holo: linear-gradient(135deg,
+    rgba(110,231,183,.5) 0%, rgba(163,230,53,.45) 30%, rgba(52,211,153,.5) 60%,
+    rgba(110,231,183,.5) 100%);
+}
+
+/* ── Paper Ledger — cool daylight paper, ink navy, plum accent ── */
+html[data-theme="paper-ledger"] {
+  --bg:        #eef0f4;
+  --bg-2:      #e7e9ee;
+  --bg-3:      #dde0e7;
   --card:      #ffffff;
-  --border:    #e0e0d8;
-  --accent:    #d97706;
-  --accent-2:  #f59e0b;
-  --accent-glow: rgba(217, 119, 6, 0.15);
-  --text:      #111111;
-  --text-muted:#6b7280;
-  --text-dim:  #9ca3af;
-  --gradient-gold: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-  --shadow-card: 0 2px 20px rgba(0,0,0,.08), 0 1px 0 rgba(255,255,255,.8) inset;
-  --shadow-glow: 0 0 0 1px rgba(217,119,6,.3), 0 0 32px rgba(217,119,6,.12), 0 12px 40px rgba(0,0,0,.12);
+  --border:    #cbd0da;
+  --accent:      #7a2e45;
+  --accent-rgb:  122,46,69;
+  --accent-2:    #a24361;
+  --accent-2-rgb: 162,67,97;
+  --accent-glow: rgba(122,46,69,.14);
+
+  --text:      #1a2233;
+  --text-muted:#55607a;
+  --text-dim:  #8790a6;
+
+  --violet:      #4c3a91;
+  --violet-rgb:  76,58,145;
+  --violet-glow: rgba(76,58,145,.14);
+  --electric:      #2b6f77;
+  --electric-rgb:  43,111,119;
+  --electric-glow: rgba(43,111,119,.12);
+
+  --ambient-1: var(--violet-rgb);
+  --ambient-2: var(--accent-rgb);
+  --ambient-3: var(--electric-rgb);
+
+  --gradient-accent: linear-gradient(135deg, #7a2e45 0%, #a24361 100%);
+  --shadow-card: 0 2px 20px rgba(20,24,40,.08), 0 1px 0 rgba(255,255,255,.8) inset;
+  --shadow-glow: 0 0 0 1px rgba(122,46,69,.25), 0 0 32px rgba(122,46,69,.12), 0 12px 40px rgba(20,24,40,.12);
+  --holo: linear-gradient(135deg,
+    rgba(122,46,69,.35) 0%, rgba(43,111,119,.3) 35%, rgba(76,58,145,.3) 70%, rgba(122,46,69,.35) 100%);
+  --glass-bg:     rgba(20,24,40,.03);
+  --glass-border: rgba(20,24,40,.08);
+  --noise-opacity:   .06;
+  --ambient-opacity: .35;
+  --star-opacity:    .18;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   LAYOUT TOKENS — structural, independent of theme.
+   Selected via `html[data-layout="…"]`. See /DESIGN_SYSTEM.md §Layouts
+   for what each one is for and which components read --grid-cols-*.
+═════════════════════════════════════════════════════════════════════════ */
+
+/* Dossier — narrower editorial column, tighter rhythm, denser grids */
+html[data-layout="dossier"] {
+  --container:   880px;
+  --layout-gap:  1.25rem;
+  --section-py:  4rem;
+  --radius:      8px;
+  --radius-lg:   14px;
+  --grid-cols-2: 1;
+  --grid-cols-3: 2;
+  --grid-cols-4: 2;
+  --grid-tile-min: 220px;
+}
+
+/* Atelier Grid — wide canvas, big radius/gaps, bento-style grids */
+html[data-layout="atelier-grid"] {
+  --container:   1360px;
+  --layout-gap:  2.75rem;
+  --section-py:  6.5rem;
+  --radius:      18px;
+  --radius-lg:   28px;
+  --grid-cols-2: 2;
+  --grid-cols-3: 3;
+  --grid-cols-4: 4;
+  --grid-tile-min: 320px;
 }
 
 body {
@@ -65,33 +238,31 @@ body {
   cursor: none;
 }
 
-body.light-theme::before { opacity: .06; }
-
 /* Noise texture overlay */
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 9998;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
-  opacity: .25;
+  opacity: var(--noise-opacity);
 }
 
-/* Ambient volumetric light — washes over every section for depth */
+/* Ambient volumetric light — washes over every section for depth.
+   Colors come from --ambient-1/2/3 so every theme gets its own mood. */
 body::after {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 1;
   background:
-    radial-gradient(ellipse 55% 45% at 10% -5%,  rgba(124,58,237,.075), transparent 62%),
-    radial-gradient(ellipse 45% 38% at 92% 18%,  rgba(245,158,11,.05),  transparent 60%),
-    radial-gradient(ellipse 60% 45% at 50% 105%, rgba(6,182,212,.05),   transparent 62%);
+    radial-gradient(ellipse 55% 45% at 10% -5%,  rgba(var(--ambient-1),.075), transparent 62%),
+    radial-gradient(ellipse 45% 38% at 92% 18%,  rgba(var(--ambient-2),.05),  transparent 60%),
+    radial-gradient(ellipse 60% 45% at 50% 105%, rgba(var(--ambient-3),.05),  transparent 62%);
+  opacity: var(--ambient-opacity);
   animation: ambient-breathe 14s ease-in-out infinite alternate;
 }
 
 @keyframes ambient-breathe {
-  from { opacity: .75; }
-  to   { opacity: 1; }
+  from { opacity: calc(var(--ambient-opacity) * .78); }
+  to   { opacity: var(--ambient-opacity); }
 }
-
-body.light-theme::after { opacity: .35; }
 
 /* Scrollbar */
 ::-webkit-scrollbar       { width: 4px; }
@@ -100,7 +271,7 @@ body.light-theme::after { opacity: .35; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* Selection */
-::selection { background: rgba(245,158,11,.2); color: var(--text); }
+::selection { background: rgba(var(--accent-rgb),.2); color: var(--text); }
 
 /* Focus */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -120,11 +291,12 @@ input, textarea, select {
 /* Headings use Space Grotesk */
 h1, h2, h3, h4, h5 { font-family: var(--font-head); }
 
-/* Section label */
+/* Section label — set in the utility/mono face: these read as data
+   annotations ("§ WORK", "§ SKILLS"), not decorative headings. */
 .sec-label {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: .7rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--accent);
@@ -155,7 +327,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
   .italic {
     font-style: italic;
     font-weight: 300;
-    background: linear-gradient(135deg, var(--text-muted) 20%, rgba(245,158,11,.8) 100%);
+    background: linear-gradient(135deg, var(--text-muted) 20%, rgba(var(--accent-rgb),.8) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -180,7 +352,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
   }
 }
 
-/* Gold glow card */
+/* Accent glow card */
 .glow-card {
   position: relative;
   box-shadow: var(--shadow-card);
@@ -190,14 +362,14 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(ellipse 80% 55% at 20% 0%, rgba(245,158,11,.07), transparent 65%);
+    background: radial-gradient(ellipse 80% 55% at 20% 0%, rgba(var(--accent-rgb),.07), transparent 65%);
     opacity: 0;
     transition: opacity var(--t-mid);
     pointer-events: none;
     z-index: 0;
   }
   &:hover {
-    border-color: rgba(245,158,11,.45) !important;
+    border-color: rgba(var(--accent-rgb),.45) !important;
     box-shadow: var(--shadow-glow);
     transform: perspective(1000px) translateZ(18px) translateY(-5px);
     &::before { opacity: 1; }
@@ -219,7 +391,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
   transition: width .1s linear;
 }
 
-/* Responsive container */
+/* Responsive container — width driven by the active layout, see tokens above */
 .container {
   width: 100%;
   max-width: var(--container);
@@ -235,7 +407,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
 .gold { color: var(--accent); }
 .muted { color: var(--text-muted); }
 .gradient-text {
-  background: var(--gradient-gold);
+  background: var(--gradient-accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -246,33 +418,11 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
 ───────────────────────────────────────────────────── */
 
 :root {
-  /* Extended palette */
-  --violet:       #7c3aed;
-  --violet-glow:  rgba(124,58,237,.22);
-  --electric:     #06b6d4;
-  --electric-glow:rgba(6,182,212,.18);
-  --emerald:      #10b981;
-  --crimson:      #e11d48;
-
-  /* Holographic gradient */
-  --holo: linear-gradient(135deg,
-    rgba(255,100,165,.55) 0%,
-    rgba(255,215,0,.55)   20%,
-    rgba(0,255,160,.55)   40%,
-    rgba(0,160,255,.55)   60%,
-    rgba(200,80,255,.55)  80%,
-    rgba(255,100,165,.55) 100%
-  );
-
   /* 3D depth */
   --perspective: 1000px;
   --depth-sm: 20px;
   --depth-md: 50px;
   --depth-lg: 100px;
-
-  /* Glass material */
-  --glass-bg:     rgba(255,255,255,.03);
-  --glass-border: rgba(255,255,255,.07);
 }
 
 /* ── Mouse-tracked 3D tilt card (upgraded) ── */
@@ -343,8 +493,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
 
 /* ── Neon border pulse ── */
 @keyframes neon-pulse {
-  0%,100% { box-shadow: 0 0 8px var(--accent), 0 0 0 1px rgba(245,158,11,.3); }
-  50%     { box-shadow: 0 0 28px var(--accent), 0 0 0 1px rgba(245,158,11,.6); }
+  0%,100% { box-shadow: 0 0 8px var(--accent), 0 0 0 1px rgba(var(--accent-rgb),.3); }
+  50%     { box-shadow: 0 0 28px var(--accent), 0 0 0 1px rgba(var(--accent-rgb),.6); }
 }
 .neon-border { animation: neon-pulse 2.5s ease-in-out infinite; }
 
@@ -352,10 +502,19 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
    RHYTHM & MOTION PASS
 ───────────────────────────────────────────────────── */
 
-/* Consistent, tighter vertical rhythm — sections were drowning in padding.
+/* Consistent vertical rhythm, driven by the active layout's --section-py.
    Component styles win on specificity, hence the !important. */
-section[class*="-sec"]  { padding: 5.5rem 0 !important; }
-section.story-sec       { padding: 7rem 0 8rem !important; }
+section[class*="-sec"]  { padding: var(--section-py) 0 !important; }
+section.story-sec       { padding: calc(var(--section-py) * 1.27) 0 calc(var(--section-py) * 1.45) !important; }
+
+/* Dossier gets a hairline rule between sections — the one structural
+   device that's specific to that layout's editorial-density thesis. */
+html[data-layout="dossier"] section[class*="-sec"] {
+  border-top: 1px solid var(--border);
+}
+html[data-layout="dossier"] section[class*="-sec"]:first-of-type {
+  border-top: none;
+}
 
 /* Skip rendering off-screen sections entirely — massive scroll/initial-paint win */
 section[class*="-sec"] {
@@ -363,12 +522,14 @@ section[class*="-sec"] {
   contain-intrinsic-size: auto 720px;
 }
 
-/* Global drifting starfield (sits above section backgrounds, below content glows) */
+/* Global drifting starfield (sits above section backgrounds, below content glows).
+   Dot colors come from the theme's accent/violet/electric triplet. */
 .global-stars {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 1;
+  opacity: var(--star-opacity);
 
   &::before, &::after {
     content: '';
@@ -381,7 +542,7 @@ section[class*="-sec"] {
     background-image:
       radial-gradient(1px 1px at 20px 30px,  rgba(255,255,255,.5), transparent 100%),
       radial-gradient(1px 1px at 140px 80px, rgba(255,255,255,.35), transparent 100%),
-      radial-gradient(1.5px 1.5px at 240px 190px, rgba(245,158,11,.45), transparent 100%),
+      radial-gradient(1.5px 1.5px at 240px 190px, rgba(var(--accent-rgb),.45), transparent 100%),
       radial-gradient(1px 1px at 330px 120px, rgba(255,255,255,.3), transparent 100%);
     background-size: 380px 260px;
     opacity: .35;
@@ -390,9 +551,9 @@ section[class*="-sec"] {
 
   &::after {
     background-image:
-      radial-gradient(1px 1px at 60px 150px,  rgba(124,58,237,.5), transparent 100%),
+      radial-gradient(1px 1px at 60px 150px,  rgba(var(--violet-rgb),.5), transparent 100%),
       radial-gradient(1px 1px at 200px 40px,  rgba(255,255,255,.28), transparent 100%),
-      radial-gradient(1.5px 1.5px at 300px 220px, rgba(6,182,212,.4), transparent 100%);
+      radial-gradient(1.5px 1.5px at 300px 220px, rgba(var(--electric-rgb),.4), transparent 100%);
     background-size: 460px 320px;
     opacity: .28;
     animation: stars-drift-b 220s linear infinite;
@@ -401,8 +562,6 @@ section[class*="-sec"] {
 
 @keyframes stars-drift-a { to { transform: translate3d(-380px, -260px, 0); } }
 @keyframes stars-drift-b { to { transform: translate3d(460px, -320px, 0); } }
-
-body.light-theme .global-stars { opacity: .25; }
 
 /* Staggered card entrances — cards cascade in instead of appearing at once.
    Uses animation (not transition) so hover transforms take over cleanly after. */

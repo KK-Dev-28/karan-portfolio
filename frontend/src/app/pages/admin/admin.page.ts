@@ -14,8 +14,9 @@ import { SurveyService }    from '../../services/survey.service';
 import { DemosService }    from '../../services/demos.service';
 import { BookingService }  from '../../services/booking.service';
 import { PaymentService }  from '../../services/payment.service';
+import { ThemeService, THEMES, LAYOUTS, ThemeId, LayoutId } from '../../services/theme.service';
 
-type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
+type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
 type DateFilter = 'today' | 'week' | 'month' | 'custom' | 'all';
 
 @Component({
@@ -146,9 +147,44 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private demosSvc:     DemosService,
     private bookingSvc:   BookingService,
     private paymentSvc:   PaymentService,
+    private themeSvc:     ThemeService,
   ) {}
 
+  // ── Appearance (theme + layout) ────────────────────────
+  appearanceThemes  = THEMES;
+  appearanceLayouts = LAYOUTS;
+  appearanceTheme:  ThemeId  = 'midnight-gold';
+  appearanceLayout: LayoutId = 'standard';
+  appearanceDirty   = false;
+  appearanceBusy    = false;
+  appearanceSuccess = false;
+  appearanceError   = '';
+
+  pickAppearanceTheme(id: ThemeId) {
+    this.appearanceTheme = id;
+    this.appearanceDirty = true;
+    this.appearanceSuccess = false;
+    this.themeSvc.preview(this.appearanceTheme, this.appearanceLayout);
+  }
+
+  pickAppearanceLayout(id: LayoutId) {
+    this.appearanceLayout = id;
+    this.appearanceDirty = true;
+    this.appearanceSuccess = false;
+    this.themeSvc.preview(this.appearanceTheme, this.appearanceLayout);
+  }
+
+  saveAppearance() {
+    this.appearanceBusy = true; this.appearanceError = ''; this.appearanceSuccess = false;
+    this.themeSvc.saveAsSiteDefault(this.appearanceTheme, this.appearanceLayout).subscribe({
+      next: () => { this.appearanceBusy = false; this.appearanceSuccess = true; this.appearanceDirty = false; },
+      error: (e: any) => { this.appearanceBusy = false; this.appearanceError = e?.error?.message || 'Could not save. Try again.'; },
+    });
+  }
+
   ngOnInit() {
+    this.appearanceTheme  = this.themeSvc.getTheme();
+    this.appearanceLayout = this.themeSvc.getLayout();
     this.journalForm = this.fb.group({
       kind:         ['learning', Validators.required],
       title:        ['', [Validators.required, Validators.maxLength(200)]],

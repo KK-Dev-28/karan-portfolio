@@ -22,19 +22,24 @@
     <!-- Right controls -->
     <div class="nav-controls">
       <a class="nav-blog-link" routerLink="/blog">Blog</a>
-      <button class="theme-toggle" (click)="toggleTheme()" [title]="theme === 'dark' ? 'Switch to light' : 'Switch to dark'">
-        <!-- Sun icon (dark mode → click for light) -->
-        <svg *ngIf="theme === 'dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-        <!-- Moon icon (light mode → click for dark) -->
-        <svg *ngIf="theme !== 'dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-        </svg>
-      </button>
+      <div class="theme-picker">
+        <button class="theme-toggle" (click)="toggleThemeMenu()" title="Change color theme" aria-haspopup="true" [attr.aria-expanded]="themeMenuOpen">
+          <span class="theme-dot" [style.background]="currentSwatch()"></span>
+        </button>
+        <div class="theme-menu" *ngIf="themeMenuOpen">
+          <button *ngFor="let t of themes" class="theme-option" [class.active]="t.id === currentTheme" (click)="pickTheme(t.id)">
+            <span class="theme-swatch">
+              <span [style.background]="t.swatch[0]"></span>
+              <span [style.background]="t.swatch[1]"></span>
+              <span [style.background]="t.swatch[2]"></span>
+            </span>
+            <span class="theme-option-text">
+              <span class="theme-option-label">{{ t.label }}</span>
+              <span class="theme-option-blurb">{{ t.blurb }}</span>
+            </span>
+          </button>
+        </div>
+      </div>
       <button *ngIf="!isLoggedIn()" class="nav-btn" (click)="openLogin()">Admin</button>
       <button *ngIf="isLoggedIn()" class="nav-btn active" (click)="goAdmin()">Dashboard</button>
     </div>
@@ -56,16 +61,16 @@
     <li><a href="/insights" (click)="menuOpen=false">Visitor Logs</a></li>
   </ul>
   <div class="mobile-footer">
-    <button class="theme-toggle" (click)="toggleTheme()">
-      <svg *ngIf="theme === 'dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
-      <svg *ngIf="theme !== 'dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-      {{ theme === 'dark' ? 'Light Mode' : 'Dark Mode' }}
-    </button>
+    <div class="mobile-theme-row">
+      <button *ngFor="let t of themes" class="mobile-theme-dot" [class.active]="t.id === currentTheme"
+              [style.background]="t.swatch[2]" [title]="t.label" (click)="pickTheme(t.id)"></button>
+    </div>
     <button *ngIf="!isLoggedIn()" class="nav-btn" (click)="openLogin(); menuOpen=false">Admin Login</button>
     <button *ngIf="isLoggedIn()" class="nav-btn active" (click)="goAdmin()">Dashboard</button>
   </div>
 </div>
 <div class="menu-overlay" *ngIf="menuOpen" (click)="menuOpen=false"></div>
+<div class="theme-menu-overlay" *ngIf="themeMenuOpen" (click)="themeMenuOpen=false"></div>
 
 <!-- Login Modal -->
 <div class="overlay" *ngIf="showModal" (click)="closeModal()">

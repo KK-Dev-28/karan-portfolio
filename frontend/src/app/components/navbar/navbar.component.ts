@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeService, THEMES, ThemeId } from '../../services/theme.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -23,7 +23,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   loginLoading  = false;
   loginError    = '';
   form!:         FormGroup;
-  theme: 'dark' | 'light' = 'dark';
+
+  themes         = THEMES;
+  currentTheme:  ThemeId = 'midnight-gold';
+  themeMenuOpen  = false;
 
   links = [
     { label: 'About',      id: 'about' },
@@ -45,8 +48,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.fb.group({ password: ['', Validators.required] });
-    this.themeSvc.initTheme();
-    this.theme = this.themeSvc.getTheme();
+    // ThemeService.init() already ran at app root — just read the current pick.
+    this.currentTheme = this.themeSvc.getTheme();
     this.initSectionObserver();
   }
 
@@ -122,5 +125,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isLoggedIn() { return this.auth.isLoggedIn(); }
   goAdmin()    { this.router.navigate(['/admin']); }
-  toggleTheme() { this.theme = this.themeSvc.toggleTheme(); }
+
+  toggleThemeMenu() { this.themeMenuOpen = !this.themeMenuOpen; }
+  currentSwatch() { return this.themes.find(t => t.id === this.currentTheme)?.swatch[2] ?? '#f59e0b'; }
+  pickTheme(id: ThemeId) {
+    this.currentTheme = id;
+    this.themeSvc.setThemeLocal(id);
+    this.themeMenuOpen = false;
+  }
 }

@@ -2,6 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    // Runs before any CSS or Angular loads — paints the visitor's last-known
+    // theme/layout immediately so reloads don't flash the default theme first.
+    (function () {
+      try {
+        var t = localStorage.getItem('kk_theme_id');
+        var l = localStorage.getItem('kk_layout_id');
+        document.documentElement.setAttribute('data-theme', t || 'midnight-gold');
+        document.documentElement.setAttribute('data-layout', l || 'standard');
+      } catch (e) { /* localStorage unavailable (privacy mode, SSR, etc.) — default styles apply */ }
+    })();
+  </script>
   <title>Karan Kapoor — Full Stack Developer</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">

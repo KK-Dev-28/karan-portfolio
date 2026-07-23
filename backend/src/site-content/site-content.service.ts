@@ -94,7 +94,7 @@ const DEFAULTS: Record<string, any> = {
   ],
   faqs: [
     { q: 'How do engagements start?', a: 'We align on scope, timeline, and success metrics. A deposit secures calendar time; detailed SOW can follow for larger programs.' },
-    { q: 'Which payment provider do you use?', a: 'Checkout runs on Stripe for global card acceptance and strong compliance (PCI handled by Stripe).' },
+    { q: 'Which payment provider do you use?', a: 'Checkout runs on Razorpay for smooth INR card, UPI, and netbanking acceptance (PCI compliance handled by Razorpay).' },
     { q: 'Do you offer retainers?', a: 'Yes — monthly retainers are available for roadmap ownership, on-call coverage, and continuous delivery after the initial build.' },
     { q: 'What about NDAs and IP?', a: 'Standard practice: your IP remains yours; we can sign mutual NDAs before sharing sensitive materials.' },
   ],
@@ -129,6 +129,10 @@ const DEFAULTS: Record<string, any> = {
   about: {
     summary: 'Full Stack Developer with 2.6+ years building enterprise-grade web applications. Passionate about clean architecture, performance, and delivering value.',
     tagline: 'Building production-grade systems that scale.',
+  },
+  appearance: {
+    theme: 'midnight-gold',
+    layout: 'standard',
   },
 };
 

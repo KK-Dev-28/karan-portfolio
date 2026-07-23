@@ -94,6 +94,13 @@
         <span class="nav-label">CMS</span>
       </button>
 
+      <button class="nav-item" [class.active]="tab==='appearance'" (click)="tab='appearance'">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 2a8 8 0 100 16 1.5 1.5 0 001.06-2.56c-.36-.36-.56-.83-.56-1.32 0-1.03.84-1.87 1.87-1.87h1.1A3.53 3.53 0 0016.99 9c0-3.87-3.65-7-8-7 .34 0 .01 0 0 0zM5 11a1 1 0 110-2 1 1 0 010 2zm2.5-4a1 1 0 110-2 1 1 0 010 2zm5 0a1 1 0 110-2 1 1 0 010 2zM15 11a1 1 0 110-2 1 1 0 010 2z"/></svg>
+        </span>
+        <span class="nav-label">Appearance</span>
+      </button>
+
       <button class="nav-item" [class.active]="tab==='journal'" (click)="tab='journal'">
         <span class="nav-icon">
           <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"/><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"/></svg>
@@ -705,6 +712,60 @@
             </div>
             <textarea class="cms-textarea" [(ngModel)]="cmsJson" rows="30" spellcheck="false"></textarea>
           </div>
+        </div>
+      </div>
+
+      <!-- ── APPEARANCE ────────────────────────────── -->
+      <div class="tab-panel" *ngIf="tab==='appearance'">
+        <div class="section-lbl">Appearance</div>
+        <p class="cms-hint">
+          Pick a color theme and a layout. Changes here preview instantly for you only —
+          click <strong>Save as site default</strong> to make it what every new visitor sees.
+        </p>
+
+        <div class="appearance-block">
+          <div class="appearance-block-hdr">Color theme</div>
+          <div class="theme-grid">
+            <button
+              *ngFor="let t of appearanceThemes"
+              class="theme-card"
+              [class.active]="appearanceTheme === t.id"
+              (click)="pickAppearanceTheme(t.id)">
+              <span class="theme-card-swatch">
+                <span [style.background]="t.swatch[0]"></span>
+                <span [style.background]="t.swatch[1]"></span>
+                <span [style.background]="t.swatch[2]"></span>
+              </span>
+              <span class="theme-card-label">{{ t.label }}</span>
+              <span class="theme-card-blurb">{{ t.blurb }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="appearance-block">
+          <div class="appearance-block-hdr">Layout</div>
+          <div class="layout-grid">
+            <button
+              *ngFor="let l of appearanceLayouts"
+              class="layout-card"
+              [class.active]="appearanceLayout === l.id"
+              (click)="pickAppearanceLayout(l.id)">
+              <span class="layout-card-icon" [attr.data-layout-id]="l.id">
+                <span></span><span></span><span></span>
+              </span>
+              <span class="layout-card-label">{{ l.label }}</span>
+              <span class="layout-card-blurb">{{ l.blurb }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="appearance-actions">
+          <span class="form-success" *ngIf="appearanceSuccess">✅ Saved as site default!</span>
+          <span class="form-err" *ngIf="appearanceError">{{ appearanceError }}</span>
+          <span class="appearance-preview-note" *ngIf="appearanceDirty && !appearanceSuccess">Previewing — not saved yet.</span>
+          <button class="form-save-btn" (click)="saveAppearance()" [disabled]="appearanceBusy || !appearanceDirty">
+            {{ appearanceBusy ? 'Saving…' : 'Save as site default' }}
+          </button>
         </div>
       </div>
 
