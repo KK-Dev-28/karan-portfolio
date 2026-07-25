@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SiteContentService } from './site-content.service';
 
 export type ThemeId  = 'midnight-gold' | 'blueprint' | 'terminal' | 'paper-ledger';
-export type LayoutId = 'standard' | 'dossier' | 'atelier-grid';
+export type LayoutId = 'standard' | 'dossier' | 'atelier-grid' | 'zen' | 'command' | 'canvas';
 
 export interface ThemeMeta {
   id: ThemeId;
@@ -67,6 +67,21 @@ export const LAYOUTS: LayoutMeta[] = [
     label: 'Atelier Grid',
     blurb: 'Wider canvas, bigger radius and gaps — project/skill grids read as a bento board.',
   },
+  {
+    id: 'zen',
+    label: 'Zen',
+    blurb: 'Calm and airy — narrow column, huge section breathing room, soft corners.',
+  },
+  {
+    id: 'command',
+    label: 'Command',
+    blurb: 'Dense control-panel feel — very wide, tight gaps, crisp small corners.',
+  },
+  {
+    id: 'canvas',
+    label: 'Canvas',
+    blurb: 'Full-bleed gallery — the widest container, large radius, spacious tiles.',
+  },
 ];
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -79,7 +94,7 @@ export const LAYOUTS: LayoutMeta[] = [
 ───────────────────────────────────────────────────────────────────────── */
 
 export type TokenKind  = 'color' | 'size';
-export type TokenGroup = 'Brand' | 'Surfaces' | 'Text' | 'Shape' | 'Spacing';
+export type TokenGroup = 'Brand' | 'Surfaces' | 'Text' | 'Shape' | 'Spacing' | 'Grid';
 
 export interface DesignTokenDef {
   var: string;      // e.g. '--accent'
@@ -113,6 +128,11 @@ export const DESIGN_TOKENS: DesignTokenDef[] = [
   { var: '--container',  label: 'Container width',  group: 'Spacing',  kind: 'size', hint: 'e.g. 1200px' },
   { var: '--layout-gap', label: 'Grid gap',         group: 'Spacing',  kind: 'size', hint: 'e.g. 2rem' },
   { var: '--section-py', label: 'Section spacing',  group: 'Spacing',  kind: 'size', hint: 'e.g. 5.5rem' },
+  // Grid structure (unitless counts + fluid tile floor) — override the layout's grid density
+  { var: '--grid-cols-2',   label: 'Columns (2-up sections)', group: 'Grid', kind: 'size', hint: 'e.g. 2' },
+  { var: '--grid-cols-3',   label: 'Columns (3-up sections)', group: 'Grid', kind: 'size', hint: 'e.g. 3' },
+  { var: '--grid-cols-4',   label: 'Columns (4-up sections)', group: 'Grid', kind: 'size', hint: 'e.g. 4' },
+  { var: '--grid-tile-min', label: 'Fluid tile min width',    group: 'Grid', kind: 'size', hint: 'e.g. 280px' },
 ];
 
 const VALID_TOKEN_VARS = new Set(DESIGN_TOKENS.map(t => t.var));

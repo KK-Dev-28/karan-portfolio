@@ -227,6 +227,45 @@ html[data-layout="atelier-grid"] {
   --grid-tile-min: 320px;
 }
 
+/* Zen — calm & airy: narrow column, generous whitespace, soft corners */
+html[data-layout="zen"] {
+  --container:   1040px;
+  --layout-gap:  2.5rem;
+  --section-py:  8rem;
+  --radius:      16px;
+  --radius-lg:   26px;
+  --grid-cols-2: 2;
+  --grid-cols-3: 2;
+  --grid-cols-4: 3;
+  --grid-tile-min: 300px;
+}
+
+/* Command — dense control-panel: very wide, tight gaps, crisp small corners */
+html[data-layout="command"] {
+  --container:   1440px;
+  --layout-gap:  1rem;
+  --section-py:  3.25rem;
+  --radius:      8px;
+  --radius-lg:   12px;
+  --grid-cols-2: 2;
+  --grid-cols-3: 3;
+  --grid-cols-4: 4;
+  --grid-tile-min: 240px;
+}
+
+/* Canvas — full-bleed gallery: widest container, large radius, spacious tiles */
+html[data-layout="canvas"] {
+  --container:   1600px;
+  --layout-gap:  3rem;
+  --section-py:  6rem;
+  --radius:      22px;
+  --radius-lg:   34px;
+  --grid-cols-2: 2;
+  --grid-cols-3: 3;
+  --grid-cols-4: 4;
+  --grid-tile-min: 360px;
+}
+
 body {
   background:  var(--bg);
   color:       var(--text);

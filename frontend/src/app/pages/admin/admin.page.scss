@@ -475,11 +475,14 @@
 .layout-card-icon {
   display: flex; align-items: flex-end; gap: 4px; height: 40px; padding: 6px 8px;
   background: var(--card); border: 1px solid var(--border); border-radius: 6px;
-  span { flex: 1; background: var(--accent); border-radius: 2px; opacity: .55; }
+  span { flex: 1; background: var(--accent); border-radius: 2px; opacity: .55; height: 60%; }
 
   &[data-layout-id="standard"] span { height: 60%; }
   &[data-layout-id="dossier"]  { gap: 2px; span { height: 45%; } }
   &[data-layout-id="atelier-grid"] { gap: 7px; span { height: 80%; border-radius: 3px; } }
+  &[data-layout-id="zen"]      { gap: 9px; span { height: 70%; } }
+  &[data-layout-id="command"]  { gap: 2px; span { height: 92%; border-radius: 1px; } }
+  &[data-layout-id="canvas"]   { gap: 8px; span { height: 85%; border-radius: 3px; } }
 }
 
 .appearance-actions {

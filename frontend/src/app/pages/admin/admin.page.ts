@@ -187,7 +187,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
 
   // ── Design Studio (fine-grained token / motion / custom-CSS overrides) ──
   designTokenDefs = DESIGN_TOKENS;
-  designGroups: TokenGroup[] = ['Brand', 'Surfaces', 'Text', 'Shape', 'Spacing'];
+  designGroups: TokenGroup[] = ['Brand', 'Surfaces', 'Text', 'Shape', 'Spacing', 'Grid'];
   design: DesignConfig = defaultDesign();
   /** Effective value shown in each field (override, else the theme's computed value). */
   tokenValues: Record<string, string> = {};
