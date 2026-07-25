@@ -101,6 +101,13 @@
         <span class="nav-label">Appearance</span>
       </button>
 
+      <button class="nav-item" [class.active]="tab==='design'" (click)="tab='design'; initDesignEditor()">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm3 3a1 1 0 000 2h6a1 1 0 100-2H7zm0 4a1 1 0 000 2h6a1 1 0 100-2H7zm0 4a1 1 0 100 2h3a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+        </span>
+        <span class="nav-label">Design Studio</span>
+      </button>
+
       <button class="nav-item" [class.active]="tab==='journal'" (click)="tab='journal'">
         <span class="nav-icon">
           <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"/><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"/></svg>
@@ -765,6 +772,101 @@
           <span class="appearance-preview-note" *ngIf="appearanceDirty && !appearanceSuccess">Previewing — not saved yet.</span>
           <button class="form-save-btn" (click)="saveAppearance()" [disabled]="appearanceBusy || !appearanceDirty">
             {{ appearanceBusy ? 'Saving…' : 'Save as site default' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- ── DESIGN STUDIO ─────────────────────────── -->
+      <div class="tab-panel" *ngIf="tab==='design'">
+        <div class="section-lbl">Design Studio</div>
+        <p class="cms-hint">
+          Fine-tune every color, size, and animation on top of the current theme.
+          Changes preview <strong>live</strong> as you edit — click
+          <strong>Save as site default</strong> to publish them to every visitor,
+          or <strong>Reset all</strong> to fall back to the theme.
+        </p>
+
+        <!-- Colors & sizes, grouped -->
+        <div class="ds-groups">
+          <div class="ds-group" *ngFor="let g of designGroups">
+            <div class="appearance-block-hdr">{{ g }}</div>
+            <div class="ds-token-grid">
+              <div class="ds-token" *ngFor="let t of tokensInGroup(g)" [class.overridden]="isTokenOverridden(t)">
+                <label class="ds-token-lbl">
+                  {{ t.label }}
+                  <span class="ds-token-badge" *ngIf="isTokenOverridden(t)">custom</span>
+                </label>
+
+                <div class="ds-token-input" *ngIf="t.kind === 'color'">
+                  <input type="color" class="ds-color"
+                         [value]="asHex(tokenValues[t.var])"
+                         (input)="setToken(t, $any($event.target).value)" />
+                  <input type="text" class="form-input ds-hex"
+                         [ngModel]="tokenValues[t.var]"
+                         (ngModelChange)="setToken(t, $event)"
+                         placeholder="#000000" spellcheck="false" />
+                  <button class="ds-reset" *ngIf="isTokenOverridden(t)" (click)="resetToken(t)" title="Reset to theme">↺</button>
+                </div>
+
+                <div class="ds-token-input" *ngIf="t.kind === 'size'">
+                  <input type="text" class="form-input ds-size"
+                         [ngModel]="tokenValues[t.var]"
+                         (ngModelChange)="setToken(t, $event)"
+                         [placeholder]="t.hint || ''" spellcheck="false" />
+                  <button class="ds-reset" *ngIf="isTokenOverridden(t)" (click)="resetToken(t)" title="Reset to theme">↺</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Motion -->
+        <div class="appearance-block">
+          <div class="appearance-block-hdr">Motion &amp; animation</div>
+          <div class="ds-motion">
+            <div class="ds-motion-row">
+              <label class="ds-motion-lbl">Transition speed</label>
+              <input type="range" class="ds-range" min="0.4" max="2" step="0.1"
+                     [ngModel]="design.motion.speed"
+                     (ngModelChange)="setMotion('speed', +$event)" />
+              <span class="ds-motion-val">{{ design.motion.speed | number:'1.1-1' }}×</span>
+            </div>
+            <label class="form-checkbox">
+              <input type="checkbox" [ngModel]="design.motion.ambient" (ngModelChange)="setMotion('ambient', $event)" />
+              Ambient light wash
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" [ngModel]="design.motion.stars" (ngModelChange)="setMotion('stars', $event)" />
+              Drifting starfield
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" [ngModel]="design.motion.reduced" (ngModelChange)="setMotion('reduced', $event)" />
+              Reduce all motion (calm mode)
+            </label>
+          </div>
+        </div>
+
+        <!-- Custom CSS -->
+        <div class="appearance-block">
+          <div class="appearance-block-hdr">Custom CSS</div>
+          <p class="cms-hint ds-css-hint">
+            Advanced — injected site-wide, applied last so it overrides everything.
+            Use the design tokens (e.g. <code>var(--accent)</code>) to stay theme-aware.
+          </p>
+          <textarea class="cms-textarea ds-css"
+                    [ngModel]="design.customCss"
+                    (ngModelChange)="setCustomCss($event)"
+                    rows="10" spellcheck="false"
+                    placeholder=".hero-title &#123; letter-spacing: -.04em; &#125;"></textarea>
+        </div>
+
+        <div class="appearance-actions">
+          <span class="form-success" *ngIf="designSuccess">✅ Saved as site default!</span>
+          <span class="form-err" *ngIf="designError">{{ designError }}</span>
+          <span class="appearance-preview-note" *ngIf="designDirty && !designSuccess">Previewing — not saved yet.</span>
+          <button class="action-btn" (click)="resetDesign()">Reset all</button>
+          <button class="form-save-btn" (click)="saveDesign()" [disabled]="designBusy || !designDirty">
+            {{ designBusy ? 'Saving…' : 'Save as site default' }}
           </button>
         </div>
       </div>

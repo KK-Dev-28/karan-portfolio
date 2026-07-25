@@ -4,14 +4,49 @@
   <meta charset="utf-8">
   <script>
     // Runs before any CSS or Angular loads — paints the visitor's last-known
-    // theme/layout immediately so reloads don't flash the default theme first.
+    // theme/layout/design overrides immediately so reloads don't flash the
+    // default appearance first. Mirrors ThemeService.applyDesign(); kept
+    // dependency-free and defensive so a bad value can never block boot.
     (function () {
       try {
-        var t = localStorage.getItem('kk_theme_id');
-        var l = localStorage.getItem('kk_layout_id');
-        document.documentElement.setAttribute('data-theme', t || 'midnight-gold');
-        document.documentElement.setAttribute('data-layout', l || 'standard');
-      } catch (e) { /* localStorage unavailable (privacy mode, SSR, etc.) — default styles apply */ }
+        var root = document.documentElement;
+        root.setAttribute('data-theme',  localStorage.getItem('kk_theme_id')  || 'midnight-gold');
+        root.setAttribute('data-layout', localStorage.getItem('kk_layout_id') || 'standard');
+
+        var RGB_TWIN = { '--accent': '--accent-rgb', '--accent-2': '--accent-2-rgb', '--violet': '--violet-rgb', '--electric': '--electric-rgb' };
+        function hexToRgb(h) {
+          var m = /^#?([0-9a-f]{6})$/i.exec((h || '').trim());
+          if (!m) return null;
+          var n = parseInt(m[1], 16);
+          return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
+        }
+
+        var d = JSON.parse(localStorage.getItem('kk_design') || '{}');
+        var tokens = (d && d.tokens) || {};
+        for (var k in tokens) {
+          if (!Object.prototype.hasOwnProperty.call(tokens, k)) continue;
+          var v = tokens[k];
+          if (typeof v !== 'string' || !v) continue;
+          root.style.setProperty(k, v);
+          if (RGB_TWIN[k]) { var rgb = hexToRgb(v); if (rgb) root.style.setProperty(RGB_TWIN[k], rgb); }
+        }
+
+        var m = (d && d.motion) || {};
+        var speed = typeof m.speed === 'number' && isFinite(m.speed) ? Math.min(2, Math.max(0.4, m.speed)) : 1;
+        root.style.setProperty('--t-fast', (0.15 / speed) + 's');
+        root.style.setProperty('--t-mid',  (0.30 / speed) + 's');
+        root.style.setProperty('--t-slow', (0.60 / speed) + 's');
+        root.setAttribute('data-ambient', m.ambient === false ? 'off' : 'on');
+        root.setAttribute('data-stars',   m.stars   === false ? 'off' : 'on');
+        if (m.reduced === true) root.setAttribute('data-motion', 'reduced');
+
+        if (typeof d.customCss === 'string' && d.customCss) {
+          var s = document.createElement('style');
+          s.id = 'kk-custom-css';
+          s.textContent = d.customCss.slice(0, 40000);
+          document.head.appendChild(s);
+        }
+      } catch (e) { /* localStorage/JSON unavailable — default styles apply */ }
     })();
   </script>
   <title>Karan Kapoor — Full Stack Developer</title>

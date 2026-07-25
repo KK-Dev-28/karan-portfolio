@@ -487,6 +487,58 @@
 }
 .appearance-preview-note { font-size: .75rem; color: var(--text-dim); font-style: italic; }
 
+/* ── Design Studio ───────────────────────────────────── */
+.ds-groups { display: flex; flex-direction: column; gap: 1.75rem; margin-bottom: 2.25rem; }
+.ds-group  { }
+.ds-token-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .9rem;
+}
+.ds-token {
+  display: flex; flex-direction: column; gap: .45rem;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: .75rem .85rem; transition: border-color var(--t-fast);
+  &.overridden { border-color: rgba(var(--accent-rgb),.45); }
+}
+.ds-token-lbl {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: .68rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 700;
+}
+.ds-token-badge {
+  font-size: .58rem; letter-spacing: .04em; font-weight: 700;
+  color: var(--accent); background: rgba(var(--accent-rgb),.12);
+  border: 1px solid rgba(var(--accent-rgb),.3); border-radius: 20px;
+  padding: .05rem .4rem; text-transform: none;
+}
+.ds-token-input { display: flex; align-items: center; gap: .5rem; }
+.ds-color {
+  flex: 0 0 auto; width: 38px; height: 34px; padding: 0;
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+  cursor: pointer;
+  &::-webkit-color-swatch-wrapper { padding: 3px; }
+  &::-webkit-color-swatch { border: none; border-radius: 4px; }
+}
+.ds-hex, .ds-size { flex: 1 1 auto; min-width: 0; font-size: .78rem; padding: .5rem .6rem; }
+.ds-hex { font-family: var(--font-mono, monospace); }
+.ds-reset {
+  flex: 0 0 auto; width: 30px; height: 30px; line-height: 1; font-size: .95rem;
+  background: none; border: 1px solid var(--border); color: var(--text-dim);
+  border-radius: var(--radius); cursor: pointer; transition: all var(--t-fast);
+  &:hover { border-color: rgba(var(--accent-rgb),.4); color: var(--accent); }
+}
+
+.ds-motion { display: flex; flex-direction: column; gap: .9rem; max-width: 460px; }
+.ds-motion-row { display: flex; align-items: center; gap: .9rem; }
+.ds-motion-lbl {
+  flex: 0 0 130px; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 700;
+}
+.ds-range { flex: 1 1 auto; accent-color: var(--accent); cursor: pointer; }
+.ds-motion-val { flex: 0 0 auto; font-family: var(--font-mono, monospace); font-size: .78rem; color: var(--text); min-width: 44px; }
+
+.ds-css-hint { margin-bottom: .65rem; code { font-family: var(--font-mono, monospace); color: var(--accent); } }
+.ds-css { min-height: 180px; }
+
 /* ── Blog admin ──────────────────────────────────────── */
 .blog-stats { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 .bs-card {

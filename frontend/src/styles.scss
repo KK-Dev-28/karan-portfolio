@@ -621,3 +621,24 @@ section[class*="-sec"] {
     transition-duration: .01ms !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────
+   DESIGN STUDIO MOTION TOGGLES
+   Admin-controlled attributes set on <html> by ThemeService
+   (and by the instant-paint script in index.html). These let the
+   ambient wash / starfield be switched off, or all motion collapsed,
+   independently of the OS reduced-motion setting above.
+───────────────────────────────────────────────────── */
+html[data-ambient="off"] body::after { display: none; }
+html[data-stars="off"]   .global-stars { display: none; }
+
+html[data-motion="reduced"] .global-stars,
+html[data-motion="reduced"] body::after { display: none; }
+html[data-motion="reduced"] .reveal { opacity: 1; transform: none; }
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+}

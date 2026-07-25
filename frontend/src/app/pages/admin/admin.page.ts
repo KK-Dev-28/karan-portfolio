@@ -14,9 +14,12 @@ import { SurveyService }    from '../../services/survey.service';
 import { DemosService }    from '../../services/demos.service';
 import { BookingService }  from '../../services/booking.service';
 import { PaymentService }  from '../../services/payment.service';
-import { ThemeService, THEMES, LAYOUTS, ThemeId, LayoutId } from '../../services/theme.service';
+import {
+  ThemeService, THEMES, LAYOUTS, ThemeId, LayoutId,
+  DESIGN_TOKENS, DesignTokenDef, DesignConfig, MotionSettings, TokenGroup, defaultDesign,
+} from '../../services/theme.service';
 
-type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
+type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'design' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
 type DateFilter = 'today' | 'week' | 'month' | 'custom' | 'all';
 
 @Component({
@@ -179,6 +182,93 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.themeSvc.saveAsSiteDefault(this.appearanceTheme, this.appearanceLayout).subscribe({
       next: () => { this.appearanceBusy = false; this.appearanceSuccess = true; this.appearanceDirty = false; },
       error: (e: any) => { this.appearanceBusy = false; this.appearanceError = e?.error?.message || 'Could not save. Try again.'; },
+    });
+  }
+
+  // ── Design Studio (fine-grained token / motion / custom-CSS overrides) ──
+  designTokenDefs = DESIGN_TOKENS;
+  designGroups: TokenGroup[] = ['Brand', 'Surfaces', 'Text', 'Shape', 'Spacing'];
+  design: DesignConfig = defaultDesign();
+  /** Effective value shown in each field (override, else the theme's computed value). */
+  tokenValues: Record<string, string> = {};
+  designDirty   = false;
+  designBusy    = false;
+  designSuccess = false;
+  designError   = '';
+
+  tokensInGroup(g: TokenGroup): DesignTokenDef[] {
+    return this.designTokenDefs.filter(t => t.group === g);
+  }
+
+  /** Called when the Design tab opens — snapshot current overrides + prefill fields. */
+  initDesignEditor() {
+    this.design = this.themeSvc.getDesign();
+    this.refreshTokenValues();
+    this.designDirty = false; this.designSuccess = false; this.designError = '';
+  }
+
+  private refreshTokenValues() {
+    const cs = getComputedStyle(document.documentElement);
+    const next: Record<string, string> = {};
+    for (const def of this.designTokenDefs) {
+      const override = this.design.tokens[def.var];
+      next[def.var] = (override ?? cs.getPropertyValue(def.var).trim()) || '';
+    }
+    this.tokenValues = next;
+  }
+
+  /** Coerce a field value to a #rrggbb hex the native color input accepts. */
+  asHex(value: string): string {
+    return /^#[0-9a-f]{6}$/i.test((value || '').trim()) ? value.trim() : '#000000';
+  }
+
+  setToken(def: DesignTokenDef, value: string) {
+    this.tokenValues[def.var] = value;
+    const v = (value || '').trim();
+    if (v) this.design.tokens[def.var] = v;
+    else delete this.design.tokens[def.var];
+    this.markDesignDirty();
+    this.themeSvc.previewDesign(this.design);
+  }
+
+  resetToken(def: DesignTokenDef) {
+    delete this.design.tokens[def.var];
+    this.themeSvc.previewDesign(this.design);
+    // Overrides are cleared inline first, so the computed value is now the theme's.
+    this.tokenValues[def.var] = getComputedStyle(document.documentElement).getPropertyValue(def.var).trim();
+    this.markDesignDirty();
+  }
+
+  isTokenOverridden(def: DesignTokenDef): boolean {
+    return Object.prototype.hasOwnProperty.call(this.design.tokens, def.var);
+  }
+
+  setMotion<K extends keyof MotionSettings>(key: K, value: MotionSettings[K]) {
+    this.design.motion = { ...this.design.motion, [key]: value };
+    this.markDesignDirty();
+    this.themeSvc.previewDesign(this.design);
+  }
+
+  setCustomCss(css: string) {
+    this.design.customCss = css ?? '';
+    this.markDesignDirty();
+    this.themeSvc.previewDesign(this.design);
+  }
+
+  resetDesign() {
+    this.design = defaultDesign();
+    this.themeSvc.previewDesign(this.design);
+    this.refreshTokenValues();
+    this.markDesignDirty();
+  }
+
+  private markDesignDirty() { this.designDirty = true; this.designSuccess = false; }
+
+  saveDesign() {
+    this.designBusy = true; this.designError = ''; this.designSuccess = false;
+    this.themeSvc.saveDesignAsSiteDefault(this.design).subscribe({
+      next: () => { this.designBusy = false; this.designSuccess = true; this.designDirty = false; },
+      error: (e: any) => { this.designBusy = false; this.designError = e?.error?.message || 'Could not save. Try again.'; },
     });
   }
 
