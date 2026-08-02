@@ -29,7 +29,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   themeMenuOpen  = false;
 
   links = [
-    { label: 'About',      id: 'about' },
+    { label: 'About',      id: 'story' },
     { label: 'Work',       id: 'projects' },
     { label: 'Skills',     id: 'skills' },
     { label: 'Experience', id: 'experience' },

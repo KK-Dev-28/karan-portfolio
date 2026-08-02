@@ -1,0 +1,14 @@
+{
+  "name": "karan-portfolio-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dev tooling for the portfolio. Deliberately separate from frontend/ so these deps never enter the Vercel build.",
+  "scripts": {
+    "record": "node record-tour.mjs",
+    "setup": "npm install && npx playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
