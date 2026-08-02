@@ -757,8 +757,12 @@
               class="layout-card"
               [class.active]="appearanceLayout === l.id"
               (click)="pickAppearanceLayout(l.id)">
-              <span class="layout-card-icon" [attr.data-layout-id]="l.id">
-                <span></span><span></span><span></span>
+              <span class="layout-preview" [attr.data-layout-id]="l.id">
+                <span class="lp-bar"></span>
+                <span class="lp-hero"></span>
+                <span class="lp-grid">
+                  <span class="lp-tile" *ngFor="let _ of layoutCols(l.id)"></span>
+                </span>
               </span>
               <span class="layout-card-label">{{ l.label }}</span>
               <span class="layout-card-blurb">{{ l.blurb }}</span>

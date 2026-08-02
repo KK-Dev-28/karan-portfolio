@@ -163,6 +163,21 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   appearanceSuccess = false;
   appearanceError   = '';
 
+  /** Column count each layout actually renders for its 3-up sections — mirrors
+   *  --grid-cols-3 in styles.scss, so the picker thumbnail shows real density
+   *  rather than an arbitrary decorative count. */
+  private readonly layoutColCount: Record<LayoutId, number> = {
+    'standard':     3,
+    'dossier':      2,
+    'atelier-grid': 3,
+    'zen':          2,
+    'command':      4,
+    'canvas':       3,
+  };
+  layoutCols(id: LayoutId): number[] {
+    return Array(this.layoutColCount[id] ?? 3);
+  }
+
   pickAppearanceTheme(id: ThemeId) {
     this.appearanceTheme = id;
     this.appearanceDirty = true;

@@ -471,19 +471,36 @@
 .layout-card-label { font-family: var(--font-head); font-size: .85rem; font-weight: 700; color: var(--text); }
 .layout-card-blurb { font-size: .72rem; line-height: 1.45; color: var(--text-dim); }
 
-/* Tiny wireframe icon — three bars whose widths/gaps sketch the layout's density */
-.layout-card-icon {
-  display: flex; align-items: flex-end; gap: 4px; height: 40px; padding: 6px 8px;
+/* Mini page mockup — a real navbar/hero/grid sketch per layout, built from
+   the same shape each layout actually renders (container inset via side
+   padding, --grid-cols-3 via tile count, --layout-gap via grid gap,
+   --radius via tile corners) so the picker shows what you'll get, not an
+   arbitrary decoration. Pure CSS, no image/JS cost — stays instant. */
+.layout-preview {
+  display: flex; flex-direction: column; gap: 5px;
+  height: 66px; padding: 8px 10px; box-sizing: border-box;
   background: var(--card); border: 1px solid var(--border); border-radius: 6px;
-  span { flex: 1; background: var(--accent); border-radius: 2px; opacity: .55; height: 60%; }
-
-  &[data-layout-id="standard"] span { height: 60%; }
-  &[data-layout-id="dossier"]  { gap: 2px; span { height: 45%; } }
-  &[data-layout-id="atelier-grid"] { gap: 7px; span { height: 80%; border-radius: 3px; } }
-  &[data-layout-id="zen"]      { gap: 9px; span { height: 70%; } }
-  &[data-layout-id="command"]  { gap: 2px; span { height: 92%; border-radius: 1px; } }
-  &[data-layout-id="canvas"]   { gap: 8px; span { height: 85%; border-radius: 3px; } }
+  overflow: hidden;
 }
+.lp-bar {
+  flex: 0 0 auto; height: 5px; width: 30%; border-radius: 3px;
+  background: rgba(var(--accent-rgb),.55);
+}
+.lp-hero {
+  flex: 0 0 auto; height: 11px; border-radius: 3px;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb),.28), rgba(var(--accent-rgb),.06));
+}
+.lp-grid { flex: 1; display: grid; gap: 3px; }
+.lp-tile { background: var(--bg-3); border: 1px solid var(--border); }
+
+/* Container width → side padding on the mockup itself (narrower layouts
+   read as an inset column; wide/full-bleed layouts sit closer to the edge). */
+.layout-preview[data-layout-id="standard"]     { .lp-grid { grid-template-columns: repeat(3,1fr); gap: 4px; } .lp-tile { border-radius: 3px; } }
+.layout-preview[data-layout-id="dossier"]      { padding-left: 16px; padding-right: 16px; .lp-grid { grid-template-columns: repeat(2,1fr); gap: 2px; } .lp-tile { border-radius: 2px; } .lp-hero { opacity: .7; } }
+.layout-preview[data-layout-id="atelier-grid"] { .lp-grid { grid-template-columns: repeat(3,1fr); gap: 5px; } .lp-tile { border-radius: 6px; } }
+.layout-preview[data-layout-id="zen"]          { padding-left: 18px; padding-right: 18px; .lp-grid { grid-template-columns: repeat(2,1fr); gap: 6px; } .lp-tile { border-radius: 5px; } .lp-bar { width: 22%; } }
+.layout-preview[data-layout-id="command"]      { padding-left: 5px; padding-right: 5px; .lp-grid { grid-template-columns: repeat(4,1fr); gap: 2px; } .lp-tile { border-radius: 1px; } }
+.layout-preview[data-layout-id="canvas"]       { padding-left: 3px; padding-right: 3px; .lp-grid { grid-template-columns: repeat(3,1fr); gap: 6px; } .lp-tile { border-radius: 7px; } }
 
 .appearance-actions {
   display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: .5rem;
