@@ -56,6 +56,17 @@ export class SeoService {
     this.setProp('og:type', type);
     this.setProp('og:site_name', SITE_NAME);
 
+    // index.html declares 1200×630 for the default card. A post supplying its
+    // own cover is an unknown size, so drop the dimensions rather than lie
+    // about them — scrapers handle a missing size fine, a wrong one badly.
+    if (image === DEFAULT_IMAGE) {
+      this.setProp('og:image:width', '1200');
+      this.setProp('og:image:height', '630');
+    } else {
+      this.meta.removeTag("property='og:image:width'");
+      this.meta.removeTag("property='og:image:height'");
+    }
+
     this.setName('twitter:card', 'summary_large_image');
     this.setName('twitter:title', fullTitle);
     this.setName('twitter:description', tags.description);

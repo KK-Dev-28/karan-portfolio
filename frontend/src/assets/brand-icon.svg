@@ -1,24 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="KK Dev Icon">
+  <!-- Palette tracks the Midnight+Gold theme in styles.scss (--bg, --accent,
+       --accent-2, --violet) so the favicon matches the site it opens. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#111823"/>
-      <stop offset="100%" stop-color="#16202d"/>
+      <stop offset="0%" stop-color="#0c0c16"/>
+      <stop offset="100%" stop-color="#12121e"/>
     </linearGradient>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#34d399"/>
-      <stop offset="100%" stop-color="#60a5fa"/>
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fde68a"/>
     </linearGradient>
   </defs>
 
-  <rect x="8" y="8" width="112" height="112" rx="24" fill="url(#bg)" stroke="#253244" stroke-width="2"/>
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="url(#bg)" stroke="#23233a" stroke-width="2"/>
   <rect x="16" y="16" width="96" height="96" rx="18" fill="none" stroke="rgba(255,255,255,0.08)"/>
 
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M38 38V90" stroke="#e8edf3" stroke-width="7"/>
+    <path d="M38 38V90" stroke="#f5f5f7" stroke-width="7"/>
     <path d="M38 64L64 38" stroke="url(#accent)" stroke-width="7"/>
     <path d="M38 64L64 90" stroke="url(#accent)" stroke-width="7"/>
 
-    <path d="M74 38V90" stroke="#e8edf3" stroke-width="7"/>
+    <path d="M74 38V90" stroke="#f5f5f7" stroke-width="7"/>
     <path d="M74 64L100 38" stroke="url(#accent)" stroke-width="7"/>
     <path d="M74 64L100 90" stroke="url(#accent)" stroke-width="7"/>
   </g>

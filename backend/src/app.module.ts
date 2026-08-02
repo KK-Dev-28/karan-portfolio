@@ -36,6 +36,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
 import { PortfolioUpdateModule } from './portfolio-update/portfolio-update.module';
 import { HealthModule } from './health/health.module';
 import { ResumeModule } from './resume/resume.module';
+import { ChatModule } from './chat/chat.module';
 import { SiteContentModule } from './site-content/site-content.module';
 import { ReviewModule }  from './reviews/review.module';
 import { ServiceOrderModule } from './service-orders/service-order.module';
@@ -136,6 +137,7 @@ import { parseDatabaseUrl } from './database/parse-database-url';
     HealthModule,
     ResumeModule,
     SiteContentModule,
+    ChatModule,
     ReviewModule,
     ServiceOrderModule,
     SurveyModule,

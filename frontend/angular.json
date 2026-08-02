@@ -16,7 +16,7 @@
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": ["src/favicon.ico", "src/robots.txt", "src/sitemap.xml", "src/assets"],
             "styles": ["src/styles.scss"],
             "scripts": []
           },
@@ -54,6 +54,9 @@
     }
   },
   "cli": {
-    "analytics": "45565967-00df-4ff9-93fd-bcd3bd1c2a2a"
+    "analytics": "45565967-00df-4ff9-93fd-bcd3bd1c2a2a",
+    "cache": {
+      "enabled": false
+    }
   }
 }
