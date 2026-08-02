@@ -43,6 +43,12 @@
         WhatsApp Me
       </a>
       <button class="btn-ghost" (click)="go('contact')">{{ hero.ctaGhost }}</button>
+
+      <!-- Only rendered once a video URL is set in Admin → CMS → hero -->
+      <button class="btn-tour" *ngIf="hero.tourVideoUrl" (click)="openTour()">
+        <span class="tour-play" aria-hidden="true">▶</span>
+        {{ hero.tourCta || 'Watch the tour' }}
+      </button>
     </div>
   </div>
 
@@ -66,5 +72,21 @@
   <div class="scroll-hint">
     <div class="scroll-line"></div>
     <span>scroll</span>
+  </div>
+
+  <!-- Walkthrough video. The iframe only exists while open, so it costs
+       nothing on page load and its audio stops the moment it closes. -->
+  <div class="tour-overlay" *ngIf="tourOpen" (click)="closeTour()">
+    <div class="tour-modal" (click)="$event.stopPropagation()">
+      <button class="tour-close" (click)="closeTour()" aria-label="Close video">✕</button>
+      <div class="tour-frame">
+        <iframe
+          [src]="tourUrl"
+          title="Portfolio walkthrough"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    </div>
   </div>
 </section>

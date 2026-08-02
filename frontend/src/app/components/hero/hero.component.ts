@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SiteContentService } from '../../services/site-content.service';
 
 @Component({
@@ -23,7 +24,30 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
   nameLetters: string[] = [];
   lastLetters: string[] = [];
 
-  constructor(private cms: SiteContentService) {}
+  /* ── Walkthrough video ──
+     The iframe is only created once the modal opens (`tourUrl` stays null
+     until then), so an embed costs nothing on initial page load — an
+     always-present YouTube iframe would add several hundred KB to every
+     visit for something most visitors never click. */
+  tourOpen = false;
+  tourUrl: SafeResourceUrl | null = null;
+
+  constructor(private cms: SiteContentService, private sanitizer: DomSanitizer) {}
+
+  openTour() {
+    const embed = toEmbedUrl(this.hero?.tourVideoUrl);
+    if (!embed) return;
+    this.tourUrl  = this.sanitizer.bypassSecurityTrustResourceUrl(embed);
+    this.tourOpen = true;
+  }
+
+  closeTour() {
+    this.tourOpen = false;
+    this.tourUrl  = null; // tears the iframe down so audio stops on close
+  }
+
+  @HostListener('document:keydown.escape')
+  onEsc() { if (this.tourOpen) this.closeTour(); }
 
   ngOnInit() {
     this.cms.getAll().subscribe(c => {
@@ -166,4 +190,25 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     cancelAnimationFrame(this.animId);
     this.themeObs?.disconnect();
   }
+}
+
+/**
+ * Normalises a pasted video link into an embeddable URL, so whoever edits the
+ * CMS can paste whatever the browser address bar gave them rather than having
+ * to know the /embed/ form. Returns null for anything unrecognised, which
+ * keeps the button hidden instead of rendering a broken iframe.
+ */
+function toEmbedUrl(raw: string | undefined | null): string | null {
+  const url = (raw ?? '').trim();
+  if (!url) return null;
+
+  // youtu.be/ID  |  youtube.com/watch?v=ID  |  youtube.com/embed/ID
+  const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|live\/|shorts\/))([\w-]{6,})/);
+  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}?autoplay=1&rel=0&modestbranding=1`;
+
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1`;
+
+  // A direct file or an already-embeddable player URL — pass it through.
+  return /^https:\/\//.test(url) ? url : null;
 }

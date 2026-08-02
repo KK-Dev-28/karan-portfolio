@@ -18,6 +18,11 @@ const DEFAULTS: Record<string, any> = {
     ctaGhost: 'Get In Touch',
     whatsappNumber: '918360426467',
     available: true,
+    /* Paste a YouTube/Vimeo link here (Admin → CMS → hero) to surface the
+       "Watch the tour" button in the hero. Empty string hides the button
+       entirely, so the site looks intentional until a video exists. */
+    tourVideoUrl: '',
+    tourCta: 'Watch the tour',
   },
   skills: {
     bars: [
