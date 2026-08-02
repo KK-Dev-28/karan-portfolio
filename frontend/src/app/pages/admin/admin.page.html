@@ -738,10 +738,13 @@
               class="theme-card"
               [class.active]="appearanceTheme === t.id"
               (click)="pickAppearanceTheme(t.id)">
-              <span class="theme-card-swatch">
-                <span [style.background]="t.swatch[0]"></span>
-                <span [style.background]="t.swatch[1]"></span>
-                <span [style.background]="t.swatch[2]"></span>
+              <span class="theme-preview" [class.light]="!t.dark" [style.background]="t.swatch[0]">
+                <span class="tp-bar"></span>
+                <span class="tp-card" [style.background]="t.swatch[1]" [style.border-color]="t.swatch[2]">
+                  <span class="tp-line"></span>
+                  <span class="tp-line short"></span>
+                  <span class="tp-accent" [style.background]="t.swatch[2]"></span>
+                </span>
               </span>
               <span class="theme-card-label">{{ t.label }}</span>
               <span class="theme-card-blurb">{{ t.blurb }}</span>

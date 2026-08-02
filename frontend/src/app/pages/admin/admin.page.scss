@@ -448,10 +448,33 @@
   &:hover     { border-color: rgba(var(--accent-rgb),.35); transform: translateY(-2px); }
   &.active    { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(var(--accent-rgb),.25), 0 0 24px var(--accent-glow); }
 }
-.theme-card-swatch {
-  display: flex; height: 44px; border-radius: var(--radius); overflow: hidden;
-  border: 1px solid var(--border);
-  span { flex: 1; height: 100%; }
+/* Mini mockup — a card floating on the theme's real background, with an
+   accent-colored button/badge and text lines, so the picker shows how a
+   theme actually reads (surfaces + contrast + accent) instead of three
+   flat color chips. Colors come from the theme's own swatch, not the
+   admin's currently-active theme, so all 4 previews stay correct
+   regardless of which one is live. */
+.theme-preview {
+  display: flex; flex-direction: column; gap: 6px;
+  height: 66px; padding: 8px; box-sizing: border-box;
+  border-radius: var(--radius); border: 1px solid var(--border);
+  overflow: hidden;
+}
+.tp-bar { flex: 0 0 auto; height: 4px; width: 38%; border-radius: 2px; background: rgba(255,255,255,.25); }
+.tp-card {
+  flex: 1; border-radius: 5px; border: 1px solid; border-top-width: 2px;
+  padding: 7px 8px; display: flex; flex-direction: column; justify-content: center; gap: 5px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.28);
+}
+.tp-line       { height: 3px; width: 72%; border-radius: 2px; background: rgba(255,255,255,.35); }
+.tp-line.short { width: 42%; background: rgba(255,255,255,.2); }
+.tp-accent     { height: 8px; width: 32%; border-radius: 4px; margin-top: 2px; }
+
+.theme-preview.light {
+  .tp-bar        { background: rgba(0,0,0,.16); }
+  .tp-line       { background: rgba(0,0,0,.32); }
+  .tp-line.short { background: rgba(0,0,0,.18); }
+  .tp-card       { box-shadow: 0 4px 14px rgba(20,24,40,.1); }
 }
 .theme-card-label { font-family: var(--font-head); font-size: .85rem; font-weight: 700; color: var(--text); }
 .theme-card-blurb { font-size: .72rem; line-height: 1.45; color: var(--text-dim); }
