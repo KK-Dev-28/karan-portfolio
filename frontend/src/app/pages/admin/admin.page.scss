@@ -579,6 +579,13 @@
 .ds-range { flex: 1 1 auto; accent-color: var(--accent); cursor: pointer; }
 .ds-motion-val { flex: 0 0 auto; font-family: var(--font-mono, monospace); font-size: .78rem; color: var(--text); min-width: 44px; }
 
+.ds-warn {
+  font-size: .76rem; line-height: 1.6; color: var(--text-muted);
+  background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.3);
+  border-radius: var(--radius); padding: .7rem .85rem; margin-top: -.2rem;
+  strong { color: var(--text); }
+}
+
 .ds-css-hint { margin-bottom: .65rem; code { font-family: var(--font-mono, monospace); color: var(--accent); } }
 .ds-css { min-height: 180px; }
 

@@ -75,6 +75,12 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     // gold/violet dots looked like stray confetti on the plum light theme.
     // Re-read on theme switch via the observer at the end of this method.
     let colors: string[] = [];
+    // A light canvas needs noticeably more alpha than a dark one: the same
+    // value that reads as a glowing dot on near-black reads as faint dust on
+    // paper. Derived from --bg luminance so it follows any theme, including
+    // ones added later.
+    let alphaScale = 1;
+    let lineAlpha  = 0.12;
     const readPalette = () => {
       const cs = getComputedStyle(document.documentElement);
       const rgb = (name: string, fallback: string) =>
@@ -85,6 +91,9 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
         rgb('--violet-rgb',   '139,92,246'),
         rgb('--electric-rgb', '59,130,246'),
       ];
+      const light = isLightHex(cs.getPropertyValue('--bg').trim());
+      alphaScale = light ? 2.1 : 1;
+      lineAlpha  = light ? 0.3 : 0.12;
     };
     readPalette();
 
@@ -154,7 +163,7 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Glow
         const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-        glow.addColorStop(0, `${p.color}${p.opacity})`);
+        glow.addColorStop(0, `${p.color}${Math.min(1, p.opacity * alphaScale)})`);
         glow.addColorStop(1, `${p.color}0)`);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
@@ -172,7 +181,7 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
             ctx.beginPath();
             ctx.moveTo(this.particles[i].x, this.particles[i].y);
             ctx.lineTo(this.particles[j].x, this.particles[j].y);
-            ctx.strokeStyle = `rgba(245,158,11,${0.12 * (1 - d / 90)})`;
+            ctx.strokeStyle = `${colors[0]}${lineAlpha * (1 - d / 90)})`;
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }
@@ -190,6 +199,16 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     cancelAnimationFrame(this.animId);
     this.themeObs?.disconnect();
   }
+}
+
+/** True when a `#rrggbb` background is light enough to need darker/stronger
+ *  canvas marks. Uses perceived luminance, not a plain average. */
+function isLightHex(hex: string): boolean {
+  const m = /^#?([0-9a-f]{6})$/i.exec((hex || '').trim());
+  if (!m) return false;
+  const n = parseInt(m[1], 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.5;
 }
 
 /**

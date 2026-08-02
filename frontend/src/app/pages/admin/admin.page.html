@@ -848,8 +848,15 @@
             </label>
             <label class="form-checkbox">
               <input type="checkbox" [ngModel]="design.motion.reduced" (ngModelChange)="setMotion('reduced', $event)" />
-              Reduce all motion (calm mode)
+              Turn off ALL animation — for every visitor
             </label>
+            <p class="ds-warn" *ngIf="design.motion.reduced">
+              ⚠ Every animation on the public site is currently disabled: section
+              reveals, card entrances, scroll effects, the starfield and the ambient
+              light. The site will look static to visitors. You usually want this
+              <strong>off</strong> — people who need reduced motion already get it
+              automatically from their own device setting.
+            </p>
           </div>
         </div>
 

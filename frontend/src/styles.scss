@@ -153,20 +153,23 @@ html[data-theme="terminal"] {
 
 /* ── Paper Ledger — cool daylight paper, ink navy, plum accent ── */
 html[data-theme="paper-ledger"] {
-  --bg:        #eef0f4;
-  --bg-2:      #e7e9ee;
-  --bg-3:      #dde0e7;
+  /* Slightly deeper paper + stronger rules than a pure-white scheme: at very
+     low contrast this theme read as washed-out and unfinished rather than
+     minimal, especially in the wide layouts where large empty areas dominate. */
+  --bg:        #e9ecf2;
+  --bg-2:      #e0e4ec;
+  --bg-3:      #d5dae4;
   --card:      #ffffff;
-  --border:    #cbd0da;
+  --border:    #bfc6d4;
   --accent:      #7a2e45;
   --accent-rgb:  122,46,69;
   --accent-2:    #a24361;
   --accent-2-rgb: 162,67,97;
   --accent-glow: rgba(122,46,69,.14);
 
-  --text:      #1a2233;
-  --text-muted:#55607a;
-  --text-dim:  #8790a6;
+  --text:      #141b29;
+  --text-muted:#454f66;
+  --text-dim:  #6b7590;
 
   --violet:      #4c3a91;
   --violet-rgb:  76,58,145;
