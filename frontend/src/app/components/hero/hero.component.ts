@@ -13,6 +13,7 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   hero: any = null;
   private animId = 0;
+  private themeObs?: MutationObserver;
   private mouse = { x: -9999, y: -9999 };
   private particles: {
     x: number; y: number; vx: number; vy: number;
@@ -45,7 +46,23 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!canvas) return;
     const ctx = canvas.getContext('2d')!;
 
-    const colors = ['rgba(245,158,11,', 'rgba(251,191,36,', 'rgba(217,119,6,', 'rgba(139,92,246,', 'rgba(59,130,246,'];
+    // Particle palette is read from the live theme tokens rather than
+    // hardcoded, so the canvas reskins with the rest of the site — hardcoded
+    // gold/violet dots looked like stray confetti on the plum light theme.
+    // Re-read on theme switch via the observer at the end of this method.
+    let colors: string[] = [];
+    const readPalette = () => {
+      const cs = getComputedStyle(document.documentElement);
+      const rgb = (name: string, fallback: string) =>
+        `rgba(${(cs.getPropertyValue(name).trim() || fallback)},`;
+      colors = [
+        rgb('--accent-rgb',   '245,158,11'),
+        rgb('--accent-2-rgb', '251,191,36'),
+        rgb('--violet-rgb',   '139,92,246'),
+        rgb('--electric-rgb', '59,130,246'),
+      ];
+    };
+    readPalette();
 
     // Render at native device resolution (capped at 2x) so particles stay crisp on HiDPI
     let vw = 0, vh = 0;
@@ -69,13 +86,21 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     resize();
     window.addEventListener('resize', resize);
 
+    // Repaint the palette when the visitor or admin switches theme, so the
+    // canvas doesn't keep the previous theme's colours until a reload.
+    this.themeObs = new MutationObserver(() => {
+      readPalette();
+      for (const p of this.particles) p.color = colors[Math.floor(Math.random() * colors.length)];
+    });
+    this.themeObs.observe(document.documentElement, { attributeFilter: ['data-theme'] });
+
     const draw = () => {
       ctx.clearRect(0, 0, vw, vh);
 
       // Central aurora glow
       const grd = ctx.createRadialGradient(vw / 2, vh * 0.45, 0, vw / 2, vh * 0.45, vw * 0.55);
-      grd.addColorStop(0, 'rgba(245,158,11,0.06)');
-      grd.addColorStop(0.5, 'rgba(139,92,246,0.03)');
+      grd.addColorStop(0, `${colors[0]}0.06)`);
+      grd.addColorStop(0.5, `${colors[2]}0.03)`);
       grd.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, vw, vh);
@@ -137,5 +162,8 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
 
   go(id: string) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }
   get waUrl() { return `/api/wa?text=Hi Karan, I saw your portfolio and want to discuss a project.`; }
-  ngOnDestroy() { cancelAnimationFrame(this.animId); }
+  ngOnDestroy() {
+    cancelAnimationFrame(this.animId);
+    this.themeObs?.disconnect();
+  }
 }

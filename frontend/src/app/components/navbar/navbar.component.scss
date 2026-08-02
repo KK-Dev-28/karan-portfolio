@@ -21,18 +21,18 @@
   align-items: center;
   gap: 1rem;
   padding: .6rem .8rem .6rem 1.4rem;
-  background: rgba(10, 10, 20, 0.72);
+  background: var(--nav-bg);
   border: 1px solid rgba(var(--accent-rgb), 0.15);
   border-radius: 999px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-card);
   transition: background var(--t-mid), border-color var(--t-mid), box-shadow var(--t-mid);
 
   .navbar.scrolled & {
-    background: rgba(10, 10, 20, 0.92);
+    background: var(--nav-bg-scrolled);
     border-color: rgba(var(--accent-rgb), 0.25);
-    box-shadow: 0 12px 40px rgba(2, 2, 14, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 28px rgba(var(--accent-rgb),.07);
+    box-shadow: var(--shadow-card), 0 0 24px rgba(var(--accent-rgb),.07);
   }
 }
 
@@ -71,7 +71,7 @@
     border-radius: 999px;
     transition: color var(--t-fast), background var(--t-fast);
 
-    &:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+    &:hover { color: var(--text); background: var(--bg-3); }
 
     &.active {
       color: var(--accent);
@@ -270,7 +270,7 @@
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(15, 15, 15, 0.98);
+  background: var(--nav-bg-scrolled);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
@@ -411,7 +411,7 @@
 .login-btn {
   width: 100%;
   padding: .9rem;
-  background: var(--gradient-gold);
+  background: var(--gradient-accent);
   color: #000;
   font-family: var(--font-head);
   font-size: .9rem;

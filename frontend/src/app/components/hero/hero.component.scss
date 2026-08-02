@@ -35,7 +35,7 @@
 .blob-2 {
   width: 600px; height: 600px;
   bottom: -100px; right: -80px;
-  background: radial-gradient(circle, rgba(124,58,237,.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(var(--violet-rgb),.12) 0%, transparent 70%);
   animation-duration: 24s;
   animation-direction: alternate-reverse;
 }
@@ -43,7 +43,7 @@
 .blob-3 {
   width: 400px; height: 400px;
   top: 30%; right: 15%;
-  background: radial-gradient(circle, rgba(6,182,212,.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(var(--electric-rgb),.08) 0%, transparent 70%);
   animation-duration: 15s;
 }
 
@@ -105,12 +105,14 @@
   display: block; overflow: hidden;
 }
 
+/* Solid fill, deliberately not gradient-clipped text. Each letter is an
+   animated inline-block, and a `background-clip: text` gradient on this
+   parent has no text of its own to clip against — the letters render fully
+   transparent and the whole first name disappears. Solid colour is also
+   simply more legible at this size in all four themes. */
 .line1 {
   font-size: clamp(4.5rem, 13vw, 10rem);
-  background: linear-gradient(135deg, var(--text) 0%, rgba(var(--accent-rgb),.9) 55%, var(--text) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text);
 }
 
 .line2 {
@@ -177,7 +179,7 @@
 .btn-primary {
   display: inline-flex; align-items: center; gap: .6rem;
   padding: .95rem 2.2rem;
-  background: var(--gradient-gold);
+  background: var(--gradient-accent);
   color: #000; border: none; border-radius: 10px;
   font-family: var(--font-head); font-size: .92rem; font-weight: 800;
   cursor: pointer; position: relative; overflow: hidden;
@@ -195,7 +197,7 @@
     content: '';
     position: absolute;
     inset: -2px; border-radius: 12px;
-    background: var(--gradient-gold);
+    background: var(--gradient-accent);
     z-index: -1; opacity: 0; filter: blur(12px);
     transition: opacity 0.3s;
   }
@@ -230,7 +232,7 @@
 .btn-ghost {
   padding: .95rem 1.85rem;
   background: transparent;
-  border: 1px solid rgba(255,255,255,.12); border-radius: 10px;
+  border: 1px solid var(--glass-border); border-radius: 10px;
   color: var(--text-muted); font-family: var(--font-head); font-size: .92rem;
   font-weight: 600; cursor: pointer;
   transition: all 0.3s cubic-bezier(.23,1,.32,1);
@@ -248,16 +250,13 @@
   position: relative; z-index: 2;
   display: flex; align-items: center; gap: 3.5rem;
   padding: 2rem 3.5rem; margin-top: 4rem;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   border-top: 1px solid rgba(var(--accent-rgb),.25);
   border-radius: var(--radius-lg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    0 8px 40px rgba(0,0,0,.3),
-    0 1px 0 rgba(255,255,255,.06) inset,
-    0 0 0 1px rgba(var(--accent-rgb),.06) inset;
+  box-shadow: var(--shadow-card);
   animation: hero-fade 0.8s 1s both;
   transition: box-shadow .3s, transform .3s;
 
@@ -274,7 +273,7 @@
 
 .stat-n {
   font-family: var(--font-head); font-size: 2.6rem; font-weight: 800;
-  background: var(--gradient-gold);
+  background: var(--gradient-accent);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; line-height: 1;
   span { font-size: 1.6rem; }
@@ -311,24 +310,15 @@
   50%       { transform: translateX(-50%) translateY(8px); }
 }
 
-/* ── Light mode adjustments ── */
-:host-context(.theme-light) {
-  .line1 {
-    background: linear-gradient(135deg, #111 0%, #b45309 50%, #111 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .letter-outline { -webkit-text-stroke: 2px #b45309; }
-  .aurora-blob { opacity: .6; }
-  .hero-stats {
-    background: rgba(0,0,0,.04);
-    border-color: rgba(0,0,0,.08);
-    border-top-color: rgba(180,83,9,.2);
-    box-shadow: 0 4px 20px rgba(0,0,0,.1);
-  }
-  .btn-ghost { border-color: rgba(0,0,0,.12); color: #555; }
+/* ── Light-theme adjustments ──
+   Everything else in this file now resolves through theme tokens
+   (--text / --glass-bg / --glass-border / --accent), so the only override
+   still needed is dialling the aurora blobs back — at full strength they
+   read as smudges on a pale background rather than ambient light.
+   Note this keys off `html[data-theme]`, not the pre-multi-theme
+   `.theme-light` class, which no longer exists. */
+:host-context(html[data-theme="paper-ledger"]) {
+  .aurora-blob { opacity: .45; }
 }
 
 /* ── Responsive ── */

@@ -70,6 +70,11 @@ html { scroll-behavior: smooth; font-size: 16px; }
   --ambient-opacity: .3;
   --star-opacity:    .12;
 
+  /* Floating navbar pill — its own token because it sits over arbitrary
+     page content and needs a heavier, more opaque tint than --glass-bg. */
+  --nav-bg:          rgba(10,10,20,.72);
+  --nav-bg-scrolled: rgba(10,10,20,.92);
+
   /* ── Layout: Standard (default) — see /DESIGN_SYSTEM.md §Layouts ── */
   --container:   1200px;
   --layout-gap:  2rem;
@@ -182,6 +187,8 @@ html[data-theme="paper-ledger"] {
   --noise-opacity:   .06;
   --ambient-opacity: .16;
   --star-opacity:    .05;
+  --nav-bg:          rgba(255,255,255,.8);
+  --nav-bg-scrolled: rgba(255,255,255,.94);
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
