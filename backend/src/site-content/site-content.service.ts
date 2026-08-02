@@ -135,6 +135,21 @@ const DEFAULTS: Record<string, any> = {
     summary: 'Full Stack Developer with 2.6+ years building enterprise-grade web applications. Passionate about clean architecture, performance, and delivering value.',
     tagline: 'Building production-grade systems that scale.',
   },
+  /* Guided tour shown by the on-site assistant. `target` must be the id of a
+     section on the home page; a step pointing at a missing id is skipped at
+     runtime rather than breaking the tour. */
+  tourGuide: {
+    steps: [
+      { target: 'hero',       title: 'Welcome 👋',   body: "Hi, I'm Karan's guide. I'll walk you through this portfolio in about a minute — or skip ahead any time." },
+      { target: 'services',   title: 'What I do',    body: 'Full stack delivery — REST APIs through to polished interfaces. These are the engagements I take on.' },
+      { target: 'skills',     title: 'The stack',    body: 'Angular on the front end, .NET and NestJS with PostgreSQL behind it. Production tooling, not tutorials.' },
+      { target: 'projects',   title: 'The proof',    body: 'Real shipped systems — inventory platforms, an applicant tracking system, internal tooling. Each has a full case study.' },
+      { target: 'story',      title: 'The journey',  body: 'How I got from a diploma in computer applications to building enterprise systems.' },
+      { target: 'experience', title: 'Experience',   body: 'Currently a Junior Software Developer at CS Soft Solutions, alongside an MCA at Lovely Professional University.' },
+      { target: 'gigs',       title: 'Work with me', body: 'Fixed-scope packages and monthly retainers, with clear deliverables and timelines.' },
+      { target: 'contact',    title: "Let's talk",   body: 'That’s the tour. If something here fits what you need, send a message — I reply quickly.' },
+    ],
+  },
   appearance: {
     theme: 'midnight-gold',
     layout: 'standard',

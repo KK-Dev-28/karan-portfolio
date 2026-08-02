@@ -1,7 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SeoService, SITE_URL } from '../../services/seo.service';
 
 interface Path { icon: string; title: string; desc: string; }
 interface Highlight { icon: string; label: string; }
@@ -54,9 +55,10 @@ const CASE_STUDIES: Record<string, CaseStudy> = {
   templateUrl: './case-study.page.html',
   styleUrls: ['./case-study.page.scss'],
 })
-export class CaseStudyPageComponent implements OnInit {
+export class CaseStudyPageComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private sanitizer = inject(DomSanitizer);
+  private seo = inject(SeoService);
 
   study: CaseStudy | null = null;
   slug = '';
@@ -69,6 +71,39 @@ export class CaseStudyPageComponent implements OnInit {
     if (this.study) {
       this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.study.liveUrl);
     }
+    this.applySeo();
+  }
+
+  ngOnDestroy() {
+    this.seo.removeJsonLd('casestudy');
+  }
+
+  /** Overrides the placeholder tags from the route with this study's own. */
+  private applySeo() {
+    const path = `/case-study/${this.slug}`;
+
+    if (!this.study) {
+      this.seo.update({
+        title: 'Case study not found',
+        description: 'This case study could not be found.',
+        path,
+        noindex: true,
+      });
+      return;
+    }
+
+    this.seo.update({ title: this.study.title, description: this.study.subtitle, path, type: 'article' });
+
+    this.seo.setJsonLd('casestudy', {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: this.study.title,
+      description: this.study.subtitle,
+      url: `${SITE_URL}${path}`,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}${path}` },
+      author: { '@type': 'Person', name: 'Karan Kapoor' },
+      keywords: this.study.builtWith.join(', '),
+    });
   }
 
   openLive() {

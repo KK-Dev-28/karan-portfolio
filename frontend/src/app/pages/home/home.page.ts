@@ -25,6 +25,7 @@ import { EstimatorComponent } from '../../components/estimator/estimator.compone
 import { DigitalProductsComponent } from '../../components/digital-products/digital-products.component';
 import { SurveyBannerComponent } from '../../components/survey-banner/survey-banner.component';
 import { StoryComponent } from '../../components/story/story.component';
+import { TourGuideComponent } from '../../components/tour-guide/tour-guide.component';
 
 @Component({
   selector: 'app-home-page',
@@ -53,6 +54,7 @@ import { StoryComponent } from '../../components/story/story.component';
     DemosComponent,
     SurveyBannerComponent,
     StoryComponent,
+    TourGuideComponent,
     BookingComponent,
     EstimatorComponent,
     DigitalProductsComponent,
@@ -60,6 +62,7 @@ import { StoryComponent } from '../../components/story/story.component';
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
     <app-cursor-3d></app-cursor-3d>
+    <app-tour-guide></app-tour-guide>
     <div class="global-stars" aria-hidden="true"></div>
     <app-navbar></app-navbar>
     <app-hero></app-hero>

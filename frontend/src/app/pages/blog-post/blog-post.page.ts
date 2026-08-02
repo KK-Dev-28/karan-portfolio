@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { BlogApiService } from '../../services/blog.service';
 import { ReactionBarComponent } from '../../components/reaction-bar/reaction-bar.component';
+import { SeoService, SITE_URL } from '../../services/seo.service';
 
 @Component({
   selector: 'app-blog-post-page',
@@ -11,15 +12,21 @@ import { ReactionBarComponent } from '../../components/reaction-bar/reaction-bar
   templateUrl: './blog-post.page.html',
   styleUrls: ['./blog-post.page.scss'],
 })
-export class BlogPostPageComponent implements OnInit {
+export class BlogPostPageComponent implements OnInit, OnDestroy {
   post: any = null;
   loading = true;
   notFound = false;
+
+  ngOnDestroy() {
+    // Don't let this post's structured data follow the visitor to the next route.
+    this.seo.removeJsonLd('blogposting');
+  }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private blog: BlogApiService,
+    private seo: SeoService,
   ) {}
 
   ngOnInit() {
@@ -28,10 +35,59 @@ export class BlogPostPageComponent implements OnInit {
       if (!slug) { this.router.navigate(['/blog']); return; }
       this.loading = true; this.notFound = false;
       this.blog.getPost(slug).subscribe({
-        next: post => { this.post = post; this.loading = false; },
-        error: () => { this.loading = false; this.notFound = true; },
+        next: post => {
+          this.post = post; this.loading = false;
+          this.applySeo(post, slug);
+        },
+        error: () => {
+          this.loading = false; this.notFound = true;
+          // A missing post must not be indexed under the requested slug.
+          this.seo.update({
+            title: 'Post not found',
+            description: 'This post could not be found.',
+            path: `/blog/posts/${slug}`,
+            noindex: true,
+          });
+        },
       });
     });
+  }
+
+  /** Per-post title, description, share image and BlogPosting structured data. */
+  private applySeo(post: any, slug: string) {
+    const path = `/blog/posts/${slug}`;
+    const description: string = (post?.excerpt || this.plainSummary(post?.body) || 'A post by Karan Kapoor.').slice(0, 300);
+    const author: string = post?.authorName || post?.author || 'Karan Kapoor';
+    const published: string | undefined = post?.publishedAt || post?.createdAt;
+
+    this.seo.update({
+      title: post?.title || 'Post',
+      description,
+      path,
+      type: 'article',
+      image: post?.coverImage || undefined,
+      published,
+      author,
+    });
+
+    this.seo.setJsonLd('blogposting', {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post?.title,
+      description,
+      url: `${SITE_URL}${path}`,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}${path}` },
+      ...(post?.coverImage ? { image: post.coverImage } : {}),
+      ...(published ? { datePublished: published } : {}),
+      author: { '@type': 'Person', name: author },
+      ...(Array.isArray(post?.tags) && post.tags.length ? { keywords: post.tags.join(', ') } : {}),
+    });
+  }
+
+  /** First ~200 chars of body text, used when a post has no excerpt. */
+  private plainSummary(body?: string): string {
+    if (!body) return '';
+    return body.replace(/\s+/g, ' ').trim().slice(0, 200);
   }
 
   get readingTime(): number {

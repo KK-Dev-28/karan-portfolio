@@ -26,9 +26,14 @@ export interface PaymentCatalog {
 
 declare const Razorpay: any;
 
+const RAZORPAY_SRC = 'https://checkout.razorpay.com/v1/checkout.js';
+
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
   private base = `${environment.apiUrl}/payments`;
+  /** Shared across calls so a second checkout reuses the first load. */
+  private razorpayLoad?: Promise<void>;
+
   constructor(private http: HttpClient) {}
 
   getCatalog(): Observable<PaymentCatalog> {
@@ -91,13 +96,54 @@ export class PaymentService {
 
   // ── Razorpay modal ───────────────────────────────────────────────────────
 
-  openCheckout(
+  /**
+   * Fetches the Razorpay checkout SDK the first time a payment is started.
+   *
+   * It used to be a `<script defer>` in index.html, which cost every visitor a
+   * third-party request on every page even though only a handful ever open
+   * checkout. Resolves immediately if the SDK is already present.
+   */
+  private loadRazorpay(): Promise<void> {
+    if (typeof Razorpay !== 'undefined') return Promise.resolve();
+    if (this.razorpayLoad) return this.razorpayLoad;
+
+    this.razorpayLoad = new Promise<void>((resolve, reject) => {
+      const existing = document.querySelector<HTMLScriptElement>(`script[src="${RAZORPAY_SRC}"]`);
+      const script = existing ?? document.createElement('script');
+      script.addEventListener('load', () => resolve());
+      script.addEventListener('error', () => {
+        // Let a later attempt retry rather than caching the failure forever.
+        this.razorpayLoad = undefined;
+        reject(new Error('Failed to load the Razorpay checkout script.'));
+      });
+      if (!existing) {
+        script.src = RAZORPAY_SRC;
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    });
+    return this.razorpayLoad;
+  }
+
+  /**
+   * Opens the Razorpay modal. Returns a promise that rejects if the SDK could
+   * not be fetched; `onDismiss` still runs so callers can clear their busy
+   * state either way.
+   */
+  async openCheckout(
     order: RazorpayOrder,
     customerName: string,
     customerPhone: string,
     onSuccess: (paymentId: string, orderId: string, signature: string) => void,
     onDismiss?: () => void,
-  ) {
+  ): Promise<void> {
+    try {
+      await this.loadRazorpay();
+    } catch (err) {
+      if (onDismiss) onDismiss();
+      throw err;
+    }
+
     const options = {
       key:         order.keyId,
       amount:      order.amount,

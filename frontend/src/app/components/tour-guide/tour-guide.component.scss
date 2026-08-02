@@ -1,0 +1,147 @@
+/* Guided tour. Everything here is theme-token driven, so the guide reskins
+   with the rest of the site rather than needing a per-theme override. */
+
+:host {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 9500;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .7rem;
+  font-family: var(--font-body);
+}
+
+/* ── Launcher ── */
+.tg-launcher {
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: .7rem 1.1rem;
+  background: var(--nav-bg-scrolled);
+  border: 1px solid rgba(var(--accent-rgb), .35);
+  border-radius: 999px;
+  color: var(--accent);
+  font-family: var(--font-head); font-size: .82rem; font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+
+  &:hover { transform: translateY(-2px); border-color: var(--accent); }
+  &.pulsing { animation: tg-pulse 2.4s ease-in-out infinite; }
+}
+
+@keyframes tg-pulse {
+  0%, 100% { box-shadow: var(--shadow-card), 0 0 0 0 rgba(var(--accent-rgb), .35); }
+  50%      { box-shadow: var(--shadow-card), 0 0 0 10px rgba(var(--accent-rgb), 0); }
+}
+
+.tg-avatar {
+  display: grid; place-items: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(var(--accent-rgb), .14);
+  color: var(--accent);
+  &.sm { width: 22px; height: 22px; }
+}
+
+/* ── First-visit nudge ── */
+.tg-invite {
+  position: relative;
+  width: min(280px, calc(100vw - 3rem));
+  padding: 1rem 1.1rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  animation: tg-rise .3s cubic-bezier(.16,1,.3,1);
+
+  p { font-size: .82rem; line-height: 1.6; color: var(--text-muted); margin-bottom: .8rem; }
+}
+
+.tg-invite-x {
+  position: absolute; top: .5rem; right: .55rem;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-dim); font-size: .75rem; line-height: 1;
+  &:hover { color: var(--text); }
+}
+
+.tg-invite-go {
+  background: none; border: none; cursor: pointer;
+  color: var(--accent); font-family: var(--font-head);
+  font-size: .8rem; font-weight: 700; padding: 0;
+  &:hover { text-decoration: underline; }
+}
+
+/* ── Tour panel ── */
+.tg-panel {
+  width: min(330px, calc(100vw - 3rem));
+  padding: 1rem 1.15rem 1.15rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  animation: tg-rise .32s cubic-bezier(.16,1,.3,1);
+}
+
+@keyframes tg-rise {
+  from { opacity: 0; transform: translateY(12px) scale(.98); }
+}
+
+.tg-head {
+  display: flex; align-items: center; gap: .55rem;
+  margin-bottom: .7rem;
+}
+.tg-count {
+  font-family: var(--font-mono); font-size: .66rem;
+  letter-spacing: .08em; color: var(--text-dim);
+}
+.tg-x {
+  margin-left: auto; background: none; border: none; cursor: pointer;
+  color: var(--text-dim); font-size: .78rem; line-height: 1;
+  &:hover { color: var(--text); }
+}
+
+.tg-title {
+  font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+  color: var(--text); margin-bottom: .4rem;
+}
+.tg-body {
+  font-size: .82rem; line-height: 1.65; color: var(--text-muted);
+  margin-bottom: .9rem;
+}
+
+.tg-dots {
+  display: flex; gap: .3rem; margin-bottom: .9rem; flex-wrap: wrap;
+}
+.tg-dot {
+  width: 18px; height: 3px; border-radius: 2px; padding: 0;
+  border: none; cursor: pointer;
+  background: var(--border);
+  transition: background var(--t-fast);
+  &.done { background: rgba(var(--accent-rgb), .45); }
+  &.on   { background: var(--accent); }
+}
+
+.tg-actions { display: flex; gap: .5rem; }
+.tg-btn {
+  flex: 1; padding: .55rem .9rem; border-radius: var(--radius);
+  font-family: var(--font-head); font-size: .78rem; font-weight: 700;
+  cursor: pointer; transition: all var(--t-fast);
+
+  &.ghost {
+    background: none; border: 1px solid var(--border); color: var(--text-muted);
+    &:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    &:disabled { opacity: .35; cursor: not-allowed; }
+  }
+  &.primary {
+    background: var(--accent); border: 1px solid var(--accent); color: var(--bg);
+    &:hover { filter: brightness(1.08); }
+  }
+}
+
+@media (max-width: 600px) {
+  :host { right: 1rem; bottom: 1rem; left: 1rem; align-items: stretch; }
+  .tg-launcher { align-self: flex-end; }
+  .tg-panel, .tg-invite { width: auto; }
+}

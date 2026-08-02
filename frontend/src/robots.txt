@@ -1,0 +1,10 @@
+# https://karan-portfolio-six-sigma.vercel.app
+User-agent: *
+Allow: /
+
+# Private / transactional routes — no search value, and admin must never be indexed.
+Disallow: /admin
+Disallow: /blog-write
+Disallow: /payment/
+
+Sitemap: https://karan-portfolio-six-sigma.vercel.app/sitemap.xml

@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Google Fonts are linked from index.html, not @import-ed here — a stylesheet
+   link is discovered by the browser's preload scanner right away, while an
+   @import is only found after this file downloads and parses. */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -315,6 +317,33 @@ body::after {
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 a:focus:not(:focus-visible), button:focus:not(:focus-visible) { outline: none; }
 
+/* Skip link — the first tab stop on every page. Off-screen until focused, so
+   keyboard users can jump past the nav without it showing for anyone else.
+   `#main-content` is the <main> wrapper around the router outlet. */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: 10000;
+  padding: .7rem 1.4rem;
+  border: 1px solid var(--accent);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--bg-2);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform var(--t-fast) ease;
+
+  &:focus { transform: translate(-50%, 0); }
+}
+
+/* <main> is a plain wrapper — it must not introduce spacing of its own. */
+#main-content:focus { outline: none; }
+
 /* Forms */
 input, textarea, select {
   font-family: var(--font-body);
@@ -609,6 +638,19 @@ section[class*="-sec"] {
    ambient wash / starfield be switched off, or all motion collapsed,
    independently of the OS reduced-motion setting above.
 ───────────────────────────────────────────────────── */
+/* Section the guided tour is currently pointing at. Global rather than scoped
+   to the tour component because the class is applied to arbitrary sections
+   owned by other components. */
+.tour-focus {
+  position: relative;
+  animation: tour-focus-in .5s ease;
+}
+@keyframes tour-focus-in {
+  0%   { box-shadow: inset 0 0 0 0 rgba(var(--accent-rgb), 0); }
+  35%  { box-shadow: inset 0 0 0 2px rgba(var(--accent-rgb), .32); }
+  100% { box-shadow: inset 0 0 0 0 rgba(var(--accent-rgb), 0); }
+}
+
 html[data-ambient="off"] body::after { display: none; }
 html[data-stars="off"]   .global-stars { display: none; }
 

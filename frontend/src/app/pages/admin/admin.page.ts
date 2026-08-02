@@ -119,7 +119,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   cmsBusy       = false;
   cmsSuccess    = false;
   cmsError      = '';
-  cmsSections   = ['hero', 'skills', 'experience', 'services', 'faqs', 'gigs', 'contact-info', 'marquee', 'about'];
+  cmsSections   = ['hero', 'skills', 'experience', 'services', 'faqs', 'gigs', 'contact-info', 'marquee', 'about', 'tourGuide'];
 
   surveyForm = { title: '', description: '', slug: '', status: 'draft', questions: '[]' };
   surveyBusy = false;

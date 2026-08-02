@@ -52,20 +52,98 @@
   <title>Karan Kapoor — Full Stack Developer</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- These defaults are what non-JS crawlers and most link-preview scrapers
+       read. SeoService rewrites them per route once Angular boots. -->
   <meta name="description" content="Karan Kapoor — Full Stack Developer specializing in Angular, ASP.NET Web API, NestJS, and PostgreSQL. Available for freelance and remote work. Ludhiana, Punjab, India.">
   <meta name="keywords" content="Full Stack Developer, Angular, NestJS, .NET, PostgreSQL, Freelance, Ludhiana">
+  <meta name="author" content="Karan Kapoor">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://karan-portfolio-six-sigma.vercel.app/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Karan Kapoor">
   <meta property="og:title" content="Karan Kapoor — Full Stack Developer">
   <meta property="og:description" content="2.6 years building production-grade apps. Angular + .NET + NestJS + PostgreSQL.">
+  <meta property="og:url" content="https://karan-portfolio-six-sigma.vercel.app/">
+  <meta property="og:image" content="https://karan-portfolio-six-sigma.vercel.app/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Karan Kapoor — Full Stack Developer. Angular, .NET, NestJS, PostgreSQL.">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Karan Kapoor — Full Stack Developer">
+  <meta name="twitter:description" content="2.6 years building production-grade apps. Angular + .NET + NestJS + PostgreSQL.">
+  <meta name="twitter:image" content="https://karan-portfolio-six-sigma.vercel.app/assets/og-image.png">
+
   <meta name="theme-color" content="#07070e">
   <link rel="icon" type="image/svg+xml" href="assets/brand-icon.svg">
   <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="assets/brand-icon.svg">
+
+  <!-- Loaded here rather than via `@import` in styles.scss: a stylesheet link
+       is visible to the preload scanner immediately, whereas an @import is only
+       discovered after styles.css has downloaded and parsed — a serial round
+       trip on the critical path. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <!-- devicon SVGs in the skills section -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://karan-portfolio-six-sigma.vercel.app/#person",
+        "name": "Karan Kapoor",
+        "url": "https://karan-portfolio-six-sigma.vercel.app/",
+        "image": "https://karan-portfolio-six-sigma.vercel.app/assets/og-image.png",
+        "jobTitle": "Full Stack Developer",
+        "email": "mailto:Karankapoor281@outlook.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ludhiana",
+          "addressRegion": "Punjab",
+          "addressCountry": "IN"
+        },
+        "knowsAbout": ["Angular", "NestJS", "ASP.NET Web API", "PostgreSQL", "TypeScript", "Full Stack Development"],
+        "sameAs": [
+          "https://instagram.com/k_rn.void",
+          "https://www.facebook.com/profile.php?id=100012225409125"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://karan-portfolio-six-sigma.vercel.app/#website",
+        "url": "https://karan-portfolio-six-sigma.vercel.app/",
+        "name": "Karan Kapoor — Full Stack Developer",
+        "publisher": { "@id": "https://karan-portfolio-six-sigma.vercel.app/#person" },
+        "inLanguage": "en"
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://karan-portfolio-six-sigma.vercel.app/#profilepage",
+        "url": "https://karan-portfolio-six-sigma.vercel.app/",
+        "about": { "@id": "https://karan-portfolio-six-sigma.vercel.app/#person" },
+        "isPartOf": { "@id": "https://karan-portfolio-six-sigma.vercel.app/#website" }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <app-root></app-root>
+  <noscript>
+    <div style="max-width:40rem;margin:12vh auto;padding:0 1.5rem;font-family:system-ui,sans-serif;color:#f5f5f7;background:#07070e">
+      <h1 style="font-size:1.6rem;margin-bottom:.75rem">Karan Kapoor — Full Stack Developer</h1>
+      <p style="color:#9aa5bc;line-height:1.7">
+        This portfolio needs JavaScript to run. Please enable it, or reach me directly at
+        <a href="mailto:Karankapoor281@outlook.com" style="color:#f59e0b">Karankapoor281@outlook.com</a>.
+      </p>
+    </div>
+  </noscript>
 </body>
 </html>
