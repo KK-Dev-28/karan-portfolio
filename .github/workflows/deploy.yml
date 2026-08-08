@@ -1,5 +1,10 @@
 name: Deploy to Production
 
+# Pushing to main deploys the site. The frontend build runs on GitHub's
+# runners (16 GB RAM, ~14 GB free disk) rather than a laptop — the local
+# build had been dying with "Fatal JavaScript out of memory", so building
+# here is both the automation win and the fix for that.
+
 on:
   push:
     branches: [main]
@@ -23,32 +28,87 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Fail loudly and specifically when the repo secrets are missing. Without
+      # this the run dies inside `vercel pull` with an opaque CLI error, which
+      # is exactly how this workflow silently failed on every push for a day.
+      - name: Check required secrets
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          missing=""
+          [ -z "$VERCEL_TOKEN" ]      && missing="$missing VERCEL_TOKEN"
+          [ -z "$VERCEL_ORG_ID" ]     && missing="$missing VERCEL_ORG_ID"
+          [ -z "$VERCEL_PROJECT_ID" ] && missing="$missing VERCEL_PROJECT_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repo secret(s):$missing"
+            echo "Add them under Settings → Secrets and variables → Actions."
+            echo "Token: https://vercel.com/account/tokens"
+            echo "Org/Project IDs: frontend/.vercel/project.json after 'vercel link'."
+            exit 1
+          fi
+          echo "All Vercel secrets present."
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
       - name: Pull Vercel environment
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
         env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        # Extra heap headroom: the bundle is ~1 MB with a large component graph,
+        # and the default ceiling is what OOM-killed the local builds.
+        run: NODE_OPTIONS=--max-old-space-size=4096 vercel build --prod --token=$VERCEL_TOKEN
         env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed: $url"
         env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # Proves the deploy actually reached the public alias, instead of
+      # reporting success because the CLI exited 0.
+      - name: Verify live site
+        run: |
+          sleep 10
+          for i in 1 2 3 4 5; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://karan-portfolio-six-sigma.vercel.app/ || true)
+            if [ "$code" = "200" ]; then echo "Live site OK ($code)"; exit 0; fi
+            echo "Attempt $i: HTTP $code — retrying in 10s"
+            sleep 10
+          done
+          echo "::error::Live site did not return 200 after deploy."
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Frontend deploy" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Preview URL: ${{ steps.deploy.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Live: https://karan-portfolio-six-sigma.vercel.app/" >> "$GITHUB_STEP_SUMMARY"
 
   # ── Backend → Render (via deploy hook) ────────────────────────────────────
   deploy-backend:
@@ -57,10 +117,14 @@ jobs:
     steps:
       - name: Trigger Render deploy
         run: |
-          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
-            curl -s "$RENDER_DEPLOY_HOOK"
-          else
-            echo "RENDER_DEPLOY_HOOK not set — skipping"
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "::warning::RENDER_DEPLOY_HOOK not set — backend not redeployed."
+            exit 0
           fi
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$RENDER_DEPLOY_HOOK")
+          echo "Render hook responded HTTP $code"
+          case "$code" in 2*) echo "Backend deploy triggered." ;;
+            *) echo "::error::Render hook failed (HTTP $code)"; exit 1 ;;
+          esac
         env:
           RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
