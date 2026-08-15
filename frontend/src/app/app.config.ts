@@ -133,6 +133,31 @@ const routes: Routes = [
       },
     },
   },
+  // Working rebuilds of the two ASP.NET projects, running on this site's own
+  // API and database. They are indexable on purpose — a visitor who can click
+  // through a real order or tick off a lesson learns more than a card can say.
+  {
+    path: 'demo/shop',
+    loadComponent: () => import('./pages/demo-shop/demo-shop.page').then(m => m.DemoShopPageComponent),
+    data: {
+      seo: {
+        title: 'E-Commerce Platform Demo',
+        description: 'A live e-commerce demo — browse the catalogue, build a cart, check out, and move the order through the back-office queues.',
+        path: '/demo/shop',
+      },
+    },
+  },
+  {
+    path: 'demo/learning',
+    loadComponent: () => import('./pages/demo-learning/demo-learning.page').then(m => m.DemoLearningPageComponent),
+    data: {
+      seo: {
+        title: 'Learning Platform Demo',
+        description: 'A live demo of a multi-tenant learning platform — browse courses, enrol, and track progress topic by topic.',
+        path: '/demo/learning',
+      },
+    },
+  },
   {
     path: 'case-study/:slug',
     loadComponent: () => import('./pages/case-study/case-study.page').then(m => m.CaseStudyPageComponent),

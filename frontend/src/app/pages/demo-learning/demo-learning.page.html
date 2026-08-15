@@ -1,0 +1,66 @@
+<section class="demo-lms">
+  <div class="wrap">
+
+    <header class="head">
+      <a routerLink="/" class="back">← Back to portfolio</a>
+      <h1>Learning Platform <span>— live demo</span></h1>
+      <p class="lede">
+        The course → chapter → topic model from the multi-tenant SaaS platform, rebuilt
+        on this site's NestJS API and PostgreSQL database. Open a course and tick topics
+        off — your progress is stored server-side and survives a reload.
+      </p>
+    </header>
+
+    <div class="alert err" *ngIf="error">{{ error }}</div>
+    <div class="alert ok"  *ngIf="notice">{{ notice }}</div>
+
+    <div class="loading" *ngIf="loading">Loading courses…</div>
+
+    <div class="grid" *ngIf="!loading">
+      <article class="course" *ngFor="let c of courses"
+               [class.active]="open?.id === c.id" (click)="openCourse(c.slug)">
+        <div class="tags">
+          <span class="tag lvl" [attr.data-level]="c.level">{{ c.level }}</span>
+          <span class="tag">{{ c.category }}</span>
+        </div>
+        <h3>{{ c.title }}</h3>
+        <p class="desc">{{ c.summary }}</p>
+        <div class="stats">
+          {{ c.chapterCount }} chapters · {{ c.topicCount }} topics · {{ c.durationMinutes }} min
+        </div>
+        <div class="actions">
+          <button class="open" (click)="openCourse(c.slug)">Open course</button>
+          <button class="enrol" (click)="enroll(c, $event)">Enrol</button>
+        </div>
+      </article>
+    </div>
+
+    <div id="course-detail" class="detail" *ngIf="open">
+      <div class="dhead">
+        <div>
+          <h2>{{ open.title }}</h2>
+          <p class="by">{{ open.instructor }} · {{ open.enrolled ? 'Enrolled' : 'Not enrolled — ticking a topic enrols you' }}</p>
+        </div>
+        <button class="close" (click)="close()">Close ✕</button>
+      </div>
+
+      <div class="progress">
+        <div class="bar"><i [style.width.%]="percent(open)"></i></div>
+        <span>{{ open.completedCount }} / {{ open.totalTopics }} complete ({{ percent(open) }}%)</span>
+      </div>
+
+      <div class="chapter" *ngFor="let ch of open.chapters">
+        <h4>{{ ch.title }}</h4>
+        <button class="topic" *ngFor="let t of ch.topics"
+                [class.done]="t.completed" (click)="toggle(t)">
+          <span class="check" [class.on]="t.completed">{{ t.completed ? '✓' : '' }}</span>
+          <span class="body">
+            <span class="ttl">{{ t.title }} <em>· {{ t.minutes }} min</em></span>
+            <span class="txt">{{ t.body }}</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>

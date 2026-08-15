@@ -1,0 +1,97 @@
+<section class="demo-shop">
+  <div class="wrap">
+
+    <header class="head">
+      <a routerLink="/" class="back">← Back to portfolio</a>
+      <h1>E-Commerce Platform <span>— live demo</span></h1>
+      <p class="lede">
+        The order lifecycle from the layered ASP.NET platform, rebuilt on this site's
+        NestJS API and PostgreSQL database. Add items, check out, then walk the order
+        through the back-office queues. Everything you do here is really persisted.
+      </p>
+    </header>
+
+    <div class="alert err" *ngIf="error">{{ error }}</div>
+    <div class="alert ok"  *ngIf="notice">{{ notice }}</div>
+
+    <div class="chips">
+      <button [class.on]="activeCategory === 'all'" (click)="selectCategory('all')">All</button>
+      <button *ngFor="let c of categories"
+              [class.on]="activeCategory === c.slug"
+              (click)="selectCategory(c.slug)">{{ c.name }}</button>
+    </div>
+
+    <div class="loading" *ngIf="loading">Loading catalogue…</div>
+
+    <div class="grid" *ngIf="!loading">
+      <article class="prod" *ngFor="let p of products" [class.oos]="!p.inStock">
+        <div class="emoji">{{ p.imageEmoji || '📦' }}</div>
+        <h3>{{ p.name }}</h3>
+        <p class="desc">{{ p.description }}</p>
+        <div class="meta">
+          <span class="price">{{ p.priceLabel }}</span>
+          <span class="stock" [class.out]="!p.inStock">
+            {{ p.inStock ? p.stock + ' in stock' : 'Out of stock' }}
+          </span>
+        </div>
+        <button class="buy" [disabled]="!p.inStock || busyProductId === p.id" (click)="add(p)">
+          {{ busyProductId === p.id ? 'Adding…' : (p.inStock ? 'Add to cart' : 'Unavailable') }}
+        </button>
+      </article>
+    </div>
+
+    <h2 class="sec">Cart <small>{{ cart.count }} item(s) · {{ inr(cart.totalPaise) }}</small></h2>
+    <div class="panel">
+      <p class="empty" *ngIf="!cart.items.length">Your cart is empty.</p>
+
+      <table *ngIf="cart.items.length">
+        <thead>
+          <tr><th>Product</th><th>Unit</th><th>Qty</th><th class="r">Line total</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let l of cart.items">
+            <td>{{ l.product.imageEmoji }} {{ l.product.name }}</td>
+            <td>{{ l.product.priceLabel }}</td>
+            <td class="qty">
+              <button (click)="setQty(l.productId, l.quantity - 1)" aria-label="Decrease">−</button>
+              <b>{{ l.quantity }}</b>
+              <button (click)="setQty(l.productId, l.quantity + 1)" aria-label="Increase">+</button>
+            </td>
+            <td class="r"><b>{{ inr(l.lineTotalPaise) }}</b></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="checkout" *ngIf="cart.items.length">
+        <input [(ngModel)]="customerName" placeholder="Your name (optional)" maxlength="80" />
+        <button class="pay" (click)="checkout()">Checkout {{ inr(cart.totalPaise) }}</button>
+      </div>
+    </div>
+
+    <h2 class="sec">Orders <small>back-office queues</small></h2>
+    <div class="panel">
+      <p class="empty" *ngIf="!orders.length">No orders yet — check out above and one will appear here.</p>
+
+      <table *ngIf="orders.length">
+        <thead>
+          <tr><th>Reference</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of orders">
+            <td><code>{{ o.reference }}</code></td>
+            <td>{{ o.itemCount }}</td>
+            <td>{{ o.totalLabel }}</td>
+            <td><span class="badge" [attr.data-status]="o.status">{{ o.status }}</span></td>
+            <td class="r">
+              <button class="adv" *ngIf="canAdvance(o.status)" (click)="advance(o)">
+                {{ o.status === 'pending' ? 'Approve →' : 'Ship →' }}
+              </button>
+              <span class="muted" *ngIf="!canAdvance(o.status)">—</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>

@@ -87,6 +87,7 @@ export class ProjectService {
       description: 'A tenanted course platform where each organisation gets isolated data behind one deployment. Content is modelled as courses → chapters → topics, each with threaded comments and file attachments, plus enrolments, an audit trail, and a full REST API alongside the MVC admin. Subscription billing runs on Stripe against configurable plans; Gemini generates draft lesson content and Aspose.Slides turns a topic into a downloadable deck. Sign-in supports Google, Facebook and GitHub on top of ASP.NET Identity. I owned the tenancy layer, the API surface, the plans and billing screens, and the AI content integration across 56 commits.',
       techStack: ['ASP.NET Core 6', 'C#', 'Entity Framework Core', 'SQL Server', 'Stripe', 'AutoMapper'],
       period: 'Feb 2024 – Apr 2024',
+      liveUrl: '/demo/learning',
       isFeatured: true, sortOrder: 11,
     },
     {
@@ -94,6 +95,7 @@ export class ProjectService {
       description: 'A storefront and back office built as four separate projects — web, domain models, data access, and shared utilities — so the dependency direction stays honest end to end. Covers the full order lifecycle: catalogue with categories, companies and cover types, shopping cart, checkout, then pending → approved → history order queues with a staff console over the top. Payments through Stripe and PayPal, SMS notifications via Twilio, live updates over SignalR, and Polly wrapping the outbound calls for retries. Data access mixes EF Core for the domain with Dapper where raw query speed mattered, across 15+ migrations.',
       techStack: ['ASP.NET Core 6', 'C#', 'Entity Framework Core', 'Dapper', 'SQL Server', 'SignalR'],
       period: '2023 – 2024',
+      liveUrl: '/demo/shop',
       isFeatured: false, sortOrder: 12,
     },
   ];
@@ -116,9 +118,34 @@ export class ProjectService {
 
     const titles = new Set(existing.map(p => p.title));
     const missing = topUp.filter(p => !titles.has(p.title!));
-    if (!missing.length) return;
 
-    await this.repo.save(missing.map(p => this.repo.create(p)));
-    console.log(`✅ Added ${missing.length} project(s): ${missing.map(p => p.title).join(', ')}`);
+    if (missing.length) {
+      await this.repo.save(missing.map(p => this.repo.create(p)));
+      console.log(`✅ Added ${missing.length} project(s): ${missing.map(p => p.title).join(', ')}`);
+    }
+
+    await this.backfillLiveUrls(topUp);
+  }
+
+  /* Rows seeded before a project had a demo keep their empty liveUrl, because
+     the top-up above only inserts titles that are missing entirely. This fills
+     those in — but only where the column is still blank, so a link edited from
+     the admin is never overwritten by a redeploy. */
+  private async backfillLiveUrls(defs: Partial<Project>[]) {
+    const wanted = defs.filter(d => d.liveUrl);
+    if (!wanted.length) return;
+
+    const rows = await this.repo.find({ select: ['id', 'title', 'liveUrl'] });
+    const patched = rows.filter(r => {
+      const def = wanted.find(d => d.title === r.title);
+      return def && !r.liveUrl;
+    });
+    if (!patched.length) return;
+
+    for (const row of patched) {
+      const def = wanted.find(d => d.title === row.title)!;
+      await this.repo.update(row.id, { liveUrl: def.liveUrl });
+    }
+    console.log(`✅ Linked ${patched.length} project demo(s): ${patched.map(p => p.title).join(', ')}`);
   }
 }
