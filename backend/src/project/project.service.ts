@@ -74,6 +74,7 @@ export class ProjectService {
       techStack: ['React 18', 'TypeScript', 'dnd-kit', 'Material UI', 'Recharts', 'Formik'],
       period: '2025',
       githubUrl: 'https://github.com/Karan28012002/todo-app-react',
+      liveUrl: '/demo/tasks',
       isFeatured: false, sortOrder: 10,
     },
   ];

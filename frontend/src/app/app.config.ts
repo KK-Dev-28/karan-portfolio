@@ -159,6 +159,17 @@ const routes: Routes = [
     },
   },
   {
+    path: 'demo/tasks',
+    loadComponent: () => import('./pages/demo-tasks/demo-tasks.page').then(m => m.DemoTasksPageComponent),
+    data: {
+      seo: {
+        title: 'TaskFlow Demo',
+        description: 'A live Kanban task board — drag cards between columns, set priorities and due dates, with everything persisted server-side.',
+        path: '/demo/tasks',
+      },
+    },
+  },
+  {
     path: 'case-study/:slug',
     loadComponent: () => import('./pages/case-study/case-study.page').then(m => m.CaseStudyPageComponent),
     data: { seo: { title: 'Case Study', description: 'A project case study by Karan Kapoor.' } },
