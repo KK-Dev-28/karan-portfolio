@@ -22,24 +22,53 @@
     <!-- Right controls -->
     <div class="nav-controls">
       <a class="nav-blog-link" routerLink="/blog">Blog</a>
+
+      <!-- Theme & Layout Studio Picker -->
       <div class="theme-picker">
-        <button class="theme-toggle" (click)="toggleThemeMenu()" title="Change color theme" aria-haspopup="true" [attr.aria-expanded]="themeMenuOpen">
+        <button class="theme-toggle" (click)="toggleThemeMenu()" title="Customize Themes & Layouts" aria-haspopup="true" [attr.aria-expanded]="themeMenuOpen">
           <span class="theme-dot" [style.background]="currentSwatch()"></span>
+          <span class="theme-btn-label">Themes</span>
         </button>
+
         <div class="theme-menu" *ngIf="themeMenuOpen">
-          <button *ngFor="let t of themes" class="theme-option" [class.active]="t.id === currentTheme" (click)="pickTheme(t.id)">
-            <span class="theme-swatch">
-              <span [style.background]="t.swatch[0]"></span>
-              <span [style.background]="t.swatch[1]"></span>
-              <span [style.background]="t.swatch[2]"></span>
-            </span>
-            <span class="theme-option-text">
-              <span class="theme-option-label">{{ t.label }}</span>
-              <span class="theme-option-blurb">{{ t.blurb }}</span>
-            </span>
-          </button>
+          <!-- Sub-tabs -->
+          <div class="picker-tabs">
+            <button class="pt-btn" [class.active]="activePickerTab === 'themes'" (click)="activePickerTab = 'themes'">
+              🎨 Themes ({{ themes.length }})
+            </button>
+            <button class="pt-btn" [class.active]="activePickerTab === 'layouts'" (click)="activePickerTab = 'layouts'">
+              📐 Layouts ({{ layouts.length }})
+            </button>
+          </div>
+
+          <!-- Theme options -->
+          <div class="picker-list" *ngIf="activePickerTab === 'themes'">
+            <button *ngFor="let t of themes" class="theme-option" [class.active]="t.id === currentTheme" (click)="pickTheme(t.id)">
+              <span class="theme-swatch">
+                <span [style.background]="t.swatch[0]"></span>
+                <span [style.background]="t.swatch[1]"></span>
+                <span [style.background]="t.swatch[2]"></span>
+              </span>
+              <span class="theme-option-text">
+                <span class="theme-option-label">{{ t.label }}</span>
+                <span class="theme-option-blurb">{{ t.blurb }}</span>
+              </span>
+            </button>
+          </div>
+
+          <!-- Layout options -->
+          <div class="picker-list" *ngIf="activePickerTab === 'layouts'">
+            <button *ngFor="let l of layouts" class="theme-option layout-option" [class.active]="l.id === currentLayout" (click)="pickLayout(l.id)">
+              <span class="layout-icon">📐</span>
+              <span class="theme-option-text">
+                <span class="theme-option-label">{{ l.label }}</span>
+                <span class="theme-option-blurb">{{ l.blurb }}</span>
+              </span>
+            </button>
+          </div>
         </div>
       </div>
+
       <button *ngIf="!isLoggedIn()" class="nav-btn" (click)="openLogin()">Admin</button>
       <button *ngIf="isLoggedIn()" class="nav-btn active" (click)="goAdmin()">Dashboard</button>
     </div>

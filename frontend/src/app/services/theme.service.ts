@@ -1,15 +1,30 @@
 import { Injectable } from '@angular/core';
 import { SiteContentService } from './site-content.service';
 
-export type ThemeId  = 'midnight-gold' | 'blueprint' | 'terminal' | 'paper-ledger';
-export type LayoutId = 'standard' | 'dossier' | 'atelier-grid' | 'zen' | 'command' | 'canvas';
+export type ThemeId =
+  | 'midnight-gold'
+  | 'blueprint'
+  | 'terminal'
+  | 'paper-ledger'
+  | 'cyber-matrix'
+  | 'obsidian-mono'
+  | 'quantum-violet'
+  | 'emerald-gold';
+
+export type LayoutId =
+  | 'standard'
+  | 'dossier'
+  | 'atelier-grid'
+  | 'zen'
+  | 'command'
+  | 'canvas'
+  | 'bento-hud'
+  | 'cinematic-wide';
 
 export interface ThemeMeta {
   id: ThemeId;
   label: string;
-  /** Short line shown under the swatch — what the palette is for / evokes. */
   blurb: string;
-  /** [bg, card, accent] — used to paint the picker swatch, no HTTP round-trip needed. */
   swatch: [string, string, string];
   dark: boolean;
 }
@@ -49,49 +64,78 @@ export const THEMES: ThemeMeta[] = [
     swatch: ['#eef0f4', '#ffffff', '#7a2e45'],
     dark: false,
   },
+  {
+    id: 'cyber-matrix',
+    label: 'Cyber Matrix',
+    blurb: 'High-contrast cyberpunk obsidian with radioactive cyan and hot magenta.',
+    swatch: ['#050508', '#0b0b12', '#00f0ff'],
+    dark: true,
+  },
+  {
+    id: 'obsidian-mono',
+    label: 'Obsidian Mono',
+    blurb: 'Apple/Linear matte black, titanium grays, and crystal ice blue glow.',
+    swatch: ['#09090b', '#121216', '#38bdf8'],
+    dark: true,
+  },
+  {
+    id: 'quantum-violet',
+    label: 'Quantum Violet',
+    blurb: 'Interstellar deep cosmic plum with luminous violet and fuchsia aura.',
+    swatch: ['#0c0617', '#150d28', '#a855f7'],
+    dark: true,
+  },
+  {
+    id: 'emerald-gold',
+    label: 'Emerald Gold',
+    blurb: 'Luxury dark jade forest with royal gold and luminescent mint accents.',
+    swatch: ['#041510', '#0a231b', '#eab308'],
+    dark: true,
+  },
 ];
 
 export const LAYOUTS: LayoutMeta[] = [
   {
     id: 'standard',
     label: 'Standard',
-    blurb: 'The default flow — balanced width, generous section breathing room.',
+    blurb: 'The default flow — balanced width (1200px), generous section breathing room.',
   },
   {
     id: 'dossier',
     label: 'Dossier',
-    blurb: 'Narrower editorial column, tighter rhythm, hairline dividers between sections.',
+    blurb: 'Narrower editorial column (880px), tighter rhythm, hairline dividers between sections.',
   },
   {
     id: 'atelier-grid',
     label: 'Atelier Grid',
-    blurb: 'Wider canvas, bigger radius and gaps — project/skill grids read as a bento board.',
+    blurb: 'Wider canvas (1280px), bigger radius and gaps — project/skill grids read as a bento board.',
   },
   {
     id: 'zen',
     label: 'Zen',
-    blurb: 'Calm and airy — narrow column, huge section breathing room, soft corners.',
+    blurb: 'Calm and airy (960px) — narrow column, huge section breathing room, soft corners.',
   },
   {
     id: 'command',
     label: 'Command',
-    blurb: 'Dense control-panel feel — very wide, tight gaps, crisp small corners.',
+    blurb: 'Dense control-panel feel (1440px) — very wide, tight gaps, crisp small corners.',
   },
   {
     id: 'canvas',
     label: 'Canvas',
-    blurb: 'Full-bleed gallery — the widest container, large radius, spacious tiles.',
+    blurb: 'Full-bleed gallery (1400px) — spacious tiles and relaxed padding.',
+  },
+  {
+    id: 'bento-hud',
+    label: 'Bento HUD',
+    blurb: 'High-tech interactive bento grid (1320px) with telemetry borders and micro-cards.',
+  },
+  {
+    id: 'cinematic-wide',
+    label: 'Cinematic Wide',
+    blurb: 'Ultra-wide presentation canvas (1520px) with fluid margins and cinematic scale.',
   },
 ];
-
-/* ─────────────────────────────────────────────────────────────────────────
-   DESIGN STUDIO — fine-grained overrides on top of the chosen theme/layout.
-   Every token below is a CSS custom property that already drives the site
-   (see /DESIGN_SYSTEM.md). The admin can retune any of them live; the value
-   is written straight onto <html> via style.setProperty, so nothing else
-   needs wiring. Color tokens that have an `rgbTwin` also update the raw
-   `r,g,b` companion var so alpha-blended effects (glows, washes) follow.
-───────────────────────────────────────────────────────────────────────── */
 
 export type TokenKind  = 'color' | 'size';
 export type TokenGroup = 'Brand' | 'Surfaces' | 'Text' | 'Shape' | 'Spacing' | 'Grid';
@@ -128,7 +172,7 @@ export const DESIGN_TOKENS: DesignTokenDef[] = [
   { var: '--container',  label: 'Container width',  group: 'Spacing',  kind: 'size', hint: 'e.g. 1200px' },
   { var: '--layout-gap', label: 'Grid gap',         group: 'Spacing',  kind: 'size', hint: 'e.g. 2rem' },
   { var: '--section-py', label: 'Section spacing',  group: 'Spacing',  kind: 'size', hint: 'e.g. 5.5rem' },
-  // Grid structure (unitless counts + fluid tile floor) — override the layout's grid density
+  // Grid structure
   { var: '--grid-cols-2',   label: 'Columns (2-up sections)', group: 'Grid', kind: 'size', hint: 'e.g. 2' },
   { var: '--grid-cols-3',   label: 'Columns (3-up sections)', group: 'Grid', kind: 'size', hint: 'e.g. 3' },
   { var: '--grid-cols-4',   label: 'Columns (4-up sections)', group: 'Grid', kind: 'size', hint: 'e.g. 4' },
@@ -138,21 +182,15 @@ export const DESIGN_TOKENS: DesignTokenDef[] = [
 const VALID_TOKEN_VARS = new Set(DESIGN_TOKENS.map(t => t.var));
 
 export interface MotionSettings {
-  /** Transition-speed multiplier for reveals/hovers. 1 = normal, >1 faster, <1 slower. */
   speed: number;
-  /** Ambient volumetric light wash on/off. */
   ambient: boolean;
-  /** Drifting starfield on/off. */
   stars: boolean;
-  /** Master "reduce motion" — collapses all animation like the OS setting. */
   reduced: boolean;
 }
 
 export interface DesignConfig {
-  /** Sparse map of token var → override value. Absent keys fall back to the theme. */
   tokens: Record<string, string>;
   motion: MotionSettings;
-  /** Raw CSS injected site-wide, applied last so it can override anything. */
   customCss: string;
 }
 
@@ -164,16 +202,15 @@ export function defaultDesign(): DesignConfig {
   return { tokens: {}, motion: defaultMotion(), customCss: '' };
 }
 
-// Base transition speeds (mirror styles.scss :root) — scaled by motion.speed.
 const T_BASE = { '--t-fast': 0.15, '--t-mid': 0.3, '--t-slow': 0.6 };
 const CUSTOM_CSS_MAX = 40_000;
 const CUSTOM_CSS_EL_ID = 'kk-custom-css';
 
 const LS_THEME    = 'kk_theme_id';
 const LS_LAYOUT   = 'kk_layout_id';
-const LS_DESIGN   = 'kk_design';                // JSON DesignConfig, for instant paint
-const LS_OVERRIDE = 'kk_appearance_override';   // '1' once a visitor has manually picked something
-const LEGACY_MODE  = 'kk_theme_mode';           // pre-multi-theme key: 'dark' | 'light'
+const LS_DESIGN   = 'kk_design';
+const LS_OVERRIDE = 'kk_appearance_override';
+const LEGACY_MODE  = 'kk_theme_mode';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
@@ -189,7 +226,6 @@ export class ThemeService {
 
   getTheme(): ThemeId   { return this.theme; }
   getLayout(): LayoutId { return this.layout; }
-  /** Returns a detached copy so an editor can mutate it without touching live state. */
   getDesign(): DesignConfig {
     return {
       tokens: { ...this.design.tokens },
@@ -198,12 +234,6 @@ export class ThemeService {
     };
   }
 
-  /**
-   * Call once on app bootstrap. Paints instantly from whatever is cached
-   * locally (visitor override, or last-known site default), then asks the
-   * backend for the current site default. If the visitor never overrode
-   * anything, the backend value wins and is re-applied when it differs.
-   */
   init(): void {
     this.migrateLegacyKey();
     this.applyTheme(this.readLocal(LS_THEME, THEMES, 'midnight-gold'));
@@ -215,16 +245,15 @@ export class ThemeService {
       next: (data) => {
         if (!data) return;
         if (!hasOverride) {
-          if (isThemeId(data.theme))   this.applyTheme(data.theme, /*persist*/ true);
-          if (isLayoutId(data.layout)) this.applyLayout(data.layout, /*persist*/ true);
-          this.applyDesign(normalizeDesign(data), /*persist*/ true);
+          if (isThemeId(data.theme))   this.applyTheme(data.theme, true);
+          if (isLayoutId(data.layout)) this.applyLayout(data.layout, true);
+          this.applyDesign(normalizeDesign(data), true);
         }
       },
-      error: () => { /* backend unreachable — keep whatever painted locally */ },
+      error: () => {},
     });
   }
 
-  /** Visitor-facing: cycles themes and remembers the choice only in this browser. */
   cycleTheme(): ThemeId {
     const idx  = THEMES.findIndex(t => t.id === this.theme);
     const next = THEMES[(idx + 1) % THEMES.length].id;
@@ -232,7 +261,6 @@ export class ThemeService {
     return next;
   }
 
-  /** Visitor picked a specific swatch — local-only, marks this browser as overridden. */
   setThemeLocal(id: ThemeId) {
     localStorage.setItem(LS_OVERRIDE, '1');
     this.applyTheme(id, true);
@@ -243,31 +271,26 @@ export class ThemeService {
     this.applyLayout(id, true);
   }
 
-  /** Admin-only: preview immediately in this session (does not persist). */
   preview(theme: ThemeId, layout: LayoutId) {
     this.applyTheme(theme, false);
     this.applyLayout(layout, false);
   }
 
-  /** Admin-only: preview design overrides live in this session (does not persist). */
   previewDesign(design: DesignConfig) {
     this.applyDesign(design, false);
   }
 
-  /** Admin-only: sets the site-wide default every future visitor will load. */
   saveAsSiteDefault(theme: ThemeId, layout: LayoutId) {
     this.applyTheme(theme, true);
     this.applyLayout(layout, true);
     return this.persistSiteDefault();
   }
 
-  /** Admin-only: persist the current design overrides as the site-wide default. */
   saveDesignAsSiteDefault(design: DesignConfig) {
     this.applyDesign(design, true);
     return this.persistSiteDefault();
   }
 
-  /** PUTs the full appearance record so neither tab clobbers the other's fields. */
   private persistSiteDefault() {
     return this.siteContent.updateSection('appearance', {
       theme:     this.theme,
@@ -277,8 +300,6 @@ export class ThemeService {
       customCss: this.design.customCss,
     });
   }
-
-  // ── internals ──────────────────────────────────────────────────────────
 
   private applyTheme(id: ThemeId, persist = false) {
     this.theme = id;
@@ -300,8 +321,6 @@ export class ThemeService {
     };
     const root = document.documentElement;
 
-    // 1) Token overrides. Clear any previously-set inline token first so a
-    //    removed override reverts to the theme instead of sticking.
     for (const def of DESIGN_TOKENS) {
       root.style.removeProperty(def.var);
       if (def.rgbTwin) root.style.removeProperty(def.rgbTwin);
@@ -316,8 +335,6 @@ export class ThemeService {
       }
     }
 
-    // 2) Motion — speed scales the transition tokens; the rest are attributes
-    //    that styles.scss keys off (data-ambient / data-stars / data-motion).
     const speed = clampSpeed(this.design.motion.speed);
     root.style.setProperty('--t-fast', round3(T_BASE['--t-fast'] / speed) + 's');
     root.style.setProperty('--t-mid',  round3(T_BASE['--t-mid']  / speed) + 's');
@@ -327,11 +344,10 @@ export class ThemeService {
     if (this.design.motion.reduced) root.setAttribute('data-motion', 'reduced');
     else root.removeAttribute('data-motion');
 
-    // 3) Custom CSS — a single <style> element, applied last.
     applyCustomCss(this.design.customCss);
 
     if (persist) {
-      try { localStorage.setItem(LS_DESIGN, JSON.stringify(this.design)); } catch { /* quota/full — skip */ }
+      try { localStorage.setItem(LS_DESIGN, JSON.stringify(this.design)); } catch {}
     }
   }
 
@@ -348,9 +364,8 @@ export class ThemeService {
     return (list.some(x => x.id === v) ? v : fallback) as T['id'];
   }
 
-  /** One-time migration from the old binary dark/light toggle. */
   private migrateLegacyKey() {
-    if (localStorage.getItem(LS_THEME)) return; // already migrated
+    if (localStorage.getItem(LS_THEME)) return;
     const legacy = localStorage.getItem(LEGACY_MODE);
     if (!legacy) return;
     localStorage.setItem(LS_THEME, legacy === 'light' ? 'paper-ledger' : 'midnight-gold');
@@ -366,7 +381,6 @@ function isLayoutId(v: unknown): v is LayoutId {
   return typeof v === 'string' && LAYOUTS.some(l => l.id === v);
 }
 
-/** Coerce an untrusted appearance record into a safe DesignConfig. */
 export function normalizeDesign(data: any): DesignConfig {
   const out = defaultDesign();
   if (!data || typeof data !== 'object') return out;
@@ -405,7 +419,6 @@ function applyCustomCss(css: string) {
   el.textContent = text;
 }
 
-/** '#f59e0b' → '245,158,11'. Returns null for anything not a 6-digit hex. */
 export function hexToRgb(hex: string): string | null {
   const m = /^#?([0-9a-f]{6})$/i.exec((hex || '').trim());
   if (!m) return null;

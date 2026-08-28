@@ -196,6 +196,138 @@ html[data-theme="paper-ledger"] {
   --nav-bg-scrolled: rgba(255,255,255,.94);
 }
 
+/* ── Cyber Matrix — high-contrast cyberpunk obsidian, radioactive cyan & hot magenta ── */
+html[data-theme="cyber-matrix"] {
+  --bg:        #050508;
+  --bg-2:      #0b0b12;
+  --bg-3:      #12121e;
+  --card:      #0d0d16;
+  --border:    #26263d;
+  --accent:      #00f0ff;
+  --accent-rgb:  0,240,255;
+  --accent-2:    #ff0055;
+  --accent-2-rgb: 255,0,85;
+  --accent-glow: rgba(0,240,255,.28);
+
+  --text:      #f0f6fc;
+  --text-muted:#94a3b8;
+  --text-dim:  #64748b;
+
+  --violet:      #8b00ff;
+  --violet-rgb:  139,0,255;
+  --violet-glow: rgba(139,0,255,.24);
+  --electric:      #00f0ff;
+  --electric-rgb:  0,240,255;
+  --electric-glow: rgba(0,240,255,.22);
+
+  --ambient-1: var(--violet-rgb);
+  --ambient-2: var(--accent-rgb);
+  --ambient-3: var(--accent-2-rgb);
+
+  --gradient-accent: linear-gradient(135deg, #00f0ff 0%, #ff0055 100%);
+  --shadow-card: 0 2px 24px rgba(0,0,0,.8), 0 1px 0 rgba(0,240,255,.08) inset;
+  --shadow-glow: 0 0 0 1px rgba(0,240,255,.4), 0 12px 32px rgba(255,0,85,.2);
+}
+
+/* ── Obsidian Mono — Apple / Linear matte black, titanium, crystal ice blue ── */
+html[data-theme="obsidian-mono"] {
+  --bg:        #09090b;
+  --bg-2:      #121216;
+  --bg-3:      #18181f;
+  --card:      #111115;
+  --border:    #27272a;
+  --accent:      #38bdf8;
+  --accent-rgb:  56,189,248;
+  --accent-2:    #f8fafc;
+  --accent-2-rgb: 248,250,252;
+  --accent-glow: rgba(56,189,248,.18);
+
+  --text:      #f4f4f5;
+  --text-muted:#a1a1aa;
+  --text-dim:  #71717a;
+
+  --violet:      #6366f1;
+  --violet-rgb:  99,102,241;
+  --violet-glow: rgba(99,102,241,.16);
+  --electric:      #38bdf8;
+  --electric-rgb:  56,189,248;
+  --electric-glow: rgba(56,189,248,.15);
+
+  --ambient-1: 99,102,241;
+  --ambient-2: 56,189,248;
+  --ambient-3: 248,250,252;
+
+  --gradient-accent: linear-gradient(135deg, #f8fafc 0%, #38bdf8 100%);
+  --shadow-card: 0 2px 24px rgba(0,0,0,.65), 0 1px 0 rgba(255,255,255,.06) inset;
+  --shadow-glow: 0 0 0 1px rgba(255,255,255,.18), 0 12px 32px rgba(0,0,0,.7);
+}
+
+/* ── Quantum Violet — interstellar deep cosmic plum, luminous violet & fuchsia ── */
+html[data-theme="quantum-violet"] {
+  --bg:        #0c0617;
+  --bg-2:      #130a24;
+  --bg-3:      #1a0f32;
+  --card:      #150d28;
+  --border:    #321a5a;
+  --accent:      #a855f7;
+  --accent-rgb:  168,85,247;
+  --accent-2:    #ec4899;
+  --accent-2-rgb: 236,72,153;
+  --accent-glow: rgba(168,85,247,.28);
+
+  --text:      #faf5ff;
+  --text-muted:#c084fc;
+  --text-dim:  #7e22ce;
+
+  --violet:      #c084fc;
+  --violet-rgb:  192,132,252;
+  --violet-glow: rgba(192,132,252,.22);
+  --electric:      #ec4899;
+  --electric-rgb:  236,72,153;
+  --electric-glow: rgba(236,72,153,.2);
+
+  --ambient-1: var(--accent-rgb);
+  --ambient-2: var(--accent-2-rgb);
+  --ambient-3: 192,132,252;
+
+  --gradient-accent: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  --shadow-card: 0 2px 24px rgba(8,2,18,.75), 0 1px 0 rgba(168,85,247,.1) inset;
+  --shadow-glow: 0 0 0 1px rgba(168,85,247,.35), 0 12px 32px rgba(236,72,153,.2);
+}
+
+/* ── Emerald Gold — luxury dark jade forest, royal gold & luminescent mint ── */
+html[data-theme="emerald-gold"] {
+  --bg:        #041510;
+  --bg-2:      #072019;
+  --bg-3:      #0b2c23;
+  --card:      #0a231b;
+  --border:    #164e3f;
+  --accent:      #eab308;
+  --accent-rgb:  234,179,8;
+  --accent-2:    #2dd4bf;
+  --accent-2-rgb: 45,212,191;
+  --accent-glow: rgba(234,179,8,.24);
+
+  --text:      #f0fdf4;
+  --text-muted:#86efac;
+  --text-dim:  #22c55e;
+
+  --violet:      #10b981;
+  --violet-rgb:  16,185,129;
+  --violet-glow: rgba(16,185,129,.2);
+  --electric:      #2dd4bf;
+  --electric-rgb:  45,212,191;
+  --electric-glow: rgba(45,212,191,.18);
+
+  --ambient-1: var(--accent-rgb);
+  --ambient-2: var(--violet-rgb);
+  --ambient-3: var(--electric-rgb);
+
+  --gradient-accent: linear-gradient(135deg, #eab308 0%, #2dd4bf 100%);
+  --shadow-card: 0 2px 24px rgba(2,16,10,.7), 0 1px 0 rgba(234,179,8,.08) inset;
+  --shadow-glow: 0 0 0 1px rgba(234,179,8,.3), 0 12px 32px rgba(45,212,191,.18);
+}
+
 /* ═════════════════════════════════════════════════════════════════════════
    LAYOUT TOKENS — structural, independent of theme.
    Selected via `html[data-layout="…"]`. See /DESIGN_SYSTEM.md §Layouts
@@ -265,6 +397,32 @@ html[data-layout="canvas"] {
   --grid-cols-3: 3;
   --grid-cols-4: 4;
   --grid-tile-min: 360px;
+}
+
+/* Bento HUD — high-density interactive bento grid with telemetry borders */
+html[data-layout="bento-hud"] {
+  --container:   1320px;
+  --layout-gap:  1.5rem;
+  --section-py:  4.5rem;
+  --radius:      14px;
+  --radius-lg:   22px;
+  --grid-cols-2: 2;
+  --grid-cols-3: 3;
+  --grid-cols-4: 4;
+  --grid-tile-min: 290px;
+}
+
+/* Cinematic Wide — ultra-wide presentation canvas with fluid margins */
+html[data-layout="cinematic-wide"] {
+  --container:   1520px;
+  --layout-gap:  2.5rem;
+  --section-py:  6.5rem;
+  --radius:      16px;
+  --radius-lg:   26px;
+  --grid-cols-2: 2;
+  --grid-cols-3: 3;
+  --grid-cols-4: 4;
+  --grid-tile-min: 340px;
 }
 
 body {

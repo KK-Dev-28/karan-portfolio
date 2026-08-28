@@ -167,12 +167,14 @@ export class AdminPageComponent implements OnInit, OnDestroy {
    *  --grid-cols-3 in styles.scss, so the picker thumbnail shows real density
    *  rather than an arbitrary decorative count. */
   private readonly layoutColCount: Record<LayoutId, number> = {
-    'standard':     3,
-    'dossier':      2,
-    'atelier-grid': 3,
-    'zen':          2,
-    'command':      4,
-    'canvas':       3,
+    'standard':       3,
+    'dossier':        2,
+    'atelier-grid':   3,
+    'zen':            2,
+    'command':        4,
+    'canvas':         3,
+    'bento-hud':      3,
+    'cinematic-wide': 4,
   };
   layoutCols(id: LayoutId): number[] {
     return Array(this.layoutColCount[id] ?? 3);

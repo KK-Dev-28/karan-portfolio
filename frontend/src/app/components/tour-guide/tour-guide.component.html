@@ -1,44 +1,124 @@
-<!-- Launcher — always available, quiet until used -->
-<button class="tg-launcher" *ngIf="!open" (click)="launch()" [class.pulsing]="inviting"
-        [attr.aria-label]="chatEnabled ? 'Ask Karan’s assistant' : 'Take a guided tour'">
-  <span class="tg-avatar" aria-hidden="true">
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-         stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2a3 3 0 0 1 3 3v1h1a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3h1V5a3 3 0 0 1 3-3z"/>
-      <circle cx="9.5" cy="12.5" r="1"/><circle cx="14.5" cy="12.5" r="1"/>
-    </svg>
-  </span>
-  <span class="tg-launcher-text">{{ chatEnabled ? 'Ask me anything' : 'Take a tour' }}</span>
+<!-- Launcher — Holographic AI Systems Copilot -->
+<button class="tg-launcher" *ngIf="!open" (click)="launch('tour')" [class.pulsing]="inviting"
+        [attr.aria-label]="'Explore with AI Systems Copilot'">
+  <div class="hologram-orb">
+    <div class="orb-ring ring-1"></div>
+    <div class="orb-ring ring-2"></div>
+    <div class="orb-core">
+      <span class="orb-icon">🧠</span>
+    </div>
+  </div>
+  <div class="tg-launcher-info">
+    <span class="tg-launcher-title">AI Systems Copilot</span>
+    <span class="tg-launcher-sub">Interactive Voice &amp; Section Guide</span>
+  </div>
+  <span class="tg-badge">LIVE</span>
 </button>
 
-<!-- First-visit nudge -->
+<!-- First-visit proactive nudge -->
 <div class="tg-invite" *ngIf="inviting && !open">
   <button class="tg-invite-x" (click)="dismissInvite()" aria-label="Dismiss">✕</button>
-  <p>{{ chatEnabled
-      ? 'New here? Ask me anything about Karan’s work — or I can show you around.'
-      : 'New here? I can show you around in about a minute.' }}</p>
+  <div class="invite-header">
+    <span class="invite-icon">✨</span>
+    <strong>AI Section Guide Ready</strong>
+  </div>
+  <p>I can narrate Karan's architecture, projects, and live demos section-by-section with voice audio.</p>
   <div class="tg-invite-actions">
-    <button class="tg-invite-go" *ngIf="chatEnabled" (click)="launch('chat')">Ask a question →</button>
-    <button class="tg-invite-go alt" (click)="launch('tour')">Take the tour →</button>
+    <button class="tg-invite-go" (click)="launch('tour')">Start Guided Tour →</button>
+    <button class="tg-invite-go alt" (click)="launch('chat')">Ask Questions</button>
   </div>
 </div>
 
-<!-- Assistant panel -->
-<div class="tg-panel" *ngIf="open" role="dialog" aria-label="Portfolio assistant">
+<!-- Holographic Copilot Main Panel -->
+<div class="tg-panel" *ngIf="open" role="dialog" aria-label="AI Systems Copilot">
+
+  <!-- Header -->
   <div class="tg-head">
-    <span class="tg-avatar sm" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2a3 3 0 0 1 3 3v1h1a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3h1V5a3 3 0 0 1 3-3z"/>
-        <circle cx="9.5" cy="12.5" r="1"/><circle cx="14.5" cy="12.5" r="1"/>
-      </svg>
-    </span>
-    <span class="tg-title-sm">{{ mode === 'chat' ? 'Ask about Karan' : 'Guided tour' }}</span>
-    <span class="tg-count" *ngIf="mode === 'tour'">{{ index + 1 }} / {{ steps.length }}</span>
-    <button class="tg-x" (click)="close()" aria-label="Close">✕</button>
+    <div class="head-left">
+      <div class="avatar-holo" [class.talking]="isPlayingVoice">
+        <div class="holo-core">{{ step?.icon || '🧠' }}</div>
+        <div class="holo-waves" *ngIf="isPlayingVoice">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+      <div>
+        <div class="tg-title-sm">AI Systems Copilot</div>
+        <div class="tg-status">
+          <span class="status-indicator"></span>
+          {{ isPlayingVoice ? 'Speaking…' : (mode === 'tour' ? 'Guided Audio Tour' : 'AI Assistant Ready') }}
+        </div>
+      </div>
+    </div>
+
+    <div class="head-controls">
+      <!-- Voice Toggle -->
+      <button class="icon-btn" (click)="toggleVoice()" [title]="voiceEnabled ? 'Mute Audio Narration' : 'Enable Voice Narration'" [class.active]="voiceEnabled">
+        {{ voiceEnabled ? '🔊' : '🔇' }}
+      </button>
+      <button class="tg-x" (click)="close()" aria-label="Close Copilot">✕</button>
+    </div>
   </div>
 
-  <!-- ── Chat mode ── -->
+  <!-- Mode Switcher Tabs -->
+  <div class="tg-mode-tabs">
+    <button class="tab-btn" [class.active]="mode === 'tour'" (click)="switchTo('tour')">
+      🗺️ Section Guide ({{ index + 1 }}/{{ steps.length }})
+    </button>
+    <button class="tab-btn" [class.active]="mode === 'chat'" (click)="switchTo('chat')">
+      💬 Ask Questions
+    </button>
+  </div>
+
+  <!-- ── GUIDED TOUR MODE ── -->
+  <ng-container *ngIf="mode === 'tour'">
+    <div class="tg-tour-content">
+      <div class="tour-header">
+        <span class="tour-icon">{{ step.icon }}</span>
+        <h4 class="tg-title">{{ step.title }}</h4>
+      </div>
+
+      <p class="tg-body">{{ step.body }}</p>
+
+      <!-- Deep Dive Expansion Drawer -->
+      <div class="deep-dive-box">
+        <button class="deep-dive-toggle" (click)="toggleDeepDive()">
+          <span>{{ showDeepDive ? '▼ Hide Technical Specs' : '▶ Show Deep Technical Specs' }}</span>
+          <span class="spec-tag">ARCHITECTURE</span>
+        </button>
+
+        <div class="deep-dive-details" *ngIf="showDeepDive">
+          <div class="spec-group">
+            <span class="spec-label">🛠️ What Karan Built:</span>
+            <p class="spec-val">{{ step.builtDetails }}</p>
+          </div>
+          <div class="spec-group">
+            <span class="spec-label">⚡ Tech &amp; Algorithms:</span>
+            <p class="spec-val tech-mono">{{ step.techDetails }}</p>
+          </div>
+          <div class="spec-group">
+            <span class="spec-label">📈 Enterprise Impact:</span>
+            <p class="spec-val">{{ step.impactDetails }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stepper Progress Dots -->
+      <div class="tg-dots">
+        <button *ngFor="let s of steps; let i = index"
+                class="tg-dot" [class.on]="i === index" [class.done]="i < index"
+                (click)="jump(i)" [attr.aria-label]="'Go to step ' + (i + 1)">
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="tg-actions">
+        <button class="tg-btn ghost" (click)="prev()" [disabled]="index === 0">← Back</button>
+        <button class="tg-btn primary" (click)="next()">{{ isLast ? 'Complete Tour 🎉' : 'Next Section →' }}</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ── CHAT MODE ── -->
   <ng-container *ngIf="mode === 'chat'">
     <div class="tg-scroll" #scroller>
       <div class="tg-msg" *ngFor="let t of turns" [class.me]="t.role === 'user'">
@@ -46,43 +126,24 @@
       </div>
 
       <div class="tg-msg" *ngIf="thinking">
-        <div class="tg-bubble tg-typing" aria-label="Assistant is typing">
+        <div class="tg-bubble tg-typing" aria-label="Copilot is analyzing">
           <span></span><span></span><span></span>
         </div>
       </div>
 
       <p class="tg-err" *ngIf="chatError">{{ chatError }}</p>
 
-      <div class="tg-chips" *ngIf="turns.length <= 1 && !thinking">
+      <!-- Quick Suggestion Chips -->
+      <div class="tg-chips" *ngIf="turns.length <= 2 && !thinking">
         <button *ngFor="let s of suggestions" class="tg-chip" (click)="useSuggestion(s)">{{ s }}</button>
       </div>
     </div>
 
     <form class="tg-compose" (ngSubmit)="send()">
       <input class="tg-input" [(ngModel)]="draft" name="draft" autocomplete="off"
-             placeholder="Ask a question…" [disabled]="thinking" aria-label="Your question" />
+             placeholder="Ask anything about Karan's work &amp; architecture…" [disabled]="thinking" aria-label="Your question" />
       <button class="tg-send" type="submit" [disabled]="thinking || !draft.trim()" aria-label="Send">→</button>
     </form>
-
-    <button class="tg-switch" (click)="switchTo('tour')">Or take the guided tour</button>
   </ng-container>
 
-  <!-- ── Guided tour mode ── -->
-  <ng-container *ngIf="mode === 'tour'">
-    <h4 class="tg-title">{{ step.title }}</h4>
-    <p class="tg-body">{{ step.body }}</p>
-
-    <div class="tg-dots">
-      <button *ngFor="let s of steps; let i = index"
-              class="tg-dot" [class.on]="i === index" [class.done]="i < index"
-              (click)="jump(i)" [attr.aria-label]="'Go to step ' + (i + 1)"></button>
-    </div>
-
-    <div class="tg-actions">
-      <button class="tg-btn ghost" (click)="prev()" [disabled]="index === 0">Back</button>
-      <button class="tg-btn primary" (click)="next()">{{ isLast ? 'Finish' : 'Next →' }}</button>
-    </div>
-
-    <button class="tg-switch" *ngIf="chatEnabled" (click)="switchTo('chat')">Or ask me a question</button>
-  </ng-container>
 </div>
