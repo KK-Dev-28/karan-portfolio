@@ -1,8 +1,9 @@
 import { join } from 'path';
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import { Visitor }        from './visitor/visitor.entity';
@@ -139,8 +140,12 @@ import { parseDatabaseUrl } from './database/parse-database-url';
       },
     }),
 
-    // Rate-limit: 60 requests / minute per IP
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
+    /* Global backstop only. The home page mounts ~25 sections, so a single
+       visit can legitimately issue a dozen or more requests; a tight global
+       number would throttle real people before it ever troubled a script.
+       Endpoints that actually need a low ceiling — chat, auth, checkout —
+       carry their own @Throttle, and those numbers win over this one. */
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 300 }]),
 
     // Feature modules
     VisitorModule,
@@ -166,6 +171,17 @@ import { parseDatabaseUrl } from './database/parse-database-url';
     LmsModule,
     ShopModule,
     AdminModule,
+  ],
+  providers: [
+    /* Without this, ThrottlerGuard only runs where a controller declares it in
+       @UseGuards — which was true of just auth and ai-tools. Every other
+       @Throttle in the codebase (24 of them, across chat, payments, bookings,
+       reviews, newsletter and more) was metadata no guard ever read, so those
+       endpoints were unlimited despite being annotated as limited. The Razorpay
+       webhook already carries @SkipThrottle(), which only makes sense against a
+       global guard, so the registration was the missing piece rather than the
+       decorators being wrong. */
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule {}

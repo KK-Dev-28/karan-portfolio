@@ -2,6 +2,7 @@ import {
   Controller, Get, Post, Put, Delete, Body, Param, Req, UseGuards, HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { TaskflowService } from './taskflow.service';
 import { TaskflowAuthGuard } from './taskflow-auth.guard';
@@ -16,13 +17,18 @@ import { RegisterDto, LoginDto, TodoBody } from './taskflow.dto';
 export class TaskflowUserController {
   constructor(private svc: TaskflowService) {}
 
+  /* Each registration writes an account plus seven seeded tasks, so this is
+     the costliest public endpoint here. Generous for the one account a real
+     visitor needs, hostile to a script farming rows. */
   @Post('register')
+  @Throttle({ default: { limit: 5, ttl: 3_600_000 } })
   register(@Body() dto: RegisterDto) {
     return this.svc.register(dto);
   }
 
   @Post('login')
   @HttpCode(200)
+  @Throttle({ default: { limit: 10, ttl: 300_000 } })
   login(@Body() dto: LoginDto) {
     return this.svc.login(dto);
   }

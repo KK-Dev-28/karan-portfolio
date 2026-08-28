@@ -1,4 +1,3 @@
-// visitor.controller.ts
 import { Controller, Post, Get, Body, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
@@ -20,6 +19,15 @@ export class VisitorController {
     const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim()
               || req.socket.remoteAddress || '0.0.0.0';
     return this.svc.log(dto, ip);
+  }
+
+  @Post('events')
+  @Throttle({ default: { ttl: 60_000, limit: 30 } })
+  @ApiOperation({ summary: 'Ingest batched telemetry events' })
+  logEvents(@Body() body: { events: any[] }, @Req() req: Request) {
+    const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim()
+              || req.socket.remoteAddress || '0.0.0.0';
+    return this.svc.logEvents(body?.events || [], ip);
   }
 
   @Get('analytics')

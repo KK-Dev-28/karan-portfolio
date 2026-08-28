@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { LmsService } from './lms.service';
 import { EnrollDto, ProgressDto } from './lms.dto';
@@ -27,7 +28,11 @@ export class LmsController {
     return this.svc.myEnrollments(sessionId ?? '');
   }
 
+  /* Enrolment inserts a row per (session, course). Ticking topics is left on
+     the global backstop — it updates one existing row and a visitor working
+     through a course clicks it quickly and legitimately. */
   @Post('enrollments')
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
   enroll(@Body() dto: EnrollDto) {
     return this.svc.enroll(dto);
   }

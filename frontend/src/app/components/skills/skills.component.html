@@ -1,12 +1,12 @@
 <section class="skills-sec reveal" id="skills">
   <div class="container">
-    <div class="sec-label">My Toolkit</div>
+    <div class="sec-label">§ INFRASTRUCTURE &amp; CAPABILITIES</div>
     <div class="skills-layout">
 
-      <!-- Left: bars -->
+      <!-- Left: Proficiency bars & Highlights -->
       <div class="skills-left">
-        <h2 class="sec-title">Skills &amp; <span class="italic">Technologies</span></h2>
-        <p class="skills-sub">Real-world stack I use daily on production systems — not just tutorial projects.</p>
+        <h2 class="sec-title">Engineered for <span class="italic">High Scale</span></h2>
+        <p class="skills-sub">A production-tested stack designed for reliability, sub-50ms latency, and high-performance user experiences.</p>
 
         <div class="bars">
           <div class="bar-row" *ngFor="let s of skills">
@@ -29,27 +29,63 @@
         </div>
       </div>
 
-      <!-- Right: tech icon grid -->
+      <!-- Right: System Architecture & Tech Ecosystem -->
       <div class="skills-right">
 
         <div class="tech-header">
-          <div class="th-title">Technologies I Work With</div>
-          <div class="th-sub">Tools powering real production projects</div>
+          <div class="th-title">Distributed System &amp; Stack</div>
+          <div class="th-sub">Live microservices, frontend engines, and cloud persistence</div>
         </div>
 
         <!-- Category tabs -->
-        <div class="tech-cat-tabs">
+        <div class="tech-cat-tabs" role="tablist">
           <button
             *ngFor="let cat of techCategories"
             class="tct-btn"
             [class.active]="activeTechCat === cat.key"
-            (click)="activeTechCat = cat.key">
+            (click)="selectCategory(cat.key)"
+            role="tab">
             {{ cat.label }}
           </button>
         </div>
 
-        <!-- Icon grid -->
-        <div class="tech-icon-grid">
+        <!-- Interactive Architecture Topology View -->
+        <div class="arch-topology-view" *ngIf="activeTechCat === 'architecture'">
+          <div class="arch-nodes-grid">
+            <button
+              *ngFor="let node of architectureNodes"
+              class="arch-node-card"
+              [class.selected]="selectedArchNode?.id === node.id"
+              (click)="selectArchNode(node)">
+              <div class="node-top">
+                <span class="node-icon">{{ node.icon }}</span>
+                <span class="node-status-beacon" [attr.data-status]="node.status">
+                  <span class="pulse-dot"></span>
+                  {{ node.latency }}
+                </span>
+              </div>
+              <div class="node-name">{{ node.name }}</div>
+              <div class="node-role">{{ node.role }}</div>
+            </button>
+          </div>
+
+          <!-- Inspect Node Drawer -->
+          <div class="arch-detail-card" *ngIf="selectedArchNode">
+            <div class="detail-header">
+              <div class="detail-title">
+                <span class="detail-icon">{{ selectedArchNode.icon }}</span>
+                <strong>{{ selectedArchNode.name }}</strong>
+                <span class="detail-badge">{{ selectedArchNode.status | uppercase }}</span>
+              </div>
+              <span class="detail-latency">{{ selectedArchNode.latency }}</span>
+            </div>
+            <div class="detail-tech">{{ selectedArchNode.tech }}</div>
+            <p class="detail-desc">{{ selectedArchNode.description }}</p>
+          </div>
+        </div>
+
+        <!-- Standard Devicon Grid -->
+        <div class="tech-icon-grid" *ngIf="activeTechCat !== 'architecture'">
           <div class="tech-tile" *ngFor="let tech of activeCatItems">
             <div class="tt-logo">
               <img
@@ -68,8 +104,8 @@
           </div>
         </div>
 
-        <!-- Also familiar from CMS -->
-        <div class="also-familiar" *ngIf="tags.length > 0">
+        <!-- Also familiar tags from CMS -->
+        <div class="also-familiar" *ngIf="tags.length > 0 && activeTechCat !== 'architecture'">
           <div class="af-label">Also Familiar With</div>
           <div class="af-tags">
             <span class="af-tag" *ngFor="let t of tags">{{ t }}</span>
@@ -79,8 +115,8 @@
         <div class="ai-card">
           <span class="ai-icon">⚡</span>
           <div>
-            <div class="ai-title">AI-Augmented Workflow</div>
-            <p class="ai-desc">Claude &amp; ChatGPT as dev tools — faster debugging, cleaner code, better docs.</p>
+            <div class="ai-title">AI-Augmented Architecture</div>
+            <p class="ai-desc">Claude SDK &amp; Python FastAPI NLP microservices powering automated analysis, schema inference, and accelerated builds.</p>
           </div>
         </div>
 

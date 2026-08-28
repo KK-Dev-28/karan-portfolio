@@ -6,6 +6,7 @@
   "description": "Dev tooling for the portfolio. Deliberately separate from frontend/ so these deps never enter the Vercel build.",
   "scripts": {
     "record": "node record-tour.mjs",
+    "og": "node make-og-image.mjs",
     "setup": "npm install && npx playwright install chromium"
   },
   "devDependencies": {

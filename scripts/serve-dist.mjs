@@ -20,6 +20,7 @@ const MIME = {
   '.json': 'application/json', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp',
   '.woff': 'font/woff', '.woff2': 'font/woff2', '.txt': 'text/plain',
+  '.xml': 'application/xml',
 };
 
 createServer(async (req, res) => {

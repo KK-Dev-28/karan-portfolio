@@ -1,13 +1,45 @@
-/* Same token strategy as the shop demo: inherit the site's theme, fall back to
-   local values so the page is never unstyled if a token is renamed. */
-.demo-lms {
-  --panel: var(--surface-2, #131a2a);
-  --line:  var(--border, #26304a);
-  --ink:   var(--text, #e8edf7);
-  --muted: var(--text-muted, #93a0bd);
-  --gold:  var(--accent, #e8b64c);
-  --ok:    #39d98a;
+/* ── Theme bridge ──────────────────────────────────────────────────────────
+   Maps this page's local names onto the site's real design tokens, so the demo
+   follows every theme rather than pinning itself to the dark palette.
 
+   An earlier version of this file referenced --surface-2/--surface-3, which do
+   not exist in the token set. Those silently fell back to hardcoded dark hex,
+   which rendered dark panels under Paper Ledger's dark-on-light text. */
+:host {
+  --panel:   var(--card);
+  --panel-2: var(--bg-2);
+  --line:    var(--border);
+  --ink:     var(--text);
+  --muted:   var(--text-muted);
+  --brand:   var(--accent);
+
+  /* Text sitting on a filled --accent button. There is no on-accent token, and
+     --bg is the dependable inverse of --accent in every theme: near-black
+     behind gold in the dark themes, near-white behind plum in Paper Ledger. */
+  --on-brand: var(--bg);
+
+  /* Status hues are semantic rather than brand, so the token set does not carry
+     them. These suit the dark themes; the light override follows. */
+  --ok:   #39d98a;
+  --info: #79c0ff;
+  --warn: #ffd479;
+  --bad:  #ff8f8f;
+  --hair: rgba(255, 255, 255, .06);
+}
+
+/* Paper Ledger is currently the only light theme. Its near-white surfaces wash
+   out the pale status hues above, and the hairline has to invert. Another light
+   theme would need its id added here. */
+:host-context([data-theme='paper-ledger']) {
+  --ok:   #0f7a4a;
+  --info: #1d5fa8;
+  --warn: #8a5a00;
+  --bad:  #b3261e;
+  --hair: rgba(0, 0, 0, .06);
+}
+
+.demo-lms {
+  --gold:  var(--brand);
   min-height: 100vh;
   padding: 110px 0 90px;
   color: var(--ink);
@@ -30,8 +62,8 @@
 
 .alert {
   padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; font-size: 14px;
-  &.err { background: rgba(255,107,107,.12); border: 1px solid rgba(255,107,107,.4); color: #ffb4b4; }
-  &.ok  { background: rgba(57,217,138,.12); border: 1px solid rgba(57,217,138,.4); color: #8ff0bd; }
+  &.err { background: color-mix(in srgb, var(--bad) 12%, transparent); border: 1px solid var(--bad); color: var(--bad); }
+  &.ok  { background: color-mix(in srgb, var(--ok) 12%, transparent); border: 1px solid var(--ok); color: var(--ok); }
 }
 
 .loading { color: var(--muted); padding: 22px 0; font-size: 14px; }
@@ -42,9 +74,9 @@
 }
 
 .course {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg);
   padding: 19px; cursor: pointer; display: flex; flex-direction: column;
-  transition: transform .18s ease, border-color .18s ease;
+  transition: transform var(--t-fast) ease, border-color var(--t-fast) ease;
 
   &:hover { transform: translateY(-3px); border-color: var(--gold); }
   &.active { border-color: var(--gold); }
@@ -56,7 +88,7 @@
 
   .actions { display: flex; gap: 9px; }
   .open {
-    background: var(--gold); color: #1c1408; border: 0; padding: 9px 17px;
+    background: var(--gold); color: var(--on-brand); border: 0; padding: 9px 17px;
     border-radius: 9px; cursor: pointer; font-weight: 650; font-size: 13.5px;
   }
   .enrol {
@@ -70,14 +102,14 @@
   font-size: 11.5px; padding: 3px 10px; border-radius: 999px;
   border: 1px solid var(--line); color: var(--muted); text-transform: capitalize;
 
-  &.lvl[data-level='beginner']     { color: #8ff0bd; border-color: rgba(143,240,189,.4); }
-  &.lvl[data-level='intermediate'] { color: #ffd479; border-color: rgba(255,212,121,.4); }
-  &.lvl[data-level='advanced']     { color: #ff9f9f; border-color: rgba(255,159,159,.4); }
+  &.lvl[data-level='beginner']     { color: var(--ok); border-color: var(--ok); }
+  &.lvl[data-level='intermediate'] { color: var(--warn); border-color: var(--warn); }
+  &.lvl[data-level='advanced']     { color: var(--bad); border-color: var(--bad); }
 }
 
 .detail {
   margin-top: 34px; background: var(--panel);
-  border: 1px solid var(--line); border-radius: 14px; padding: 22px;
+  border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px;
 
   .dhead {
     display: flex; justify-content: space-between; align-items: flex-start;
@@ -98,8 +130,8 @@
 
   .bar {
     flex: 1; min-width: 180px; height: 7px; border-radius: 5px;
-    background: rgba(255,255,255,.08); overflow: hidden;
-    i { display: block; height: 100%; background: var(--gold); transition: width .3s ease; }
+    background: var(--hair); overflow: hidden;
+    i { display: block; height: 100%; background: var(--gold); transition: width var(--t-mid) ease; }
   }
   span { font-size: 13px; color: var(--muted); }
 }
@@ -118,14 +150,14 @@
   padding: 13px 4px; cursor: pointer; color: inherit; font: inherit;
 
   &:last-child { border-bottom: 0; }
-  &:hover { background: rgba(255,255,255,.03); }
+  &:hover { background: var(--hair); }
   &.done .ttl { color: var(--muted); text-decoration: line-through; }
 
   .check {
     flex: 0 0 auto; width: 19px; height: 19px; margin-top: 2px;
     border: 1px solid var(--line); border-radius: 6px;
     display: grid; place-items: center; font-size: 12px;
-    &.on { background: var(--ok); border-color: var(--ok); color: #0b2a1c; }
+    &.on { background: var(--ok); border-color: var(--ok); color: var(--on-brand); }
   }
 
   .body { display: flex; flex-direction: column; gap: 4px; }

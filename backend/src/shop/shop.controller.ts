@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { ShopService } from './shop.service';
 import { AddToCartDto, UpdateCartDto, CheckoutDto } from './shop.dto';
@@ -46,7 +47,10 @@ export class ShopController {
     return this.svc.clearCart(sessionId ?? '');
   }
 
+  /* Checkout is the only shop write that creates a durable record and moves
+     stock, so it gets a tighter ceiling than cart edits. */
   @Post('checkout')
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   checkout(@Body() dto: CheckoutDto) {
     return this.svc.checkout(dto);
   }
