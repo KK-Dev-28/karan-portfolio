@@ -425,6 +425,151 @@ html[data-layout="cinematic-wide"] {
   --grid-tile-min: 340px;
 }
 
+/* ═════════════════════════════════════════════════════════════════════════
+   RADICAL LAYOUT TRANSFORMATIONS — Deep Structural Redesigns
+═════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Cyber Matrix & Bento HUD — Sci-Fi High-Tech Terminal */
+html[data-layout="command"],
+html[data-layout="bento-hud"] {
+  .sec-label {
+    font-family: var(--font-mono);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    &::before { content: '[SYS_ '; }
+    &::after  { content: ' ]'; }
+  }
+
+  .sec-title {
+    font-family: var(--font-head);
+    letter-spacing: -.02em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  /* Cyber corner brackets on cards */
+  .card, .project-card, .service-card, .arch-node-card, .gig-card, .product-card, .award-card, .ai-card {
+    position: relative;
+    border-radius: 4px !important;
+    border: 1px solid rgba(var(--accent-rgb), .35) !important;
+    background: rgba(var(--bg-3-rgb, 14, 14, 24), .85) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,.6), inset 0 0 15px rgba(var(--accent-rgb), .03) !important;
+
+    &::before {
+      content: '+';
+      position: absolute;
+      top: -6px;
+      left: -4px;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 0 6px var(--accent);
+      pointer-events: none;
+    }
+    &::after {
+      content: '+';
+      position: absolute;
+      bottom: -6px;
+      right: -4px;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 0 6px var(--accent);
+      pointer-events: none;
+    }
+  }
+}
+
+/* 2. Executive Swiss Dossier — Minimalist Luxury Editorial */
+html[data-layout="dossier"] {
+  --font-head: 'Space Grotesk', serif;
+
+  .sec-label {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-size: .7rem;
+    letter-spacing: .15em;
+    border-left: 2px solid var(--accent);
+    padding-left: .5rem;
+  }
+
+  .sec-title {
+    font-weight: 400;
+    letter-spacing: -.03em;
+    .italic { font-style: italic; font-weight: 300; }
+  }
+
+  section {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card, .project-card, .service-card, .arch-node-card, .gig-card, .product-card {
+    border-radius: 0 !important;
+    border: none !important;
+    border-top: 1px solid var(--border) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* 3. Atelier Bento Grid — Apple & Linear Style Bento Studio */
+html[data-layout="atelier-grid"] {
+  .sec-title {
+    font-weight: 800;
+    letter-spacing: -.03em;
+  }
+
+  .card, .project-card, .service-card, .arch-node-card, .gig-card, .product-card {
+    border-radius: 20px !important;
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 20px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.05) inset !important;
+    backdrop-filter: blur(20px);
+    transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s cubic-bezier(.16,1,.3,1) !important;
+
+    &:hover {
+      transform: translateY(-6px) scale(1.01) !important;
+      box-shadow: 0 28px 64px rgba(0,0,0,.7), 0 0 24px rgba(var(--accent-rgb), .15) !important;
+    }
+  }
+}
+
+/* 4. Cinematic Wide — Spatial 3D Stage Presentation */
+html[data-layout="cinematic-wide"] {
+  .sec-title {
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    text-shadow: 0 0 32px rgba(var(--accent-rgb), .3);
+  }
+
+  .card, .project-card, .service-card, .arch-node-card, .gig-card, .product-card {
+    border-radius: 16px !important;
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), .03) 0%, var(--card) 100%) !important;
+    border: 1px solid rgba(var(--accent-rgb), .25) !important;
+    box-shadow: 0 16px 40px rgba(0,0,0,.7), 0 0 24px rgba(var(--accent-rgb), .08) !important;
+  }
+}
+
+/* ── Tour Focus Spotlight Frame ───────────────────────── */
+.tour-focus {
+  position: relative;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 48px rgba(var(--accent-rgb), .35) !important;
+  transition: all .6s cubic-bezier(.16, 1, .3, 1);
+  animation: tour-spotlight-pulse 2s infinite alternate ease-in-out;
+}
+
+@keyframes tour-spotlight-pulse {
+  0%   { box-shadow: 0 0 0 2px var(--accent), 0 0 30px rgba(var(--accent-rgb), .25); }
+  100% { box-shadow: 0 0 0 3px var(--accent-2), 0 0 64px rgba(var(--accent-rgb), .55); }
+}
+
 body {
   background:  var(--bg);
   color:       var(--text);

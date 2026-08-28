@@ -1,9 +1,12 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, ElementRef, ViewChild, inject, NgZone
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SiteContentService } from '../../services/site-content.service';
 import { ChatService, ChatTurn } from '../../services/chat.service';
 import { AnalyticsService } from '../../services/analytics.service';
+import { SoundService } from '../../services/sound.service';
 
 export interface TourStep {
   target: string;
@@ -19,10 +22,10 @@ const FALLBACK_STEPS: TourStep[] = [
   {
     target: 'hero',
     title: 'Kinetic 3D Hero & Spatial Core',
-    body: "Welcome! I'm your AI Systems Copilot. This hero features a hardware-adaptive kinetic canvas that automatically throttles to 0% CPU/GPU usage when scrolled out of view.",
-    builtDetails: 'Custom Three.js & HTML5 Canvas particle engine with pointer attraction physics and theme-reactive volumetric aurora gradients.',
+    body: "Hello! I'm Karan's AI Hologram Copilot. This hero features a hardware-adaptive kinetic 3D engine that automatically throttles to zero CPU/GPU usage when scrolled out of view.",
+    builtDetails: 'Custom Three.js particle system with pointer vector attraction physics and theme-reactive volumetric aurora gradients.',
     techDetails: 'IntersectionObserver viewport throttling · Rolling FPS quality tiering (Ultra/High/Mid/Low/2D) · prefers-reduced-motion compliance.',
-    impactDetails: 'Achieves a 100/100 performance score with zero layout shift (CLS < 0.01) and sub-180kB initial transfer.',
+    impactDetails: 'Achieves a 100/100 Lighthouse performance score with zero layout shift (CLS < 0.01) and sub-180kB initial transfer.',
     icon: '🌌',
   },
   {
@@ -72,7 +75,7 @@ const FALLBACK_STEPS: TourStep[] = [
   },
   {
     target: 'gigs',
-    title: 'Freelance Offerings & Cost Estimator',
+    title: 'Freelance Packages & Cost Estimator',
     body: 'Transparent freelance packages, monthly retainers, and an interactive Project Cost Estimator with instant scoping calculations.',
     builtDetails: 'Dynamic slider estimator, consultation booking scheduler, and direct WhatsApp / Razorpay integration.',
     techDetails: 'Interactive formula calculus · Currency formatters · Instant calendar booking · Webhook invoice generator.',
@@ -113,13 +116,21 @@ export class TourGuideComponent implements OnInit, OnDestroy {
   private readonly cms = inject(SiteContentService);
   private readonly chat = inject(ChatService);
   private readonly analytics = inject(AnalyticsService);
+  public readonly sound = inject(SoundService);
+  private readonly ngZone = inject(NgZone);
 
   open = false;
   inviting = false;
   mode: Mode = 'tour';
+
   voiceEnabled = true;
   isPlayingVoice = false;
+  isBlinking = false;
+  mouthOpenness = 0; // 0 to 1 for mouth animation
+
   showDeepDive = false;
+  autoPlay = true;
+  autoPlayProgress = 0; // 0% to 100%
 
   chatEnabled = true;
   turns: ChatTurn[] = [];
@@ -130,8 +141,12 @@ export class TourGuideComponent implements OnInit, OnDestroy {
 
   steps: TourStep[] = FALLBACK_STEPS;
   index = 0;
+
   private highlighted?: HTMLElement;
   private synth?: SpeechSynthesis;
+  private autoPlayTimer?: any;
+  private blinkTimer?: any;
+  private mouthInterval?: any;
 
   constructor() {}
 
@@ -157,6 +172,8 @@ export class TourGuideComponent implements OnInit, OnDestroy {
       error: () => {},
     });
 
+    this.startBlinkLoop();
+
     try {
       if (!localStorage.getItem(LS_SEEN)) {
         setTimeout(() => {
@@ -169,6 +186,22 @@ export class TourGuideComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.clearHighlight();
     this.stopVoice();
+    this.stopAutoPlayTimer();
+    if (this.blinkTimer) clearTimeout(this.blinkTimer);
+    if (this.mouthInterval) clearInterval(this.mouthInterval);
+  }
+
+  private startBlinkLoop() {
+    const nextBlink = () => {
+      this.blinkTimer = setTimeout(() => {
+        this.isBlinking = true;
+        setTimeout(() => {
+          this.isBlinking = false;
+          nextBlink();
+        }, 180);
+      }, 2500 + Math.random() * 3000);
+    };
+    nextBlink();
   }
 
   launch(mode: Mode = 'tour') {
@@ -176,10 +209,12 @@ export class TourGuideComponent implements OnInit, OnDestroy {
     this.inviting = false;
     this.open = true;
     this.mode = mode;
+    this.sound.playPowerUp();
     this.analytics.trackInteraction('open_ai_companion', 'tour_guide', { mode });
 
     if (mode === 'tour') {
       this.index = 0;
+      this.autoPlay = true;
       this.goToStep();
     } else if (!this.turns.length) {
       this.greet();
@@ -190,6 +225,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
     this.open = false;
     this.clearHighlight();
     this.stopVoice();
+    this.stopAutoPlayTimer();
     this.markSeen();
   }
 
@@ -201,6 +237,9 @@ export class TourGuideComponent implements OnInit, OnDestroy {
   switchTo(mode: Mode) {
     this.mode = mode;
     this.stopVoice();
+    this.stopAutoPlayTimer();
+    this.sound.playBeep();
+
     if (mode === 'tour') {
       this.goToStep();
     } else {
@@ -211,6 +250,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
 
   toggleVoice() {
     this.voiceEnabled = !this.voiceEnabled;
+    this.sound.playBeep();
     if (!this.voiceEnabled) {
       this.stopVoice();
     } else if (this.mode === 'tour') {
@@ -218,36 +258,86 @@ export class TourGuideComponent implements OnInit, OnDestroy {
     }
   }
 
+  toggleAutoPlay() {
+    this.autoPlay = !this.autoPlay;
+    this.sound.playBeep();
+    if (!this.autoPlay) {
+      this.stopAutoPlayTimer();
+    } else {
+      this.startAutoPlayTimer();
+    }
+  }
+
+  toggleSoundMute() {
+    this.sound.toggleMute();
+  }
+
   toggleDeepDive() {
     this.showDeepDive = !this.showDeepDive;
+    this.sound.playBeep();
     this.analytics.trackInteraction('toggle_deep_dive', 'tour_guide', {
       step: this.step.title,
       expanded: this.showDeepDive,
     });
   }
 
-  // ── Speech Synthesis ──────────────────────────────────
-  private speakText(text: string) {
-    if (!this.voiceEnabled || !this.synth) return;
+  // ── Speech Synthesis & Mouth Lip-Sync ─────────────────
+  private speakText(text: string, onComplete?: () => void) {
+    if (!this.voiceEnabled || !this.synth) {
+      if (onComplete) onComplete();
+      return;
+    }
     this.stopVoice();
 
     try {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.05;
-      utterance.pitch = 1.0;
+      utterance.rate = 1.02;
+      utterance.pitch = 1.05;
 
       const voices = this.synth.getVoices();
-      const preferred = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha')));
+      const preferred = voices.find(v =>
+        v.lang.startsWith('en') &&
+        (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel'))
+      );
       if (preferred) utterance.voice = preferred;
 
-      utterance.onstart = () => { this.isPlayingVoice = true; };
-      utterance.onend = () => { this.isPlayingVoice = false; };
-      utterance.onerror = () => { this.isPlayingVoice = false; };
+      utterance.onstart = () => {
+        this.isPlayingVoice = true;
+        this.startMouthAnimation();
+      };
+
+      utterance.onend = () => {
+        this.isPlayingVoice = false;
+        this.stopMouthAnimation();
+        if (onComplete) onComplete();
+      };
+
+      utterance.onerror = () => {
+        this.isPlayingVoice = false;
+        this.stopMouthAnimation();
+        if (onComplete) onComplete();
+      };
 
       this.synth.speak(utterance);
     } catch {
       this.isPlayingVoice = false;
+      this.stopMouthAnimation();
+      if (onComplete) onComplete();
     }
+  }
+
+  private startMouthAnimation() {
+    if (this.mouthInterval) clearInterval(this.mouthInterval);
+    this.mouthInterval = setInterval(() => {
+      this.mouthOpenness = Math.random() * 0.9 + 0.1;
+      if (Math.random() < 0.25) this.sound.playBlip();
+    }, 110);
+  }
+
+  private stopMouthAnimation() {
+    if (this.mouthInterval) clearInterval(this.mouthInterval);
+    this.mouthInterval = null;
+    this.mouthOpenness = 0;
   }
 
   private stopVoice() {
@@ -255,6 +345,39 @@ export class TourGuideComponent implements OnInit, OnDestroy {
       try { this.synth.cancel(); } catch {}
     }
     this.isPlayingVoice = false;
+    this.stopMouthAnimation();
+  }
+
+  // ── Auto-Play Progress & Transition Timer ─────────────
+  private startAutoPlayTimer(durationMs: number = 8000) {
+    this.stopAutoPlayTimer();
+    if (!this.autoPlay) return;
+
+    const interval = 100;
+    let elapsed = 0;
+    this.autoPlayProgress = 0;
+
+    this.autoPlayTimer = setInterval(() => {
+      elapsed += interval;
+      this.autoPlayProgress = Math.min(100, (elapsed / durationMs) * 100);
+
+      if (elapsed >= durationMs) {
+        this.stopAutoPlayTimer();
+        if (!this.isLast) {
+          this.next();
+        } else {
+          this.finishTour();
+        }
+      }
+    }, interval);
+  }
+
+  private stopAutoPlayTimer() {
+    if (this.autoPlayTimer) {
+      clearInterval(this.autoPlayTimer);
+      this.autoPlayTimer = null;
+    }
+    this.autoPlayProgress = 0;
   }
 
   // ── Chat ──────────────────────────────────────────────
@@ -264,7 +387,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
       content: "Hello! I am Karan's Holographic Systems Copilot. Ask me about his full-stack architecture, projects, live demos, or take the interactive audio/visual tour.",
     }];
     if (this.voiceEnabled) {
-      this.speakText("Hello! I am Karan's Holographic Systems Copilot. Ask me anything or take the tour.");
+      this.speakText("Hello! I am Karan's Holographic Systems Copilot. Ask me anything or take the guided tour.");
     }
   }
 
@@ -281,6 +404,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
     this.chatError = '';
     this.turns = [...this.turns, { role: 'user', content: text }];
     this.thinking = true;
+    this.sound.playBeep();
     this.scrollDown();
 
     const history = this.turns.slice(this.turns[0]?.role === 'assistant' ? 1 : 0);
@@ -290,7 +414,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
         this.thinking = false;
         if (reply) {
           this.turns = [...this.turns, { role: 'assistant', content: reply }];
-          if (this.voiceEnabled) this.speakText(reply.slice(0, 280));
+          if (this.voiceEnabled) this.speakText(reply.slice(0, 300));
         }
         this.scrollDown();
       },
@@ -311,7 +435,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── Guided Tour ───────────────────────────────────────
+  // ── Guided Tour Navigation ────────────────────────────
   get step(): TourStep {
     return this.steps[this.index] || FALLBACK_STEPS[0];
   }
@@ -323,6 +447,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
   next() {
     if (!this.isLast) {
       this.index++;
+      this.sound.playSwoosh();
       this.goToStep();
     } else {
       this.finishTour();
@@ -332,35 +457,56 @@ export class TourGuideComponent implements OnInit, OnDestroy {
   prev() {
     if (this.index > 0) {
       this.index--;
+      this.sound.playSwoosh();
       this.goToStep();
     }
   }
 
   jump(i: number) {
     this.index = i;
+    this.sound.playSwoosh();
+    this.goToStep();
+  }
+
+  replayCurrent() {
+    this.sound.playSwoosh();
     this.goToStep();
   }
 
   finishTour() {
     this.clearHighlight();
     this.stopVoice();
-    if (this.chatEnabled) this.switchTo('chat');
-    else this.close();
+    this.stopAutoPlayTimer();
+    this.sound.playSuccess();
+
+    if (this.chatEnabled) {
+      this.switchTo('chat');
+    } else {
+      this.close();
+    }
   }
 
   private goToStep() {
     this.showDeepDive = false;
-    const el = document.getElementById(this.step?.target ?? '');
+    this.stopAutoPlayTimer();
     this.clearHighlight();
 
+    const el = document.getElementById(this.step?.target ?? '');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       el.classList.add('tour-focus');
       this.highlighted = el;
     }
 
-    if (this.voiceEnabled) {
-      this.speakText(this.step.body);
+    // Speak audio, then start auto-advance countdown if autoplay is enabled
+    this.speakText(this.step.body, () => {
+      if (this.autoPlay && !this.isLast) {
+        this.startAutoPlayTimer(5000);
+      }
+    });
+
+    if (!this.voiceEnabled && this.autoPlay && !this.isLast) {
+      this.startAutoPlayTimer(7000);
     }
   }
 

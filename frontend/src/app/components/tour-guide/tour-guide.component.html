@@ -4,15 +4,23 @@
   <div class="hologram-orb">
     <div class="orb-ring ring-1"></div>
     <div class="orb-ring ring-2"></div>
-    <div class="orb-core">
-      <span class="orb-icon">🧠</span>
+    <!-- Human Holographic Face Avatar Thumbnail -->
+    <div class="human-avatar-thumb">
+      <svg viewBox="0 0 36 36" width="24" height="24" class="avatar-svg">
+        <circle cx="18" cy="18" r="16" fill="rgba(var(--accent-rgb), 0.15)" stroke="var(--accent)" stroke-width="1.5"/>
+        <!-- Eyes -->
+        <circle cx="12" cy="15" r="2" fill="var(--accent)"/>
+        <circle cx="24" cy="15" r="2" fill="var(--accent)"/>
+        <!-- Mouth -->
+        <path d="M13 23 Q18 27 23 23" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
     </div>
   </div>
   <div class="tg-launcher-info">
     <span class="tg-launcher-title">AI Systems Copilot</span>
-    <span class="tg-launcher-sub">Interactive Voice &amp; Section Guide</span>
+    <span class="tg-launcher-sub">Interactive Voice &amp; Auto-Tour</span>
   </div>
-  <span class="tg-badge">LIVE</span>
+  <span class="tg-badge">LIVE 5D</span>
 </button>
 
 <!-- First-visit proactive nudge -->
@@ -20,9 +28,9 @@
   <button class="tg-invite-x" (click)="dismissInvite()" aria-label="Dismiss">✕</button>
   <div class="invite-header">
     <span class="invite-icon">✨</span>
-    <strong>AI Section Guide Ready</strong>
+    <strong>Automated Portfolio Tour Ready</strong>
   </div>
-  <p>I can narrate Karan's architecture, projects, and live demos section-by-section with voice audio.</p>
+  <p>I can take you on an automatic, voice-narrated walkthrough of Karan's architecture, projects, and live demos.</p>
   <div class="tg-invite-actions">
     <button class="tg-invite-go" (click)="launch('tour')">Start Guided Tour →</button>
     <button class="tg-invite-go alt" (click)="launch('chat')">Ask Questions</button>
@@ -32,40 +40,94 @@
 <!-- Holographic Copilot Main Panel -->
 <div class="tg-panel" *ngIf="open" role="dialog" aria-label="AI Systems Copilot">
 
-  <!-- Header -->
+  <!-- Header with Live Human Hologram Avatar -->
   <div class="tg-head">
     <div class="head-left">
-      <div class="avatar-holo" [class.talking]="isPlayingVoice">
-        <div class="holo-core">{{ step?.icon || '🧠' }}</div>
+      <!-- Animated Human Hologram Avatar Face -->
+      <div class="human-avatar-container" [class.speaking]="isPlayingVoice">
+        <div class="holo-rings">
+          <div class="holo-ring r-1"></div>
+          <div class="holo-ring r-2"></div>
+        </div>
+
+        <svg viewBox="0 0 64 64" width="44" height="44" class="human-avatar-face">
+          <!-- Cyber Head Outline -->
+          <circle cx="32" cy="32" r="28" fill="rgba(var(--bg-3-rgb, 18, 18, 30), 0.85)" stroke="var(--accent)" stroke-width="2"/>
+          <path d="M12 32 H52" stroke="rgba(var(--accent-rgb), 0.2)" stroke-width="0.75" stroke-dasharray="2 2"/>
+          <path d="M32 12 V52" stroke="rgba(var(--accent-rgb), 0.2)" stroke-width="0.75" stroke-dasharray="2 2"/>
+
+          <!-- Eyes with dynamic Blink -->
+          <g [class.blinking]="isBlinking">
+            <ellipse cx="23" cy="26" [attr.rx]="isBlinking ? 4 : 3" [attr.ry]="isBlinking ? 0.5 : 3" fill="var(--accent)"/>
+            <circle *ngIf="!isBlinking" cx="24" cy="25" r="1" fill="#ffffff"/>
+
+            <ellipse cx="41" cy="26" [attr.rx]="isBlinking ? 4 : 3" [attr.ry]="isBlinking ? 0.5 : 3" fill="var(--accent)"/>
+            <circle *ngIf="!isBlinking" cx="42" cy="25" r="1" fill="#ffffff"/>
+          </g>
+
+          <!-- Eyebrows -->
+          <path d="M19 21 Q23 19 27 21" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M37 21 Q41 19 45 21" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/>
+
+          <!-- Nose -->
+          <path d="M32 26 L30 33 H34" fill="none" stroke="rgba(var(--accent-rgb), 0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Dynamic Talking Mouth (opens and moves when isPlayingVoice) -->
+          <ellipse cx="32" cy="42" [attr.rx]="isPlayingVoice ? (4 + mouthOpenness * 3) : 5" [attr.ry]="isPlayingVoice ? (2 + mouthOpenness * 4) : 1.5"
+                   [attr.fill]="isPlayingVoice ? 'var(--accent)' : 'none'" stroke="var(--accent)" stroke-width="1.5"/>
+        </svg>
+
+        <!-- Audio Waveform Bars -->
         <div class="holo-waves" *ngIf="isPlayingVoice">
-          <span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
         </div>
       </div>
+
       <div>
         <div class="tg-title-sm">AI Systems Copilot</div>
         <div class="tg-status">
-          <span class="status-indicator"></span>
-          {{ isPlayingVoice ? 'Speaking…' : (mode === 'tour' ? 'Guided Audio Tour' : 'AI Assistant Ready') }}
+          <span class="status-indicator" [class.live]="isPlayingVoice"></span>
+          {{ isPlayingVoice ? 'Speaking…' : (autoPlay && mode === 'tour' ? 'Auto-Touring' : 'Ready') }}
         </div>
       </div>
     </div>
 
+    <!-- Controls -->
     <div class="head-controls">
-      <!-- Voice Toggle -->
-      <button class="icon-btn" (click)="toggleVoice()" [title]="voiceEnabled ? 'Mute Audio Narration' : 'Enable Voice Narration'" [class.active]="voiceEnabled">
-        {{ voiceEnabled ? '🔊' : '🔇' }}
+      <!-- Auto-Play Toggle -->
+      <button *ngIf="mode === 'tour'" class="icon-btn" (click)="toggleAutoPlay()"
+              [title]="autoPlay ? 'Pause Auto-Play' : 'Resume Auto-Play'" [class.active]="autoPlay">
+        {{ autoPlay ? '⏸️' : '▶️' }}
       </button>
+
+      <!-- Sound Effects Mute Toggle -->
+      <button class="icon-btn" (click)="toggleSoundMute()"
+              [title]="sound.isMuted ? 'Unmute Sound Effects' : 'Mute Sound Effects'" [class.active]="!sound.isMuted">
+        {{ sound.isMuted ? '🔇' : '🎵' }}
+      </button>
+
+      <!-- Voice Narration Toggle -->
+      <button class="icon-btn" (click)="toggleVoice()"
+              [title]="voiceEnabled ? 'Mute Voice Narration' : 'Enable Voice Narration'" [class.active]="voiceEnabled">
+        {{ voiceEnabled ? '🗣️' : '🤐' }}
+      </button>
+
       <button class="tg-x" (click)="close()" aria-label="Close Copilot">✕</button>
     </div>
+  </div>
+
+  <!-- Auto-Tour Progress Countdown Bar -->
+  <div class="tour-progress-bar" *ngIf="mode === 'tour' && autoPlay">
+    <div class="progress-fill" [style.width]="autoPlayProgress + '%'"></div>
   </div>
 
   <!-- Mode Switcher Tabs -->
   <div class="tg-mode-tabs">
     <button class="tab-btn" [class.active]="mode === 'tour'" (click)="switchTo('tour')">
-      🗺️ Section Guide ({{ index + 1 }}/{{ steps.length }})
+      🗺️ Section Walkthrough ({{ index + 1 }}/{{ steps.length }})
     </button>
     <button class="tab-btn" [class.active]="mode === 'chat'" (click)="switchTo('chat')">
-      💬 Ask Questions
+      💬 Technical Q&amp;A
     </button>
   </div>
 
@@ -113,7 +175,10 @@
       <!-- Actions -->
       <div class="tg-actions">
         <button class="tg-btn ghost" (click)="prev()" [disabled]="index === 0">← Back</button>
-        <button class="tg-btn primary" (click)="next()">{{ isLast ? 'Complete Tour 🎉' : 'Next Section →' }}</button>
+        <button class="tg-btn icon-only ghost" (click)="replayCurrent()" title="Replay Section">🔄</button>
+        <button class="tg-btn primary" (click)="next()">
+          {{ isLast ? 'Complete Tour 🎉' : 'Next Section →' }}
+        </button>
       </div>
     </div>
   </ng-container>
