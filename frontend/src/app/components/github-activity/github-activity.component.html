@@ -1,0 +1,92 @@
+<section class="github-section" id="github">
+  <div class="container">
+
+    <!-- Section Header -->
+    <div class="sec-header">
+      <div class="sec-label">OPEN SOURCE &amp; REPOSITORIES</div>
+      <h2 class="sec-title">Live GitHub Activity &amp; Stats</h2>
+      <p class="sec-sub">Continuous production delivery, architectural open-source repos, and developer telemetry.</p>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="gh-grid">
+
+      <!-- Left Profile & Language Distribution Card -->
+      <div class="gh-profile-card">
+        <div class="profile-hdr">
+          <div class="avatar-gh">
+            <span class="gh-octo">🐙</span>
+          </div>
+          <div>
+            <h3 class="gh-name">&#64;{{ username }}</h3>
+            <span class="gh-status">Active Contributor</span>
+          </div>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="metrics-strip">
+          <div class="m-item">
+            <span class="m-val">{{ stats.totalCommits }}</span>
+            <span class="m-lbl">Commits</span>
+          </div>
+          <div class="m-item">
+            <span class="m-val">{{ stats.totalRepos }}</span>
+            <span class="m-lbl">Repositories</span>
+          </div>
+          <div class="m-item">
+            <span class="m-val">{{ stats.contributionsThisYear }}</span>
+            <span class="m-lbl">Yearly Activity</span>
+          </div>
+        </div>
+
+        <!-- Languages Breakdown Bar -->
+        <div class="lang-breakdown">
+          <span class="lang-title">Language Distribution</span>
+          <div class="lang-bar">
+            <span *ngFor="let l of languages" [style.width]="l.pct + '%'" [style.background]="l.color" [title]="l.name + ': ' + l.pct + '%'"></span>
+          </div>
+          <div class="lang-legend">
+            <div *ngFor="let l of languages" class="legend-item">
+              <span class="dot" [style.background]="l.color"></span>
+              <span class="name">{{ l.name }}</span>
+              <span class="pct">{{ l.pct }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <a [href]="profileUrl" target="_blank" rel="noopener noreferrer" class="view-profile-btn" (click)="sound.playBeep()">
+          <span>View GitHub Profile</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+      <!-- Right Featured Repositories Grid -->
+      <div class="gh-repos-container">
+        <div *ngFor="let r of featuredRepos" class="repo-card">
+          <div class="repo-card-top">
+            <div class="repo-name-wrap">
+              <span class="repo-icon">📦</span>
+              <a [href]="r.url" target="_blank" rel="noopener noreferrer" class="repo-title">{{ r.name }}</a>
+            </div>
+            <span class="repo-visibility">Public</span>
+          </div>
+
+          <p class="repo-desc">{{ r.description }}</p>
+
+          <div class="repo-meta">
+            <div class="lang-tag">
+              <span class="lang-pip" [style.background]="r.languageColor"></span>
+              <span>{{ r.language }}</span>
+            </div>
+            <div class="repo-stats-row">
+              <span class="stat-star">⭐ {{ r.stars }}</span>
+              <span class="stat-fork">🍴 {{ r.forks }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>

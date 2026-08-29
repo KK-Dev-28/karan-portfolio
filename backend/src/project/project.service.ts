@@ -74,7 +74,6 @@ export class ProjectService {
       techStack: ['React 18', 'TypeScript', 'dnd-kit', 'Material UI', 'Recharts', 'Formik'],
       period: '2025',
       githubUrl: 'https://github.com/Karan28012002/todo-app-react',
-      liveUrl: '/demo/tasks',
       isFeatured: false, sortOrder: 10,
     },
   ];
@@ -88,7 +87,6 @@ export class ProjectService {
       description: 'A tenanted course platform where each organisation gets isolated data behind one deployment. Content is modelled as courses → chapters → topics, each with threaded comments and file attachments, plus enrolments, an audit trail, and a full REST API alongside the MVC admin. Subscription billing runs on Stripe against configurable plans; Gemini generates draft lesson content and Aspose.Slides turns a topic into a downloadable deck. Sign-in supports Google, Facebook and GitHub on top of ASP.NET Identity. I owned the tenancy layer, the API surface, the plans and billing screens, and the AI content integration across 56 commits.',
       techStack: ['ASP.NET Core 6', 'C#', 'Entity Framework Core', 'SQL Server', 'Stripe', 'AutoMapper'],
       period: 'Feb 2024 – Apr 2024',
-      liveUrl: '/demo/learning',
       isFeatured: true, sortOrder: 11,
     },
     {
@@ -96,7 +94,6 @@ export class ProjectService {
       description: 'A storefront and back office built as four separate projects — web, domain models, data access, and shared utilities — so the dependency direction stays honest end to end. Covers the full order lifecycle: catalogue with categories, companies and cover types, shopping cart, checkout, then pending → approved → history order queues with a staff console over the top. Payments through Stripe and PayPal, SMS notifications via Twilio, live updates over SignalR, and Polly wrapping the outbound calls for retries. Data access mixes EF Core for the domain with Dapper where raw query speed mattered, across 15+ migrations.',
       techStack: ['ASP.NET Core 6', 'C#', 'Entity Framework Core', 'Dapper', 'SQL Server', 'SignalR'],
       period: '2023 – 2024',
-      liveUrl: '/demo/shop',
       isFeatured: false, sortOrder: 12,
     },
   ];
@@ -104,7 +101,8 @@ export class ProjectService {
   /* Runs on every boot. A first run fills an empty table; later runs only add
      entries whose title is missing, so a redeploy can introduce a new project
      without duplicating rows or overwriting admin edits. Client work is seeded
-     once and then left alone — it is edited from the admin, not from here. */
+     once and then left alone — it is edited from the admin, not from here.
+     The final pass retires links to routes that no longer exist. */
   async seed() {
     const existing = await this.repo.find({ select: ['title'] });
     const topUp = [...ProjectService.OPEN_SOURCE_PROJECTS, ...ProjectService.PERSONAL_PROJECTS];
@@ -125,28 +123,25 @@ export class ProjectService {
       console.log(`✅ Added ${missing.length} project(s): ${missing.map(p => p.title).join(', ')}`);
     }
 
-    await this.backfillLiveUrls(topUp);
+    await this.clearRetiredLiveUrls();
   }
 
-  /* Rows seeded before a project had a demo keep their empty liveUrl, because
-     the top-up above only inserts titles that are missing entirely. This fills
-     those in — but only where the column is still blank, so a link edited from
-     the admin is never overwritten by a redeploy. */
-  private async backfillLiveUrls(defs: Partial<Project>[]) {
-    const wanted = defs.filter(d => d.liveUrl);
-    if (!wanted.length) return;
+  /* Internal demo routes that used to back a project card and no longer
+     exist. A row keeps whatever liveUrl it was given, so removing the route
+     alone would leave the card pointing at a 404. */
+  private static readonly RETIRED_LIVE_URLS = ['/demo/shop', '/demo/learning', '/demo/tasks'];
 
+  /* Clears links to routes that have been removed. Only exact matches from the
+     list above are touched, so a real external URL — or anything set by hand in
+     the admin — is left alone. */
+  private async clearRetiredLiveUrls() {
     const rows = await this.repo.find({ select: ['id', 'title', 'liveUrl'] });
-    const patched = rows.filter(r => {
-      const def = wanted.find(d => d.title === r.title);
-      return def && !r.liveUrl;
-    });
-    if (!patched.length) return;
+    const stale = rows.filter(r => r.liveUrl && ProjectService.RETIRED_LIVE_URLS.includes(r.liveUrl));
+    if (!stale.length) return;
 
-    for (const row of patched) {
-      const def = wanted.find(d => d.title === row.title)!;
-      await this.repo.update(row.id, { liveUrl: def.liveUrl });
+    for (const row of stale) {
+      await this.repo.update(row.id, { liveUrl: '' });
     }
-    console.log(`✅ Linked ${patched.length} project demo(s): ${patched.map(p => p.title).join(', ')}`);
+    console.log(`🧹 Cleared ${stale.length} retired demo link(s): ${stale.map(p => p.title).join(', ')}`);
   }
 }

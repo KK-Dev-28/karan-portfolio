@@ -28,6 +28,9 @@ import { StoryComponent } from '../../components/story/story.component';
 import { TourGuideComponent } from '../../components/tour-guide/tour-guide.component';
 import { GatewayCoverComponent } from '../../components/gateway-cover/gateway-cover.component';
 import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.component';
+import { CommandPaletteComponent } from '../../components/command-palette/command-palette.component';
+import { TerminalModalComponent } from '../../components/terminal-modal/terminal-modal.component';
+import { GithubActivityComponent } from '../../components/github-activity/github-activity.component';
 
 @Component({
   selector: 'app-home-page',
@@ -37,12 +40,15 @@ import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.co
     LoadingScreenComponent,
     GatewayCoverComponent,
     SidebarNavComponent,
+    CommandPaletteComponent,
+    TerminalModalComponent,
     NavbarComponent,
     HeroComponent,
     MarqueeComponent,
     ServicesComponent,
     SkillsComponent,
     ProjectsComponent,
+    GithubActivityComponent,
     JournalFeedComponent,
     ExperienceComponent,
     GigsComponent,
@@ -65,6 +71,8 @@ import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.co
   ],
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
+    <app-command-palette></app-command-palette>
+    <app-terminal-modal></app-terminal-modal>
     <app-gateway-cover></app-gateway-cover>
     <app-cursor-3d></app-cursor-3d>
     <app-tour-guide></app-tour-guide>
@@ -76,6 +84,7 @@ import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.co
     <app-services></app-services>
     <app-skills></app-skills>
     <app-projects></app-projects>
+    <app-github-activity></app-github-activity>
     <app-story></app-story>
     <app-demos></app-demos>
     <app-survey-banner></app-survey-banner>

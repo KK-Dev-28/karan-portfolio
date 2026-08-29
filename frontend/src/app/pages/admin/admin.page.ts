@@ -625,87 +625,30 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     setTimeout(() => this.studioSuccess = false, 3000);
   }
 
-  // ── DigiLocker & LinkedIn Credentials Hub ─────────────
+  // ── Credentials & Profile ─────────────────────────────
   linkedInInputJson = '';
   importStatus = '';
   importSuccess = false;
 
-  educationList = [
-    {
-      id: 1,
-      degree: 'Master of Computer Applications (MCA)',
-      institution: 'Chandigarh Group of Colleges (CGC) Landran / I.K. Gujral PTU',
-      year: '2023 – 2025',
-      grade: '8.4 CGPA / Distinction',
-      digiLockerVerified: true,
-      digiLockerDocId: 'DL-EDU-MCA-2025-KK9841',
-      docUrl: 'https://digilocker.merit.gov.in/verify/mca-kk',
-    },
-    {
-      id: 2,
-      degree: 'Bachelor of Computer Applications (BCA)',
-      institution: 'I.K. Gujral Punjab Technical University',
-      year: '2020 – 2023',
-      grade: '8.1 CGPA',
-      digiLockerVerified: true,
-      digiLockerDocId: 'DL-EDU-BCA-2023-KK3190',
-      docUrl: 'https://digilocker.merit.gov.in/verify/bca-kk',
-    }
-  ];
+  /* Empty by design. The previous contents carried fabricated DigiLocker
+     document ids and verification URLs on a domain made to look governmental,
+     and the degree details were not accurate either. Nothing is listed until
+     real, checkable values are supplied through this panel. */
+  educationList: Array<{ id: number; degree: string; institution: string; year: string; grade: string }> = [];
 
-  certificationsList = [
-    {
-      id: 1,
-      title: 'Full Stack Web Development & Microservices Architecture',
-      issuer: 'CS Soft Solutions / Enterprise Academy',
-      date: '2024',
-      credentialId: 'CSS-FSWD-8921',
-      digiLockerVerified: true,
-      verificationUrl: 'https://verify.cssoftsolutions.com/cert/8921',
-    },
-    {
-      id: 2,
-      title: 'PostgreSQL Advanced Indexing & Query Optimization',
-      issuer: 'PostgreSQL Professional Guild',
-      date: '2024',
-      credentialId: 'PG-OPT-7740',
-      digiLockerVerified: true,
-      verificationUrl: 'https://postgres-certs.org/verify/7740',
-    },
-    {
-      id: 3,
-      title: 'NestJS & TypeScript Architecture Mastery',
-      issuer: 'TypeScript Software Institute',
-      date: '2023',
-      credentialId: 'TSI-NEST-3392',
-      digiLockerVerified: true,
-      verificationUrl: 'https://typescript-institute.org/cert/3392',
-    }
-  ];
+  /* Empty by design. The previous entries cited issuing bodies that do not
+     exist ("PostgreSQL Professional Guild", "TypeScript Software Institute")
+     with verification links to match. Add only certificates that can be
+     checked at the issuer. */
+  certificationsList: Array<{ id: number; title: string; issuer: string; date: string; credentialId: string; verificationUrl: string }> = [];
 
-  achievementsList = [
-    {
-      id: 1,
-      title: 'Enterprise High-Performance API Recognition',
-      organization: 'CS Soft Solutions',
-      category: 'Corporate Award',
-      year: '2024',
-      description: 'Awarded for architecting sub-25ms response time microservices and optimizing database query latencies across 100K+ transaction volume.',
-      link: '',
-    },
-    {
-      id: 2,
-      title: 'First Place - National Full-Stack Hackathon',
-      organization: 'TechSprint India',
-      category: 'Hackathon',
-      year: '2023',
-      description: 'Built a real-time collaborative task pipeline with WebSocket sync and NestJS backend in 36 hours.',
-      link: 'https://github.com/KK-Dev-28',
-    }
-  ];
+  /* Empty by design. The previous entries claimed a corporate award and a
+     national hackathon win, including specific latency and volume figures,
+     none of which are evidenced anywhere in this repository. */
+  achievementsList: Array<{ id: number; title: string; organization: string; category: string; year: string; description: string; link: string }> = [];
 
-  newEdu = { degree: '', institution: '', year: '', grade: '', digiLockerVerified: true, digiLockerDocId: '', docUrl: '' };
-  newCert = { title: '', issuer: '', date: '', credentialId: '', digiLockerVerified: true, verificationUrl: '' };
+  newEdu = { degree: '', institution: '', year: '', grade: '' };
+  newCert = { title: '', issuer: '', date: '', credentialId: '', verificationUrl: '' };
   newAch = { title: '', organization: '', category: 'Hackathon', year: '2025', description: '', link: '' };
 
   addEducation() {
@@ -714,7 +657,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       id: Date.now(),
       ...this.newEdu
     });
-    this.newEdu = { degree: '', institution: '', year: '', grade: '', digiLockerVerified: true, digiLockerDocId: '', docUrl: '' };
+    this.newEdu = { degree: '', institution: '', year: '', grade: '' };
   }
 
   removeEducation(id: number) {
@@ -727,7 +670,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       id: Date.now(),
       ...this.newCert
     });
-    this.newCert = { title: '', issuer: '', date: '', credentialId: '', digiLockerVerified: true, verificationUrl: '' };
+    this.newCert = { title: '', issuer: '', date: '', credentialId: '', verificationUrl: '' };
   }
 
   removeCertification(id: number) {
@@ -761,9 +704,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
           institution: e.school || e.institution || 'University',
           year: e.year || e.dates || '2024',
           grade: e.grade || 'First Class',
-          digiLockerVerified: true,
-          digiLockerDocId: `DL-EDU-${Date.now()}`,
-          docUrl: '',
         }));
       }
       if (parsed.certifications && Array.isArray(parsed.certifications)) {
@@ -773,7 +713,6 @@ export class AdminPageComponent implements OnInit, OnDestroy {
           issuer: c.authority || c.issuer || 'Issuing Org',
           date: c.date || '2024',
           credentialId: c.licenseNumber || `CERT-${Date.now()}`,
-          digiLockerVerified: true,
           verificationUrl: c.url || '',
         }));
       }

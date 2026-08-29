@@ -120,7 +120,7 @@
         <span class="nav-icon">
           <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
         </span>
-        <span class="nav-label">DigiLocker &amp; Profile</span>
+        <span class="nav-label">Credentials &amp; Profile</span>
         <span class="nav-badge" style="background:rgba(16,185,129,.2); color:#10b981">VERIFIED</span>
       </button>
 
@@ -1285,13 +1285,13 @@
       </div>
 
       <!-- ═════════════════════════════════════════════════════════════════════
-           DIGILOCKER, LINKEDIN & CREDENTIALS HUB (tab === 'credentials')
+           CREDENTIALS & PROFILE (tab === 'credentials')
       ═════════════════════════════════════════════════════════════════════ -->
       <div *ngIf="tab==='credentials'" class="credentials-tab-view">
         <div class="view-hdr">
           <div>
-            <h2 class="view-title">DigiLocker &amp; Profile Credentials Vault</h2>
-            <p class="view-sub">Manage verified education, government DigiLocker seals, certificates, and LinkedIn sync.</p>
+            <h2 class="view-title">Credentials &amp; Profile</h2>
+            <p class="view-sub">Record education, certificates and achievements. Entries are shown exactly as typed — nothing here is externally verified, so add only what can be checked at the issuer.</p>
           </div>
         </div>
 
@@ -1313,23 +1313,18 @@
           </div>
         </div>
 
-        <!-- Education & DigiLocker Verifications -->
+        <!-- Education -->
         <div class="cred-section">
           <div class="cred-sec-hdr">
             <div class="sec-title-wrap">
               <span class="sec-ico">🎓</span>
-              <h3>Verified Education &amp; Degrees</h3>
+              <h3>Education &amp; Degrees</h3>
             </div>
-            <span class="gov-seal-badge">🛡️ DIGILOCKER VERIFIED</span>
           </div>
 
           <div class="cred-grid">
             <div *ngFor="let edu of educationList" class="cred-card">
               <div class="cred-card-top">
-                <div class="cred-badge-verified" *ngIf="edu.digiLockerVerified">
-                  <span class="badge-dot"></span>
-                  <span>DIGILOCKER VERIFIED</span>
-                </div>
                 <button class="remove-btn" (click)="removeEducation(edu.id)" title="Remove Degree">✕</button>
               </div>
               <h4 class="cred-title">{{ edu.degree }}</h4>
@@ -1337,10 +1332,6 @@
               <div class="cred-meta">
                 <span>🗓️ {{ edu.year }}</span>
                 <span class="cred-grade">🏆 {{ edu.grade }}</span>
-              </div>
-              <div class="cred-doc-info" *ngIf="edu.digiLockerDocId">
-                <span class="doc-id-lbl">Doc ID:</span>
-                <code>{{ edu.digiLockerDocId }}</code>
               </div>
             </div>
           </div>
@@ -1365,16 +1356,12 @@
               <span class="sec-ico">📜</span>
               <h3>Professional Certifications &amp; Credentials</h3>
             </div>
-            <span class="total-badge">{{ certificationsList.length }} Verified</span>
+            <span class="total-badge">{{ certificationsList.length }}</span>
           </div>
 
           <div class="cred-grid">
             <div *ngFor="let cert of certificationsList" class="cred-card">
               <div class="cred-card-top">
-                <div class="cred-badge-verified" *ngIf="cert.digiLockerVerified">
-                  <span class="badge-dot"></span>
-                  <span>VERIFIED ISSUER</span>
-                </div>
                 <button class="remove-btn" (click)="removeCertification(cert.id)" title="Remove Certificate">✕</button>
               </div>
               <h4 class="cred-title">{{ cert.title }}</h4>

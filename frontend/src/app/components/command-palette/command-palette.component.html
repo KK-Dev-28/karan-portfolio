@@ -1,0 +1,48 @@
+<!-- Floating Cmd+K Trigger Pill Button -->
+<button class="cmd-k-floating-btn" (click)="togglePalette()" title="Press Cmd+K or Ctrl+K">
+  <span class="cmd-k-icon">⚡</span>
+  <span class="cmd-k-label">Search / Menu</span>
+  <span class="cmd-k-badge">⌘K</span>
+</button>
+
+<!-- Command Palette Modal Overlay -->
+<div class="cmd-palette-overlay" *ngIf="isOpen" (click)="close()" role="dialog" aria-modal="true" aria-label="Command Palette">
+  <div class="cmd-palette-box" (click)="$event.stopPropagation()">
+
+    <!-- Search Input Bar -->
+    <div class="cmd-search-bar">
+      <span class="cmd-search-icon">🔍</span>
+      <input #searchInput type="text" [(ngModel)]="query" (ngModelChange)="selectedIndex = 0"
+             placeholder="Type a command, section name, theme, or tool..." autocomplete="off" />
+      <span class="cmd-esc-badge" (click)="close()">ESC</span>
+    </div>
+
+    <!-- Filtered Results List -->
+    <div class="cmd-results-list">
+      <div *ngIf="filteredCommands.length === 0" class="cmd-empty">
+        No matching commands found for "{{ query }}"
+      </div>
+
+      <div *ngFor="let cmd of filteredCommands; let i = index"
+           class="cmd-item" [class.selected]="i === selectedIndex"
+           (click)="executeCommand(cmd)"
+           (mouseenter)="selectedIndex = i">
+        <span class="cmd-item-icon">{{ cmd.icon }}</span>
+        <div class="cmd-item-text">
+          <span class="cmd-item-title">{{ cmd.title }}</span>
+          <span class="cmd-item-sub" *ngIf="cmd.subtitle">{{ cmd.subtitle }}</span>
+        </div>
+        <span class="cmd-item-cat">{{ cmd.category }}</span>
+        <span class="cmd-enter-icon" *ngIf="i === selectedIndex">↵</span>
+      </div>
+    </div>
+
+    <!-- Palette Footer Tips -->
+    <div class="cmd-footer">
+      <div class="tip-item"><span>↑↓</span> to navigate</div>
+      <div class="tip-item"><span>↵</span> to select</div>
+      <div class="tip-item"><span>ESC</span> to dismiss</div>
+    </div>
+
+  </div>
+</div>
