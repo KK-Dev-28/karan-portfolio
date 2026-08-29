@@ -62,6 +62,17 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('document:keydown.escape')
   onEsc() { if (this.tourOpen) this.closeTour(); }
 
+  taglines = [
+    'Full Stack Software Developer',
+    'Angular & .NET C# Web API Architect',
+    'Entity Framework Core & NestJS Specialist',
+    'MSSQL, PostgreSQL & SymmetricDS Engineer',
+    'Python NLP & AI Systems Integrator',
+  ];
+  currentTagline = 'Full Stack Software Developer';
+  private taglineIdx = 0;
+  private taglineInterval?: any;
+
   ngOnInit() {
     this.cms.getAll().subscribe(c => {
       this.hero = c['hero'];
@@ -69,12 +80,21 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.hero?.lastName) this.lastLetters = this.hero.lastName.split('');
     });
 
+    this.startTaglineCycle();
+
     this.perfSub = this.perf.qualityTier$.subscribe(tier => {
       this.currentTier = tier;
       if (this.canvasRef?.nativeElement) {
         this.rebuildParticles();
       }
     });
+  }
+
+  private startTaglineCycle() {
+    this.taglineInterval = setInterval(() => {
+      this.taglineIdx = (this.taglineIdx + 1) % this.taglines.length;
+      this.currentTagline = this.taglines[this.taglineIdx];
+    }, 3200);
   }
 
   ngAfterViewInit() {

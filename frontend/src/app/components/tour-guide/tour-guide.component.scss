@@ -328,7 +328,33 @@
 
       &:hover { color: var(--text); background: var(--bg-3); }
       &.active { color: var(--accent); background: rgba(var(--accent-rgb), .12); }
+      &.listening {
+        animation: mic-pulse 1s infinite alternate;
+        color: #ef4444;
+      }
     }
+  }
+}
+
+@keyframes mic-pulse {
+  from { transform: scale(1); box-shadow: 0 0 0 rgba(239, 68, 68, .4); }
+  to   { transform: scale(1.15); box-shadow: 0 0 12px rgba(239, 68, 68, .8); }
+}
+
+.voice-cmd-banner {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem .85rem;
+  background: rgba(var(--accent-rgb), 0.12);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.25);
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  color: var(--accent);
+  animation: fadeIn .2s ease;
+
+  .pulse-mic {
+    animation: mic-pulse .8s infinite alternate;
   }
 }
 

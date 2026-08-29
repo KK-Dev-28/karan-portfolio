@@ -24,7 +24,8 @@
     </h1>
 
     <div class="hero-role" *ngIf="hero">
-      <span class="role-title">{{ hero.role }}</span>
+      <span class="role-title">{{ currentTagline }}</span>
+      <span class="typing-cursor">|</span>
       <span class="role-sep">·</span>
       <span class="role-stack">{{ hero.stack }}</span>
     </div>

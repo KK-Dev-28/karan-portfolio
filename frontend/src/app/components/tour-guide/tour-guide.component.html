@@ -94,6 +94,13 @@
 
     <!-- Controls -->
     <div class="head-controls">
+      <!-- Voice Navigation Microphone Toggle -->
+      <button class="icon-btn" (click)="toggleVoiceRecognition()"
+              [title]="isListeningVoice ? 'Stop Voice Command Listener' : 'Speak Voice Navigation Commands (e.g. Projects, Skills, Contact)'"
+              [class.active]="isListeningVoice" [class.listening]="isListeningVoice">
+        {{ isListeningVoice ? '🔴' : '🎤' }}
+      </button>
+
       <!-- Auto-Play Toggle -->
       <button *ngIf="mode === 'tour'" class="icon-btn" (click)="toggleAutoPlay()"
               [title]="autoPlay ? 'Pause Auto-Play' : 'Resume Auto-Play'" [class.active]="autoPlay">
@@ -114,6 +121,12 @@
 
       <button class="tg-x" (click)="close()" aria-label="Close Copilot">✕</button>
     </div>
+  </div>
+
+  <!-- Voice Command Live Indicator Status -->
+  <div class="voice-cmd-banner" *ngIf="voiceCommandStatus || isListeningVoice">
+    <span class="pulse-mic">🎙️</span>
+    <span>{{ voiceCommandStatus || 'Listening for voice commands... (Say "Projects", "Skills", "Contact")' }}</span>
   </div>
 
   <!-- Auto-Tour Progress Countdown Bar -->

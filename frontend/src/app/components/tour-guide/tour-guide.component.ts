@@ -125,6 +125,8 @@ export class TourGuideComponent implements OnInit, OnDestroy {
 
   voiceEnabled = true;
   isPlayingVoice = false;
+  isListeningVoice = false;
+  voiceCommandStatus = '';
   isBlinking = false;
   mouthOpenness = 0; // 0 to 1 for mouth animation
 
@@ -144,6 +146,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
 
   private highlighted?: HTMLElement;
   private synth?: SpeechSynthesis;
+  private recognition?: any;
   private autoPlayTimer?: any;
   private blinkTimer?: any;
   private mouthInterval?: any;
@@ -154,6 +157,7 @@ export class TourGuideComponent implements OnInit, OnDestroy {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       this.synth = window.speechSynthesis;
     }
+    this.initSpeechRecognition();
 
     this.chat.isAvailable().subscribe(ok => {
       this.chatEnabled = ok;
@@ -338,6 +342,70 @@ export class TourGuideComponent implements OnInit, OnDestroy {
     if (this.mouthInterval) clearInterval(this.mouthInterval);
     this.mouthInterval = null;
     this.mouthOpenness = 0;
+  }
+
+  private initSpeechRecognition() {
+    if (typeof window === 'undefined') return;
+    const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRec) {
+      this.recognition = new SpeechRec();
+      this.recognition.continuous = false;
+      this.recognition.interimResults = false;
+      this.recognition.lang = 'en-US';
+
+      this.recognition.onresult = (event: any) => {
+        const text = event.results[0][0].transcript.toLowerCase();
+        this.handleVoiceCommand(text);
+      };
+
+      this.recognition.onend = () => {
+        this.isListeningVoice = false;
+      };
+
+      this.recognition.onerror = () => {
+        this.isListeningVoice = false;
+      };
+    }
+  }
+
+  toggleVoiceRecognition() {
+    if (!this.recognition) return;
+    if (this.isListeningVoice) {
+      this.recognition.stop();
+      this.isListeningVoice = false;
+    } else {
+      this.sound.playBeep();
+      this.isListeningVoice = true;
+      this.voiceCommandStatus = 'Listening... Say "Projects", "Skills", "Contact", "Tour"';
+      try {
+        this.recognition.start();
+      } catch {
+        this.isListeningVoice = false;
+      }
+    }
+  }
+
+  private handleVoiceCommand(cmd: string) {
+    this.sound.playSwoosh();
+    this.voiceCommandStatus = `Recognized: "${cmd}"`;
+
+    if (cmd.includes('project') || cmd.includes('work')) {
+      document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (cmd.includes('skill') || cmd.includes('stack') || cmd.includes('topology')) {
+      document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (cmd.includes('contact') || cmd.includes('hire') || cmd.includes('email') || cmd.includes('call')) {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (cmd.includes('demo') || cmd.includes('app')) {
+      document.getElementById('demos')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (cmd.includes('story') || cmd.includes('about')) {
+      document.getElementById('story')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (cmd.includes('gig') || cmd.includes('pricing') || cmd.includes('cost')) {
+      document.getElementById('gigs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (cmd.includes('tour') || cmd.includes('guide') || cmd.includes('walkthrough')) {
+      this.launch('tour');
+    }
+
+    setTimeout(() => this.voiceCommandStatus = '', 3500);
   }
 
   private stopVoice() {
