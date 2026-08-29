@@ -5,7 +5,7 @@
     <div class="sec-header">
       <div class="sec-label">OPEN SOURCE &amp; REPOSITORIES</div>
       <h2 class="sec-title">Live GitHub Activity &amp; Stats</h2>
-      <p class="sec-sub">Continuous production delivery, architectural open-source repos, and developer telemetry.</p>
+      <p class="sec-sub">Pulled live from the GitHub API when this page loads — repository counts, stars and languages are whatever the API reports right now.</p>
     </div>
 
     <!-- Main Grid -->
@@ -26,21 +26,21 @@
         <!-- Metrics Row -->
         <div class="metrics-strip">
           <div class="m-item">
-            <span class="m-val">{{ stats.totalCommits }}</span>
-            <span class="m-lbl">Commits</span>
-          </div>
-          <div class="m-item">
-            <span class="m-val">{{ stats.totalRepos }}</span>
+            <span class="m-val">{{ loading ? '—' : stats.repositories }}</span>
             <span class="m-lbl">Repositories</span>
           </div>
           <div class="m-item">
-            <span class="m-val">{{ stats.contributionsThisYear }}</span>
-            <span class="m-lbl">Yearly Activity</span>
+            <span class="m-val">{{ loading ? '—' : stats.stars }}</span>
+            <span class="m-lbl">Stars</span>
+          </div>
+          <div class="m-item">
+            <span class="m-val">{{ loading ? '—' : stats.followers }}</span>
+            <span class="m-lbl">Followers</span>
           </div>
         </div>
 
         <!-- Languages Breakdown Bar -->
-        <div class="lang-breakdown">
+        <div class="lang-breakdown" *ngIf="languages.length">
           <span class="lang-title">Language Distribution</span>
           <div class="lang-bar">
             <span *ngFor="let l of languages" [style.width]="l.pct + '%'" [style.background]="l.color" [title]="l.name + ': ' + l.pct + '%'"></span>
@@ -62,11 +62,17 @@
 
       <!-- Right Featured Repositories Grid -->
       <div class="gh-repos-container">
+        <p class="repo-desc" *ngIf="loading">Loading repositories from GitHub…</p>
+        <p class="repo-desc" *ngIf="failed">
+          GitHub could not be reached just now (its unauthenticated API allows 60 requests an hour).
+          The profile link on the left still works.
+        </p>
+
         <div *ngFor="let r of featuredRepos" class="repo-card">
           <div class="repo-card-top">
             <div class="repo-name-wrap">
               <span class="repo-icon">📦</span>
-              <a [href]="r.url" target="_blank" rel="noopener noreferrer" class="repo-title">{{ r.name }}</a>
+              <a [href]="r.url" target="_blank" rel="noopener noreferrer" class="repo-title" [title]="r.fullName">{{ r.name }}</a>
             </div>
             <span class="repo-visibility">Public</span>
           </div>

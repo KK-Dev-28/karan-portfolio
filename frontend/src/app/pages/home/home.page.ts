@@ -25,8 +25,6 @@ import { EstimatorComponent } from '../../components/estimator/estimator.compone
 import { DigitalProductsComponent } from '../../components/digital-products/digital-products.component';
 import { SurveyBannerComponent } from '../../components/survey-banner/survey-banner.component';
 import { StoryComponent } from '../../components/story/story.component';
-import { TourGuideComponent } from '../../components/tour-guide/tour-guide.component';
-import { GatewayCoverComponent } from '../../components/gateway-cover/gateway-cover.component';
 import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.component';
 import { CommandPaletteComponent } from '../../components/command-palette/command-palette.component';
 import { TerminalModalComponent } from '../../components/terminal-modal/terminal-modal.component';
@@ -38,7 +36,6 @@ import { GithubActivityComponent } from '../../components/github-activity/github
   imports: [
     CommonModule,
     LoadingScreenComponent,
-    GatewayCoverComponent,
     SidebarNavComponent,
     CommandPaletteComponent,
     TerminalModalComponent,
@@ -64,7 +61,6 @@ import { GithubActivityComponent } from '../../components/github-activity/github
     DemosComponent,
     SurveyBannerComponent,
     StoryComponent,
-    TourGuideComponent,
     BookingComponent,
     EstimatorComponent,
     DigitalProductsComponent,
@@ -73,9 +69,7 @@ import { GithubActivityComponent } from '../../components/github-activity/github
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
     <app-command-palette></app-command-palette>
     <app-terminal-modal></app-terminal-modal>
-    <app-gateway-cover></app-gateway-cover>
     <app-cursor-3d></app-cursor-3d>
-    <app-tour-guide></app-tour-guide>
     <app-sidebar-nav></app-sidebar-nav>
     <div class="global-stars" aria-hidden="true"></div>
     <app-navbar></app-navbar>

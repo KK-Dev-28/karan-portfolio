@@ -174,14 +174,6 @@ export class CommandPaletteComponent implements OnInit, OnDestroy {
         action: () => (window as any).__openTerminalModal?.(),
       },
       {
-        id: 'action-tour',
-        title: 'Launch AI Hologram Guided Tour',
-        category: 'Actions',
-        subtitle: 'Automated voice-narrated portfolio walkthrough',
-        icon: '🧠',
-        action: () => (window as any).__startAITour?.(),
-      },
-      {
         id: 'action-sfx',
         title: 'Toggle Web Audio Sound Effects',
         category: 'Actions',
