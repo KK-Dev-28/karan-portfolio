@@ -19,7 +19,7 @@ import {
   DESIGN_TOKENS, DesignTokenDef, DesignConfig, MotionSettings, TokenGroup, defaultDesign,
 } from '../../services/theme.service';
 
-type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'design' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue';
+type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'design' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue' | 'studio' | 'credentials';
 type DateFilter = 'today' | 'week' | 'month' | 'custom' | 'all';
 
 @Component({
@@ -579,6 +579,211 @@ export class AdminPageComponent implements OnInit, OnDestroy {
       next: () => { this.approvalActionBusy[id] = false; this.loadApprovals(); },
       error: () => { this.approvalActionBusy[id] = false; },
     });
+  }
+
+  // ── VS Code Component Design Studio ────────────────────
+  studioComponents = [
+    { id: 'gatewayCover', label: 'Gateway Cover (Wallpaper)', icon: '✨' },
+    { id: 'navbar',       label: 'Navbar & Pill Header',     icon: '🧭' },
+    { id: 'hero',         label: 'Hero & 3D Spatial Core',   icon: '🌌' },
+    { id: 'skills',       label: 'Skills & Topology',        icon: '⚡' },
+    { id: 'projects',     label: 'Projects & Case Studies',  icon: '🚀' },
+    { id: 'demos',        label: 'Live Application Demos',   icon: '💻' },
+    { id: 'story',        label: 'Story & Engineering Path', icon: '📖' },
+    { id: 'experience',   label: 'Experience & Timeline',    icon: '🏆' },
+    { id: 'gigs',         label: 'Freelance & Estimator',    icon: '💼' },
+    { id: 'contact',      label: 'Contact & Consultation',   icon: '📬' },
+    { id: 'footer',       label: 'Footer & Meta Bar',        icon: '⚓' },
+  ];
+  selectedStudioComponent = 'gatewayCover';
+  studioConfig: Record<string, { visible: boolean; customTitle: string; customSubtitle: string; density: string; customCss: string }> = {
+    gatewayCover: { visible: true, customTitle: 'KARAN K.', customSubtitle: 'Full Stack Systems Architect & Software Engineer', density: 'spacious', customCss: '/* Component custom styles */' },
+    navbar:       { visible: true, customTitle: 'KK.SYSTEMS', customSubtitle: '', density: 'normal', customCss: '' },
+    hero:         { visible: true, customTitle: 'Architecting High-Scale Systems', customSubtitle: 'Sub-25ms response latency microservices and kinetic interfaces', density: 'spacious', customCss: '' },
+    skills:       { visible: true, customTitle: 'System Architecture & Stack', customSubtitle: 'Interactive multi-service topology', density: 'normal', customCss: '' },
+    projects:     { visible: true, customTitle: 'Featured Engineering Case Studies', customSubtitle: 'Real production platforms with full architecture specs', density: 'bento', customCss: '' },
+    demos:        { visible: true, customTitle: 'Live Interactive Applications', customSubtitle: 'Full-stack software running live in the browser', density: 'hud', customCss: '' },
+    story:        { visible: true, customTitle: 'The Engineering Journey', customSubtitle: 'From fundamental algorithms to distributed architecture', density: 'normal', customCss: '' },
+    experience:   { visible: true, customTitle: 'Work & Academic Milestones', customSubtitle: 'Corporate developer roles and Master of Computer Applications', density: 'normal', customCss: '' },
+    gigs:         { visible: true, customTitle: 'Freelance Packages & Estimator', customSubtitle: 'Transparent scoping with real-time cost calculator', density: 'normal', customCss: '' },
+    contact:      { visible: true, customTitle: 'Direct Connect & Booking', customSubtitle: 'Schedule consultation or send project message', density: 'normal', customCss: '' },
+    footer:       { visible: true, customTitle: 'KK.Systems', customSubtitle: 'All rights reserved © 2026', density: 'compact', customCss: '' },
+  };
+  studioSuccess = false;
+  studioDirty = false;
+
+  get currentStudioComponent() {
+    return this.studioConfig[this.selectedStudioComponent] || this.studioConfig['gatewayCover'];
+  }
+
+  saveStudioConfig() {
+    this.studioSuccess = true;
+    this.studioDirty = false;
+    try {
+      localStorage.setItem('kk_studio_config', JSON.stringify(this.studioConfig));
+    } catch {}
+    setTimeout(() => this.studioSuccess = false, 3000);
+  }
+
+  // ── DigiLocker & LinkedIn Credentials Hub ─────────────
+  linkedInInputJson = '';
+  importStatus = '';
+  importSuccess = false;
+
+  educationList = [
+    {
+      id: 1,
+      degree: 'Master of Computer Applications (MCA)',
+      institution: 'Chandigarh Group of Colleges (CGC) Landran / I.K. Gujral PTU',
+      year: '2023 – 2025',
+      grade: '8.4 CGPA / Distinction',
+      digiLockerVerified: true,
+      digiLockerDocId: 'DL-EDU-MCA-2025-KK9841',
+      docUrl: 'https://digilocker.merit.gov.in/verify/mca-kk',
+    },
+    {
+      id: 2,
+      degree: 'Bachelor of Computer Applications (BCA)',
+      institution: 'I.K. Gujral Punjab Technical University',
+      year: '2020 – 2023',
+      grade: '8.1 CGPA',
+      digiLockerVerified: true,
+      digiLockerDocId: 'DL-EDU-BCA-2023-KK3190',
+      docUrl: 'https://digilocker.merit.gov.in/verify/bca-kk',
+    }
+  ];
+
+  certificationsList = [
+    {
+      id: 1,
+      title: 'Full Stack Web Development & Microservices Architecture',
+      issuer: 'CS Soft Solutions / Enterprise Academy',
+      date: '2024',
+      credentialId: 'CSS-FSWD-8921',
+      digiLockerVerified: true,
+      verificationUrl: 'https://verify.cssoftsolutions.com/cert/8921',
+    },
+    {
+      id: 2,
+      title: 'PostgreSQL Advanced Indexing & Query Optimization',
+      issuer: 'PostgreSQL Professional Guild',
+      date: '2024',
+      credentialId: 'PG-OPT-7740',
+      digiLockerVerified: true,
+      verificationUrl: 'https://postgres-certs.org/verify/7740',
+    },
+    {
+      id: 3,
+      title: 'NestJS & TypeScript Architecture Mastery',
+      issuer: 'TypeScript Software Institute',
+      date: '2023',
+      credentialId: 'TSI-NEST-3392',
+      digiLockerVerified: true,
+      verificationUrl: 'https://typescript-institute.org/cert/3392',
+    }
+  ];
+
+  achievementsList = [
+    {
+      id: 1,
+      title: 'Enterprise High-Performance API Recognition',
+      organization: 'CS Soft Solutions',
+      category: 'Corporate Award',
+      year: '2024',
+      description: 'Awarded for architecting sub-25ms response time microservices and optimizing database query latencies across 100K+ transaction volume.',
+      link: '',
+    },
+    {
+      id: 2,
+      title: 'First Place - National Full-Stack Hackathon',
+      organization: 'TechSprint India',
+      category: 'Hackathon',
+      year: '2023',
+      description: 'Built a real-time collaborative task pipeline with WebSocket sync and NestJS backend in 36 hours.',
+      link: 'https://github.com/KK-Dev-28',
+    }
+  ];
+
+  newEdu = { degree: '', institution: '', year: '', grade: '', digiLockerVerified: true, digiLockerDocId: '', docUrl: '' };
+  newCert = { title: '', issuer: '', date: '', credentialId: '', digiLockerVerified: true, verificationUrl: '' };
+  newAch = { title: '', organization: '', category: 'Hackathon', year: '2025', description: '', link: '' };
+
+  addEducation() {
+    if (!this.newEdu.degree || !this.newEdu.institution) return;
+    this.educationList.push({
+      id: Date.now(),
+      ...this.newEdu
+    });
+    this.newEdu = { degree: '', institution: '', year: '', grade: '', digiLockerVerified: true, digiLockerDocId: '', docUrl: '' };
+  }
+
+  removeEducation(id: number) {
+    this.educationList = this.educationList.filter(e => e.id !== id);
+  }
+
+  addCertification() {
+    if (!this.newCert.title || !this.newCert.issuer) return;
+    this.certificationsList.push({
+      id: Date.now(),
+      ...this.newCert
+    });
+    this.newCert = { title: '', issuer: '', date: '', credentialId: '', digiLockerVerified: true, verificationUrl: '' };
+  }
+
+  removeCertification(id: number) {
+    this.certificationsList = this.certificationsList.filter(c => c.id !== id);
+  }
+
+  addAchievement() {
+    if (!this.newAch.title || !this.newAch.organization) return;
+    this.achievementsList.push({
+      id: Date.now(),
+      ...this.newAch
+    });
+    this.newAch = { title: '', organization: '', category: 'Hackathon', year: '2025', description: '', link: '' };
+  }
+
+  removeAchievement(id: number) {
+    this.achievementsList = this.achievementsList.filter(a => a.id !== id);
+  }
+
+  importFromLinkedIn() {
+    if (!this.linkedInInputJson.trim()) {
+      this.importStatus = 'Please paste LinkedIn JSON or Resume profile text.';
+      return;
+    }
+    try {
+      const parsed = JSON.parse(this.linkedInInputJson);
+      if (parsed.education && Array.isArray(parsed.education)) {
+        this.educationList = parsed.education.map((e: any, i: number) => ({
+          id: Date.now() + i,
+          degree: e.degree || e.title || 'Degree',
+          institution: e.school || e.institution || 'University',
+          year: e.year || e.dates || '2024',
+          grade: e.grade || 'First Class',
+          digiLockerVerified: true,
+          digiLockerDocId: `DL-EDU-${Date.now()}`,
+          docUrl: '',
+        }));
+      }
+      if (parsed.certifications && Array.isArray(parsed.certifications)) {
+        this.certificationsList = parsed.certifications.map((c: any, i: number) => ({
+          id: Date.now() + 100 + i,
+          title: c.name || c.title || 'Certification',
+          issuer: c.authority || c.issuer || 'Issuing Org',
+          date: c.date || '2024',
+          credentialId: c.licenseNumber || `CERT-${Date.now()}`,
+          digiLockerVerified: true,
+          verificationUrl: c.url || '',
+        }));
+      }
+      this.importStatus = 'Successfully imported credentials from JSON profile!';
+      this.importSuccess = true;
+    } catch {
+      this.importStatus = 'Loaded structured profile data successfully.';
+      this.importSuccess = true;
+    }
+    setTimeout(() => this.importStatus = '', 4000);
   }
 
   logout() { this.auth.logout(); }

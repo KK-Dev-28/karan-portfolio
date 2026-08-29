@@ -1,0 +1,115 @@
+<!-- Floating Re-open Gateway Button (shows only when dismissed) -->
+<button class="gateway-reopen-pill" *ngIf="isDismissed" (click)="reopenCover()" title="View Gateway Wallpaper Cover">
+  <span class="pill-dot"></span>
+  <span>✨ Cover</span>
+</button>
+
+<!-- Full-Screen Interactive Gateway Cover Curtain -->
+<div class="gateway-overlay" *ngIf="!isDismissed" [class.closing]="isClosing" role="banner">
+
+  <!-- Background Wallpaper Layer -->
+  <div class="gateway-wallpaper-layer">
+    <img src="assets/karan_cyber_avatar.jpg" alt="Karan Cyber Avatar Wallpaper" class="wallpaper-img" />
+    <div class="wallpaper-vignette"></div>
+    <div class="wallpaper-grid-overlay"></div>
+  </div>
+
+  <!-- Ambient Light Orbs -->
+  <div class="ambient-orb orb-left"></div>
+  <div class="ambient-orb orb-right"></div>
+
+  <!-- Main Content Container -->
+  <div class="gateway-content">
+
+    <!-- Top Badge Row -->
+    <div class="gateway-top-bar">
+      <div class="brand-tag">
+        <span class="brand-glow-pip"></span>
+        <span class="brand-code">KK.SYSTEMS // 2026</span>
+      </div>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>AVAILABLE FOR ENTERPRISE &amp; FREELANCE</span>
+      </div>
+    </div>
+
+    <!-- Center Hero Section -->
+    <div class="gateway-hero-card">
+      <div class="cyber-bracket bracket-tl"></div>
+      <div class="cyber-bracket bracket-tr"></div>
+      <div class="cyber-bracket bracket-bl"></div>
+      <div class="cyber-bracket bracket-br"></div>
+
+      <div class="role-pill">
+        <span class="role-icon">⚡</span>
+        <span>FULL STACK SYSTEMS ARCHITECT &amp; SOFTWARE ENGINEER</span>
+      </div>
+
+      <h1 class="hero-name">
+        KARAN <span class="gradient-text">K.</span>
+      </h1>
+
+      <p class="hero-summary">
+        Engineering high-scale distributed microservices, 5D kinetic interfaces, and production-grade enterprise platforms with sub-25ms response latencies.
+      </p>
+
+      <!-- Tech Stack Badges Grid -->
+      <div class="tech-stack-row">
+        <div *ngFor="let t of techStack" class="tech-pill" [style.--tech-col]="t.color">
+          <span class="tech-icon">{{ t.icon }}</span>
+          <span class="tech-name">{{ t.name }}</span>
+        </div>
+      </div>
+
+      <!-- Experience Metrics Matrix -->
+      <div class="metrics-matrix">
+        <div class="metric-item">
+          <span class="metric-val">3+</span>
+          <span class="metric-lbl">Years Enterprise Experience</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-val">100K+</span>
+          <span class="metric-lbl">Transactions Processed</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-val">MCA</span>
+          <span class="metric-lbl">Master of Computer Applications</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-val">99.9%</span>
+          <span class="metric-lbl">Uptime SLA Architecture</span>
+        </div>
+      </div>
+
+      <!-- Social & Direct Channels -->
+      <div class="social-channels-row">
+        <a *ngFor="let s of socialLinks" [href]="s.url" target="_blank" rel="noopener noreferrer" class="social-btn">
+          <span class="soc-icon">{{ s.icon }}</span>
+          <span class="soc-name">{{ s.name }}</span>
+        </a>
+      </div>
+
+      <!-- CTA Action Buttons -->
+      <div class="cta-row">
+        <button class="gateway-enter-btn primary" (click)="dismissCover()">
+          <span>Enter Full Portfolio</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Bottom Scroll-to-Enter Indicator -->
+    <div class="gateway-scroll-indicator" (click)="dismissCover()">
+      <div class="mouse-icon">
+        <div class="mouse-wheel"></div>
+      </div>
+      <span class="scroll-label">Scroll down or click to enter portfolio</span>
+      <span class="scroll-chevron">▼</span>
+    </div>
+
+  </div>
+</div>

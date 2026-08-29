@@ -105,7 +105,23 @@
         <span class="nav-icon">
           <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm3 3a1 1 0 000 2h6a1 1 0 100-2H7zm0 4a1 1 0 000 2h6a1 1 0 100-2H7zm0 4a1 1 0 100 2h3a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
         </span>
-        <span class="nav-label">Design Studio</span>
+        <span class="nav-label">Design Tokens</span>
+      </button>
+
+      <button class="nav-item" [class.active]="tab==='studio'" (click)="tab='studio'">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        </span>
+        <span class="nav-label">Component Studio</span>
+        <span class="nav-badge" style="background:rgba(0,240,255,.2); color:var(--accent)">NEW</span>
+      </button>
+
+      <button class="nav-item" [class.active]="tab==='credentials'" (click)="tab='credentials'">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        </span>
+        <span class="nav-label">DigiLocker &amp; Profile</span>
+        <span class="nav-badge" style="background:rgba(16,185,129,.2); color:#10b981">VERIFIED</span>
       </button>
 
       <button class="nav-item" [class.active]="tab==='journal'" (click)="tab='journal'">
@@ -1161,6 +1177,271 @@
             <div class="rev-sub">Refer clients and earn on each completed project</div>
           </div>
         </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════════════════════════════════
+           VS CODE COMPONENT DESIGN STUDIO (tab === 'studio')
+      ═════════════════════════════════════════════════════════════════════ -->
+      <div *ngIf="tab==='studio'" class="studio-tab-view">
+        <div class="studio-top-hdr">
+          <div>
+            <h2 class="view-title">Component Design Studio</h2>
+            <p class="view-sub">VS Code style live inspector &amp; custom styling for all portfolio sections.</p>
+          </div>
+          <div class="studio-actions">
+            <span class="save-toast" *ngIf="studioSuccess">✅ Component config saved &amp; applied live!</span>
+            <button class="save-btn" (click)="saveStudioConfig()">
+              <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Save Studio Config
+            </button>
+          </div>
+        </div>
+
+        <div class="studio-workspace">
+          <!-- Left Component Tree Explorer -->
+          <div class="studio-tree-pane">
+            <div class="pane-title">
+              <span>EXPLORER // COMPONENTS</span>
+              <span class="pane-badge">{{ studioComponents.length }}</span>
+            </div>
+            <div class="component-list">
+              <button *ngFor="let c of studioComponents" class="comp-tree-btn"
+                      [class.active]="selectedStudioComponent === c.id"
+                      (click)="selectedStudioComponent = c.id">
+                <span class="comp-icon">{{ c.icon }}</span>
+                <span class="comp-label">{{ c.label }}</span>
+                <span class="comp-status" [class.on]="studioConfig[c.id]?.visible !== false"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Component Property & Code Inspector -->
+          <div class="studio-editor-pane">
+            <div class="editor-tab-bar">
+              <span class="file-tab active">
+                <span class="file-icon">⚡</span>
+                <span>{{ selectedStudioComponent }}.component.ts</span>
+              </span>
+              <span class="file-status">● Live Hot-Reload</span>
+            </div>
+
+            <div class="editor-content-area" *ngIf="currentStudioComponent">
+              <!-- General Settings -->
+              <div class="field-row">
+                <div class="field">
+                  <label>Component Title Override</label>
+                  <input type="text" [(ngModel)]="currentStudioComponent.customTitle" (ngModelChange)="studioDirty = true" placeholder="Section Title..." />
+                </div>
+                <div class="field">
+                  <label>Component Subtitle / Tagline</label>
+                  <input type="text" [(ngModel)]="currentStudioComponent.customSubtitle" (ngModelChange)="studioDirty = true" placeholder="Section Subtitle..." />
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label>Layout &amp; Density Mode</label>
+                  <select [(ngModel)]="currentStudioComponent.density" (ngModelChange)="studioDirty = true">
+                    <option value="compact">Compact (Dense HUD)</option>
+                    <option value="normal">Normal (Balanced)</option>
+                    <option value="spacious">Spacious (Airy Editorial)</option>
+                    <option value="bento">Bento Box Multi-Span</option>
+                    <option value="hud">Cyber-Matrix Telemetry HUD</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Component Visibility</label>
+                  <div class="toggle-row">
+                    <button class="toggle-btn" [class.on]="currentStudioComponent.visible" (click)="currentStudioComponent.visible = !currentStudioComponent.visible; studioDirty = true">
+                      {{ currentStudioComponent.visible ? '👁️ Visible on Live Site' : '🚫 Hidden from Live Site' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VS Code Custom Style Window -->
+              <div class="code-editor-wrapper">
+                <div class="code-editor-header">
+                  <span class="code-lang">CSS // Component Custom Rules</span>
+                  <span class="code-meta">Scattered Overrides</span>
+                </div>
+                <textarea class="code-textarea" [(ngModel)]="currentStudioComponent.customCss" (ngModelChange)="studioDirty = true" rows="6" placeholder="/* Add custom CSS rules for this component here */"></textarea>
+              </div>
+
+              <!-- Live Simulation Preview -->
+              <div class="component-preview-box">
+                <div class="preview-tag">LIVE PREVIEW SIMULATION</div>
+                <div class="preview-content">
+                  <div class="preview-header">
+                    <h4>{{ currentStudioComponent.customTitle }}</h4>
+                    <p>{{ currentStudioComponent.customSubtitle }}</p>
+                  </div>
+                  <div class="preview-status-pill">Density: {{ currentStudioComponent.density | uppercase }} · Visibility: {{ currentStudioComponent.visible ? 'ONLINE' : 'OFFLINE' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════════════════════════════════
+           DIGILOCKER, LINKEDIN & CREDENTIALS HUB (tab === 'credentials')
+      ═════════════════════════════════════════════════════════════════════ -->
+      <div *ngIf="tab==='credentials'" class="credentials-tab-view">
+        <div class="view-hdr">
+          <div>
+            <h2 class="view-title">DigiLocker &amp; Profile Credentials Vault</h2>
+            <p class="view-sub">Manage verified education, government DigiLocker seals, certificates, and LinkedIn sync.</p>
+          </div>
+        </div>
+
+        <!-- Fast JSON / LinkedIn Importer -->
+        <div class="cred-import-card">
+          <div class="card-head">
+            <span class="import-icon">💼</span>
+            <div>
+              <h3>Import from LinkedIn / Resume JSON</h3>
+              <p>Paste your LinkedIn profile data or JSON resume schema to auto-populate education, certifications, and skills.</p>
+            </div>
+          </div>
+          <div class="import-form">
+            <textarea [(ngModel)]="linkedInInputJson" rows="4" placeholder='Paste LinkedIn JSON or Resume schema here... e.g. { "education": [...], "certifications": [...] }'></textarea>
+            <div class="import-actions">
+              <button class="import-btn" (click)="importFromLinkedIn()">⚡ Sync &amp; Populate Credentials</button>
+              <span class="import-status-msg" *ngIf="importStatus" [class.success]="importSuccess">{{ importStatus }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Education & DigiLocker Verifications -->
+        <div class="cred-section">
+          <div class="cred-sec-hdr">
+            <div class="sec-title-wrap">
+              <span class="sec-ico">🎓</span>
+              <h3>Verified Education &amp; Degrees</h3>
+            </div>
+            <span class="gov-seal-badge">🛡️ DIGILOCKER VERIFIED</span>
+          </div>
+
+          <div class="cred-grid">
+            <div *ngFor="let edu of educationList" class="cred-card">
+              <div class="cred-card-top">
+                <div class="cred-badge-verified" *ngIf="edu.digiLockerVerified">
+                  <span class="badge-dot"></span>
+                  <span>DIGILOCKER VERIFIED</span>
+                </div>
+                <button class="remove-btn" (click)="removeEducation(edu.id)" title="Remove Degree">✕</button>
+              </div>
+              <h4 class="cred-title">{{ edu.degree }}</h4>
+              <div class="cred-inst">{{ edu.institution }}</div>
+              <div class="cred-meta">
+                <span>🗓️ {{ edu.year }}</span>
+                <span class="cred-grade">🏆 {{ edu.grade }}</span>
+              </div>
+              <div class="cred-doc-info" *ngIf="edu.digiLockerDocId">
+                <span class="doc-id-lbl">Doc ID:</span>
+                <code>{{ edu.digiLockerDocId }}</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Education Form -->
+          <div class="add-cred-box">
+            <h4>+ Add Educational Degree</h4>
+            <div class="add-cred-row">
+              <input type="text" [(ngModel)]="newEdu.degree" placeholder="Degree (e.g. Master of Computer Applications - MCA)" />
+              <input type="text" [(ngModel)]="newEdu.institution" placeholder="Institution / University" />
+              <input type="text" [(ngModel)]="newEdu.year" placeholder="Years (e.g. 2023 – 2025)" style="max-width:140px" />
+              <input type="text" [(ngModel)]="newEdu.grade" placeholder="Grade / CGPA" style="max-width:140px" />
+              <button class="add-btn" (click)="addEducation()">Add Degree</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certifications Vault -->
+        <div class="cred-section">
+          <div class="cred-sec-hdr">
+            <div class="sec-title-wrap">
+              <span class="sec-ico">📜</span>
+              <h3>Professional Certifications &amp; Credentials</h3>
+            </div>
+            <span class="total-badge">{{ certificationsList.length }} Verified</span>
+          </div>
+
+          <div class="cred-grid">
+            <div *ngFor="let cert of certificationsList" class="cred-card">
+              <div class="cred-card-top">
+                <div class="cred-badge-verified" *ngIf="cert.digiLockerVerified">
+                  <span class="badge-dot"></span>
+                  <span>VERIFIED ISSUER</span>
+                </div>
+                <button class="remove-btn" (click)="removeCertification(cert.id)" title="Remove Certificate">✕</button>
+              </div>
+              <h4 class="cred-title">{{ cert.title }}</h4>
+              <div class="cred-inst">{{ cert.issuer }}</div>
+              <div class="cred-meta">
+                <span>🗓️ Issued {{ cert.date }}</span>
+                <span class="cred-id" *ngIf="cert.credentialId">ID: {{ cert.credentialId }}</span>
+              </div>
+              <a *ngIf="cert.verificationUrl" [href]="cert.verificationUrl" target="_blank" rel="noopener noreferrer" class="cred-link">
+                Verify Credential →
+              </a>
+            </div>
+          </div>
+
+          <!-- Add Certification Form -->
+          <div class="add-cred-box">
+            <h4>+ Add Certification</h4>
+            <div class="add-cred-row">
+              <input type="text" [(ngModel)]="newCert.title" placeholder="Certification Title (e.g. AWS Certified Solutions Architect)" />
+              <input type="text" [(ngModel)]="newCert.issuer" placeholder="Issuing Body / Authority" />
+              <input type="text" [(ngModel)]="newCert.date" placeholder="Year / Date" style="max-width:120px" />
+              <input type="text" [(ngModel)]="newCert.credentialId" placeholder="Credential ID" style="max-width:160px" />
+              <button class="add-btn" (click)="addCertification()">Add Certificate</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Awards & Achievements -->
+        <div class="cred-section">
+          <div class="cred-sec-hdr">
+            <div class="sec-title-wrap">
+              <span class="sec-ico">🏆</span>
+              <h3>Achievements, Hackathons &amp; Honors</h3>
+            </div>
+            <span class="total-badge">{{ achievementsList.length }} Awards</span>
+          </div>
+
+          <div class="cred-grid">
+            <div *ngFor="let ach of achievementsList" class="cred-card">
+              <div class="cred-card-top">
+                <span class="category-badge">{{ ach.category }}</span>
+                <button class="remove-btn" (click)="removeAchievement(ach.id)" title="Remove Achievement">✕</button>
+              </div>
+              <h4 class="cred-title">{{ ach.title }}</h4>
+              <div class="cred-inst">{{ ach.organization }} · {{ ach.year }}</div>
+              <p class="ach-desc">{{ ach.description }}</p>
+            </div>
+          </div>
+
+          <!-- Add Achievement Form -->
+          <div class="add-cred-box">
+            <h4>+ Add Achievement / Award</h4>
+            <div class="add-cred-row">
+              <input type="text" [(ngModel)]="newAch.title" placeholder="Award Title (e.g. First Place National Hackathon)" />
+              <input type="text" [(ngModel)]="newAch.organization" placeholder="Organization / Event" />
+              <select [(ngModel)]="newAch.category" style="max-width:150px">
+                <option value="Hackathon">Hackathon</option>
+                <option value="Corporate Award">Corporate Award</option>
+                <option value="Open Source">Open Source</option>
+                <option value="Academic">Academic</option>
+              </select>
+              <input type="text" [(ngModel)]="newAch.description" placeholder="Short description of achievement" />
+              <button class="add-btn" (click)="addAchievement()">Add Achievement</button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </main>

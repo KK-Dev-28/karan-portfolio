@@ -26,6 +26,8 @@ import { DigitalProductsComponent } from '../../components/digital-products/digi
 import { SurveyBannerComponent } from '../../components/survey-banner/survey-banner.component';
 import { StoryComponent } from '../../components/story/story.component';
 import { TourGuideComponent } from '../../components/tour-guide/tour-guide.component';
+import { GatewayCoverComponent } from '../../components/gateway-cover/gateway-cover.component';
+import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.component';
 
 @Component({
   selector: 'app-home-page',
@@ -33,6 +35,8 @@ import { TourGuideComponent } from '../../components/tour-guide/tour-guide.compo
   imports: [
     CommonModule,
     LoadingScreenComponent,
+    GatewayCoverComponent,
+    SidebarNavComponent,
     NavbarComponent,
     HeroComponent,
     MarqueeComponent,
@@ -61,8 +65,10 @@ import { TourGuideComponent } from '../../components/tour-guide/tour-guide.compo
   ],
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
+    <app-gateway-cover></app-gateway-cover>
     <app-cursor-3d></app-cursor-3d>
     <app-tour-guide></app-tour-guide>
+    <app-sidebar-nav></app-sidebar-nav>
     <div class="global-stars" aria-hidden="true"></div>
     <app-navbar></app-navbar>
     <app-hero></app-hero>

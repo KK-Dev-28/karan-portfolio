@@ -1,0 +1,66 @@
+<aside class="sidebar-nav" [class.collapsed]="collapsed" role="navigation" aria-label="Sidebar Navigation">
+
+  <!-- Top Brand / Logo -->
+  <div class="sidebar-header">
+    <a href="#" (click)="scrollTo('hero', $event)" class="sidebar-logo">
+      <span class="logo-mark">KK</span>
+      <span class="logo-text" *ngIf="!collapsed">.SYSTEMS</span>
+    </a>
+    <button class="collapse-toggle" (click)="toggleCollapse()" [title]="collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'">
+      {{ collapsed ? '»' : '«' }}
+    </button>
+  </div>
+
+  <!-- Status Pip -->
+  <div class="sidebar-status" *ngIf="!collapsed">
+    <span class="status-dot"></span>
+    <span class="status-text">ONLINE // v4.2</span>
+  </div>
+
+  <!-- Vertical Nav Links -->
+  <ul class="sidebar-menu">
+    <li *ngFor="let item of navItems" [class.active]="activeSection === item.id">
+      <a [href]="'#' + item.id" (click)="scrollTo(item.id, $event)" [title]="item.label">
+        <span class="menu-icon">{{ item.icon }}</span>
+        <span class="menu-label" *ngIf="!collapsed">{{ item.label }}</span>
+        <span class="active-pip" *ngIf="activeSection === item.id"></span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Bottom Controls & Theme -->
+  <div class="sidebar-footer">
+    <!-- Theme Palette Popover Button -->
+    <div class="sidebar-theme-wrapper">
+      <button class="footer-btn theme-btn" (click)="toggleThemeMenu()" [title]="'Change Theme Palette'">
+        <span class="btn-icon">🎨</span>
+        <span class="btn-text" *ngIf="!collapsed">Themes</span>
+      </button>
+
+      <div class="sidebar-theme-menu" *ngIf="themeMenuOpen">
+        <button *ngFor="let t of themes" class="theme-menu-item" [class.active]="t.id === currentTheme" (click)="pickTheme(t.id)">
+          <span class="swatch-dot" [style.background]="t.swatch[2]"></span>
+          <span class="theme-name">{{ t.label }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sound Effects Mute Toggle -->
+    <button class="footer-btn sound-btn" (click)="sound.toggleMute()" [title]="sound.isMuted ? 'Unmute Sound Effects' : 'Mute Sound Effects'">
+      <span class="btn-icon">{{ sound.isMuted ? '🔇' : '🎵' }}</span>
+      <span class="btn-text" *ngIf="!collapsed">{{ sound.isMuted ? 'Muted' : 'SFX Active' }}</span>
+    </button>
+
+    <!-- Blog & Admin Quick Link -->
+    <a routerLink="/blog" class="footer-btn blog-btn" [title]="'Developer Blog'">
+      <span class="btn-icon">📝</span>
+      <span class="btn-text" *ngIf="!collapsed">Blog</span>
+    </a>
+
+    <a routerLink="/admin" class="footer-btn admin-btn" [title]="'Admin Studio'">
+      <span class="btn-icon">⚙️</span>
+      <span class="btn-text" *ngIf="!collapsed">Studio</span>
+    </a>
+  </div>
+
+</aside>
