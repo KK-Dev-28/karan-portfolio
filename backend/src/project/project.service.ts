@@ -28,12 +28,12 @@ export class ProjectService {
   /* Client work — delivered at CS Soft Solutions. Proprietary, so there is no
      public repo or live URL to link; the write-up is the whole story. */
   private static readonly CLIENT_PROJECTS: Partial<Project>[] = [
-    { title: 'Enterprise Inventory Management System', description: 'Multi-branch inventory platform covering Head Office, Back Office, and HHT/POS Android devices. Apache Kafka integration for real-time data messaging between branches. Modules include stock management, order requests, inter-store transfers, and supplier price lists.', techStack: ['Angular', 'ASP.NET Web API', 'C#', 'Entity Framework', 'SQL Server', 'Apache Kafka'], period: 'Sep 2025 – Present', isFeatured: true, sortOrder: 1, },
-    { title: 'Talent Arbor — Applicant Tracking System', description: 'End-to-end recruitment platform for job posting, candidate tracking, and recruiter management. Candidate pipeline with status updates, CV management, and job application workflows.', techStack: ['Angular', 'ASP.NET Web API'], period: 'Aug 2025 – Present', isFeatured: false, sortOrder: 2 },
-    { title: 'Swaraj Mahindra — Enterprise Dept Management', description: 'Enterprise-level admin web app for department and organizational activity management. Scalable architecture for large organizations with multiple admin roles.', techStack: ['Angular', 'ASP.NET Web API'], period: 'Mar 2025 – Sep 2025', isFeatured: false, sortOrder: 3 },
-    { title: '3T – Task Time Tracking', description: 'Internal productivity tool where employees log tasks, time spent, and project contributions. Enables managers to monitor team output and project-level resource utilization.', techStack: ['Angular', 'ASP.NET Web API'], period: 'Aug 2024 – Dec 2024', isFeatured: false, sortOrder: 4 },
-    { title: 'Mastermind Duo Tax — Property App', description: 'Property management app with depreciation tracking, capital loss management, and detailed property records.', techStack: ['Angular 11', 'ASP.NET Web API'], period: 'Feb 2025', isFeatured: false, sortOrder: 5 },
-    { title: 'GeoData — Property Management Portal', description: 'End-to-end property lifecycle tracking covering ownership, tenancy, rentals, and map location integration.', techStack: ['VB.NET', 'C#', '.NET', 'SQL Server'], period: '2023 – 2024', isFeatured: false, sortOrder: 6 },
+    { title: 'Enterprise Inventory Management System', description: 'Multi-branch inventory platform covering Head Office, Back Office, and HHT/POS Android devices. Apache Kafka integration for real-time data messaging between branches. Modules include stock management, order requests, inter-store transfers, and supplier price lists.', techStack: ['Angular', 'ASP.NET Web API', 'C#', 'Entity Framework', 'SQL Server', 'Apache Kafka'], period: 'Sep 2025 – Present', sourceNote: 'Client work at CS Soft Solutions — source is proprietary', isFeatured: true, sortOrder: 1, },
+    { title: 'Talent Arbor — Applicant Tracking System', description: 'End-to-end recruitment platform for job posting, candidate tracking, and recruiter management. Candidate pipeline with status updates, CV management, and job application workflows.', techStack: ['Angular', 'ASP.NET Web API'], period: 'Aug 2025 – Present', sourceNote: 'Client work at CS Soft Solutions — source is proprietary', isFeatured: false, sortOrder: 2 },
+    { title: 'Swaraj Mahindra — Enterprise Dept Management', description: 'Enterprise-level admin web app for department and organizational activity management. Scalable architecture for large organizations with multiple admin roles.', techStack: ['Angular', 'ASP.NET Web API'], period: 'Mar 2025 – Sep 2025', sourceNote: 'Client work at CS Soft Solutions — source is proprietary', isFeatured: false, sortOrder: 3 },
+    { title: '3T – Task Time Tracking', description: 'Internal productivity tool where employees log tasks, time spent, and project contributions. Enables managers to monitor team output and project-level resource utilization.', techStack: ['Angular', 'ASP.NET Web API'], period: 'Aug 2024 – Dec 2024', sourceNote: 'Client work at CS Soft Solutions — source is proprietary', isFeatured: false, sortOrder: 4 },
+    { title: 'Mastermind Duo Tax — Property App', description: 'Property management app with depreciation tracking, capital loss management, and detailed property records.', techStack: ['Angular 11', 'ASP.NET Web API'], period: 'Feb 2025', sourceNote: 'Client work at CS Soft Solutions — source is proprietary', isFeatured: false, sortOrder: 5 },
+    { title: 'GeoData — Property Management Portal', description: 'End-to-end property lifecycle tracking covering ownership, tenancy, rentals, and map location integration.', techStack: ['VB.NET', 'C#', '.NET', 'SQL Server'], period: '2023 – 2024', sourceNote: 'Client work at CS Soft Solutions — source is proprietary', isFeatured: false, sortOrder: 6 },
   ];
 
   /* Open-source work — every one of these has a public repo AND a running
@@ -87,6 +87,7 @@ export class ProjectService {
       description: 'A tenanted course platform where each organisation gets isolated data behind one deployment. Content is modelled as courses → chapters → topics, each with threaded comments and file attachments, plus enrolments, an audit trail, and a full REST API alongside the MVC admin. Subscription billing runs on Stripe against configurable plans; Gemini generates draft lesson content and Aspose.Slides turns a topic into a downloadable deck. Sign-in supports Google, Facebook and GitHub on top of ASP.NET Identity. I owned the tenancy layer, the API surface, the plans and billing screens, and the AI content integration across 56 commits.',
       techStack: ['ASP.NET Core 6', 'C#', 'Entity Framework Core', 'SQL Server', 'Stripe', 'AutoMapper'],
       period: 'Feb 2024 – Apr 2024',
+      sourceNote: 'Source archived and not public — 56 commits of my own work',
       isFeatured: true, sortOrder: 11,
     },
     {
@@ -94,7 +95,17 @@ export class ProjectService {
       description: 'A storefront and back office built as four separate projects — web, domain models, data access, and shared utilities — so the dependency direction stays honest end to end. Covers the full order lifecycle: catalogue with categories, companies and cover types, shopping cart, checkout, then pending → approved → history order queues with a staff console over the top. Payments through Stripe and PayPal, SMS notifications via Twilio, live updates over SignalR, and Polly wrapping the outbound calls for retries. Data access mixes EF Core for the domain with Dapper where raw query speed mattered, across 15+ migrations.',
       techStack: ['ASP.NET Core 6', 'C#', 'Entity Framework Core', 'Dapper', 'SQL Server', 'SignalR'],
       period: '2023 – 2024',
+      sourceNote: 'Repository kept private — history contains live payment credentials',
       isFeatured: false, sortOrder: 12,
+    },
+    {
+      title: 'LocalHaat — Street Vendor Marketplace',
+      description: 'The product the capstone survey was research for: a marketplace that lets shoppers discover and order from street vendors near them. React front end built with Vite and shipped as an installable PWA with a service worker, backed by Firebase. Runs on Render free hosting, so the app paints its own boot screen before any JavaScript loads rather than showing a blank page through a cold start.',
+      techStack: ['React', 'Vite', 'Firebase', 'PWA', 'Render'],
+      period: '2026',
+      liveUrl: 'https://localhaat.onrender.com',
+      sourceNote: 'Deployed publicly; source repository is private',
+      isFeatured: true, sortOrder: 13,
     },
   ];
 
@@ -124,6 +135,28 @@ export class ProjectService {
     }
 
     await this.clearRetiredLiveUrls();
+    await this.backfillSourceNotes();
+  }
+
+  /* Rows seeded before sourceNote existed have none, and the top-up above only
+     inserts missing titles, so it never reaches them. This fills the gap by
+     title using the seed definitions, and only where the column is still
+     empty, so an admin-written note is never overwritten. */
+  private async backfillSourceNotes() {
+    const defs = new Map(
+      [...ProjectService.CLIENT_PROJECTS, ...ProjectService.OPEN_SOURCE_PROJECTS, ...ProjectService.PERSONAL_PROJECTS]
+        .filter(p => p.sourceNote)
+        .map(p => [p.title!, p.sourceNote!]),
+    );
+
+    const rows = await this.repo.find({ select: ['id', 'title', 'sourceNote'] });
+    const missing = rows.filter(r => !r.sourceNote && defs.has(r.title));
+    if (!missing.length) return;
+
+    for (const row of missing) {
+      await this.repo.update(row.id, { sourceNote: defs.get(row.title) });
+    }
+    console.log(`Backfilled source notes on ${missing.length} project(s)`);
   }
 
   /* Internal demo routes that used to back a project card and no longer

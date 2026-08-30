@@ -2,7 +2,7 @@
   <div class="container">
     <div class="sec-label">Production Portfolio</div>
     <div class="proj-header">
-      <h2 class="sec-title">Live Projects <span class="italic">I've Built</span></h2>
+      <h2 class="sec-title">Projects <span class="italic">I've Built</span></h2>
       <a class="gh-link" href="https://github.com/Karan28012002" target="_blank" rel="noopener">
         GitHub ↗
       </a>
@@ -36,7 +36,7 @@
             <span class="stag" *ngFor="let t of (p.techStack ?? []).slice(0, 5)">{{ t }}</span>
           </div>
 
-          <div class="proj-links">
+          <div class="proj-links" *ngIf="p.githubUrl || p.liveUrl">
             <a *ngIf="p.githubUrl" [href]="p.githubUrl" target="_blank" rel="noopener" class="plink">
               <span>GitHub</span> ↗
             </a>
@@ -44,6 +44,12 @@
               <span>Live</span> ↗
             </a>
           </div>
+
+          <!-- Stands in for the link row when there is nothing to link to, so a
+               closed-source project reads as deliberate rather than unfinished. -->
+          <p class="proj-source-note" *ngIf="!p.githubUrl && !p.liveUrl && p.sourceNote">
+            {{ p.sourceNote }}
+          </p>
         </div>
 
         <div class="card-glow"></div>

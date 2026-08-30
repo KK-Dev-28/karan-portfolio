@@ -8,6 +8,7 @@ export interface Project {
   id: number; title: string; description: string;
   techStack: string[]; period: string; githubUrl: string;
   liveUrl: string; isFeatured: boolean; sortOrder: number; award: string;
+  sourceNote: string;
 }
 
 @Injectable({ providedIn: 'root' })

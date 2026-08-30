@@ -204,6 +204,18 @@
   margin-top: auto;
 }
 
+/* Occupies the same slot as .proj-links on cards with nothing to link to, so
+   the grid keeps a consistent baseline and the absence reads as intentional. */
+.proj-source-note {
+  margin-top: auto;
+  padding-top: .4rem;
+  font-size: .72rem;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--muted, rgba(255, 255, 255, .55));
+  border-top: 1px solid rgba(var(--accent-rgb), .12);
+}
+
 .plink {
   display: inline-flex;
   align-items: center;

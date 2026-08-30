@@ -166,14 +166,6 @@ export class CommandPaletteComponent implements OnInit, OnDestroy {
     // 4. Tools & Actions
     list.push(
       {
-        id: 'action-cli',
-        title: 'Open Interactive CLI Terminal',
-        category: 'Tools',
-        subtitle: 'Run Unix commands (> karan.sh)',
-        icon: '💻',
-        action: () => (window as any).__openTerminalModal?.(),
-      },
-      {
         id: 'action-sfx',
         title: 'Toggle Web Audio Sound Effects',
         category: 'Actions',
