@@ -95,7 +95,7 @@ export class ProjectService {
       description: 'A storefront and back office built as four separate projects — web, domain models, data access, and shared utilities — so the dependency direction stays honest end to end. Covers the full order lifecycle: catalogue with categories, companies and cover types, shopping cart, checkout, then pending → approved → history order queues with a staff console over the top. Payments through Stripe and PayPal, SMS notifications via Twilio, live updates over SignalR, and Polly wrapping the outbound calls for retries. Data access mixes EF Core for the domain with Dapper where raw query speed mattered, across 15+ migrations.',
       techStack: ['ASP.NET Core 6', 'C#', 'Entity Framework Core', 'Dapper', 'SQL Server', 'SignalR'],
       period: '2023 – 2024',
-      sourceNote: 'Repository kept private — history contains live payment credentials',
+      sourceNote: 'Repository kept private — source is not published',
       isFeatured: false, sortOrder: 12,
     },
     {
@@ -136,6 +136,35 @@ export class ProjectService {
 
     await this.clearRetiredLiveUrls();
     await this.backfillSourceNotes();
+    await this.retireStaleSourceNotes();
+  }
+
+  /* A note that has already been stored is never touched by the backfill, so a
+     wording change here would otherwise never reach the live rows. Each entry
+     is an exact previous string to replace with the current seed text. This one
+     named the reason the e-commerce repository stays private, which does not
+     belong on a public page. */
+  private static readonly RETIRED_SOURCE_NOTES = [
+    'Repository kept private — history contains live payment credentials',
+  ];
+
+  private async retireStaleSourceNotes() {
+    const current = new Map(
+      [...ProjectService.CLIENT_PROJECTS, ...ProjectService.OPEN_SOURCE_PROJECTS, ...ProjectService.PERSONAL_PROJECTS]
+        .filter(p => p.sourceNote)
+        .map(p => [p.title!, p.sourceNote!]),
+    );
+
+    const rows = await this.repo.find({ select: ['id', 'title', 'sourceNote'] });
+    const stale = rows.filter(
+      r => r.sourceNote && ProjectService.RETIRED_SOURCE_NOTES.includes(r.sourceNote) && current.has(r.title),
+    );
+    if (!stale.length) return;
+
+    for (const row of stale) {
+      await this.repo.update(row.id, { sourceNote: current.get(row.title) });
+    }
+    console.log(`Replaced ${stale.length} outdated source note(s)`);
   }
 
   /* Rows seeded before sourceNote existed have none, and the top-up above only
