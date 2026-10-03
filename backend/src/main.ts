@@ -30,17 +30,28 @@ class SafeExceptionFilter implements ExceptionFilter {
   }
 }
 
+/* First-party front ends that are part of this project and call this API from
+   their own domain. They live here rather than in an environment variable so a
+   deploy cannot silently lose them: the Render service is not managed by
+   render.yaml, so a variable added there never reaches it, and a browser then
+   blocks every request from these origins with nothing in the server log to
+   explain why. ADDITIONAL_CORS_ORIGINS still works for anything beyond this. */
+const FIRST_PARTY_ORIGINS = [
+  'https://taskflow-karan.vercel.app',
+];
+
 function corsOrigins(): string[] {
   const parse = (v?: string) => (v ? v.split(',').map((s) => s.trim()).filter(Boolean) : []);
   const fromEnv   = parse(process.env.ADDITIONAL_CORS_ORIGINS);
   const fromMain  = parse(process.env.FRONTEND_URL);
+  const builtIn   = FIRST_PARTY_ORIGINS;
   if (process.env.NODE_ENV === 'production') {
     if (fromMain.length === 0 && fromEnv.length === 0) {
       console.warn('⚠ FRONTEND_URL is unset in production — browsers cannot call your API until you set it.');
     }
-    return [...new Set([...fromMain, ...fromEnv])];
+    return [...new Set([...fromMain, ...fromEnv, ...builtIn])];
   }
-  return [...new Set(['http://localhost:4200', ...fromMain, ...fromEnv])];
+  return [...new Set(['http://localhost:4200', ...fromMain, ...fromEnv, ...builtIn])];
 }
 
 async function bootstrap() {
