@@ -17,3 +17,7 @@ services:
         value: "true"
       - key: FRONTEND_URL
         value: "https://karan-portfolio-six-sigma.vercel.app"
+      # The TaskFlow demo is served from its own domain and calls this API, so
+      # its origin has to be allowed or the browser blocks every request.
+      - key: ADDITIONAL_CORS_ORIGINS
+        value: "https://taskflow-karan.vercel.app"
