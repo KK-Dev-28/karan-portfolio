@@ -1,158 +1,217 @@
-/* A document, not a web page. It is laid out in millimetres against A4 so what
-   a visitor reads on screen and what comes out of the print dialog are the
-   same thing, and so the pagination is decided here rather than by whatever
-   the browser happens to do. Colours are fixed rather than themed: this is the
-   one view that must look identical whichever theme the site is wearing, and a
-   recruiter opening the PDF has no theme at all. */
+/* A document, not a web page. Laid out in millimetres against A4 so what is
+   read on screen and what leaves the print dialog are the same thing, and so
+   pagination is decided here rather than by whatever the browser does.
 
-$ink:    #15181d;
-$muted:  #4b5563;
-$line:   #d8dce3;
-$accent: #0f5c4a;
+   Colours are fixed rather than themed: this is the one view that must look
+   identical whichever of the eight themes the site is wearing, and a PDF has
+   no theme at all. One accent, used only to mark structure — a CV that reaches
+   for a second colour reads as a template. */
+
+$ink:     #14171c;   // body
+$strong:  #0b0d10;   // headings and names
+$muted:   #5a6372;   // dates, organisations, secondary text
+$faint:   #8b93a1;   // separators in the contact line
+$rule:    #dfe3e9;   // hairlines
+$accent:  #0d5546;   // single accent
 
 .rz-wrap {
-  background: #e9ebef;
+  background: #eceef1;
   min-height: 100vh;
-  padding: 24px 16px 64px;
+  padding: 26px 16px 72px;
 }
 
 /* ── Screen chrome ───────────────────────────────────────────────────────── */
 
 .rz-bar {
   max-width: 210mm;
-  margin: 0 auto 16px;
+  margin: 0 auto 18px;
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; flex-wrap: wrap;
 }
 .rz-back {
-  color: $ink; text-decoration: none; font-size: .85rem; font-weight: 600;
-  opacity: .75;
+  color: $strong; text-decoration: none;
+  font-size: .84rem; font-weight: 600; opacity: .7;
   &:hover { opacity: 1; }
 }
-.rz-bar-actions { display: flex; align-items: center; gap: 12px; }
-.rz-hint { font-size: .75rem; color: $muted; }
+.rz-bar-actions { display: flex; align-items: center; gap: 14px; }
+.rz-hint { font-size: .74rem; color: $muted; }
 .rz-dl {
   background: $accent; color: #fff; border: 0; cursor: pointer;
-  padding: .6rem 1.1rem; border-radius: 6px;
-  font-size: .82rem; font-weight: 700; letter-spacing: .02em;
-  &:hover { filter: brightness(1.08); }
+  padding: .62rem 1.25rem; border-radius: 5px;
+  font-size: .8rem; font-weight: 700; letter-spacing: .03em;
+  transition: filter .15s ease;
+  &:hover { filter: brightness(1.12); }
 }
 .rz-loading { max-width: 210mm; margin: 0 auto; color: $muted; }
 
-/* ── The document ────────────────────────────────────────────────────────── */
+/* ── Document ────────────────────────────────────────────────────────────── */
 
 .rz-doc {
   width: 210mm;
   max-width: 100%;
   margin: 0 auto;
-  padding: 12mm 14mm;
+  padding: 13mm 14mm;
   background: #fff;
   color: $ink;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, .13);
-  /* Measured for print, not for a screen reading distance. */
+  box-shadow: 0 1px 3px rgba(16, 20, 28, .09), 0 14px 46px rgba(16, 20, 28, .13);
   font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 9.7pt;
-  line-height: 1.4;
+  line-height: 1.42;
+  /* Numerals in dates line up in their column instead of drifting. */
+  font-variant-numeric: tabular-nums;
 }
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
 
 .rz-head {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  gap: 18px; padding-bottom: 8px; border-bottom: 1.5px solid $accent;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 20px; padding-bottom: 9px;
+  border-bottom: 2.5px solid $accent;
 }
 .rz-name {
-  margin: 0; font-size: 21pt; font-weight: 800;
-  letter-spacing: -.015em; line-height: 1.05;
+  margin: 0;
+  font-size: 22pt; font-weight: 800;
+  letter-spacing: -.021em; line-height: 1; color: $strong;
 }
 .rz-title {
-  margin: 3px 0 0; font-size: 11.5pt; font-weight: 600; color: $accent;
+  margin: 5px 0 0;
+  font-size: 10.4pt; font-weight: 700; color: $accent;
+  text-transform: uppercase; letter-spacing: .1em;
 }
-.rz-tagline { margin: 2px 0 0; font-size: 9.2pt; color: $muted; }
+.rz-tagline { margin: 3px 0 0; font-size: 8.9pt; color: $muted; }
 
+/* Contact set as a quiet column against the name, not a bulleted list. */
 .rz-contact {
   list-style: none; margin: 0; padding: 0; text-align: right;
-  font-size: 8.9pt; color: $muted; line-height: 1.65;
+  font-size: 8.7pt; color: $muted; line-height: 1.6;
   a { color: $muted; text-decoration: none; }
+  li + li { position: relative; }
 }
 
-.rz-sec { margin-top: 11px; }
+/* ── Sections ────────────────────────────────────────────────────────────── */
+
+.rz-sec { margin-top: 12px; }
+
+/* A short rule under the label rather than a full-width border: the heading
+   marks the section, it does not need to fence it off. */
 .rz-h2 {
-  margin: 0 0 7px;
-  font-size: 9pt; font-weight: 800;
-  letter-spacing: .13em; text-transform: uppercase; color: $accent;
-  padding-bottom: 3px; border-bottom: 1px solid $line;
+  position: relative;
+  margin: 0 0 8px;
+  padding-bottom: 5px;
+  font-size: 8.6pt; font-weight: 800;
+  letter-spacing: .16em; text-transform: uppercase; color: $accent;
+  border-bottom: 1px solid $rule;
+  &::after {
+    content: ''; position: absolute; left: 0; bottom: -1px;
+    width: 34px; height: 2px; background: $accent;
+  }
 }
-.rz-summary { margin: 0; text-align: justify; }
 
-/* No heading: these are a continuation of the profile, and a heading would
-   make four short lines look like a section in their own right. */
-.rz-hl-sec { margin-top: 7px; }
+.rz-summary { margin: 0; text-align: justify; hyphens: auto; }
+
+/* No heading: these continue the profile, and a heading would make four short
+   lines look like a section of their own. */
+.rz-hl-sec { margin-top: 8px; }
 .rz-highlights {
   margin: 0; padding: 0; list-style: none;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1px 16px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px 18px;
   li {
-    position: relative; padding-left: 11px;
-    font-size: 9.1pt; font-weight: 600;
+    position: relative; padding-left: 12px;
+    font-size: 9pt; font-weight: 600; color: $strong;
     &::before {
-      content: ''; position: absolute; left: 0; top: .42em;
+      content: ''; position: absolute; left: 0; top: .44em;
       width: 4px; height: 4px; border-radius: 50%; background: $accent;
     }
   }
 }
-.rz-langs { margin: 0; font-size: 9.5pt; }
 
-/* A role split across the page fold is the usual way a two-page CV looks
-   careless, so each block is kept whole. */
-.rz-role, .rz-edu { margin-bottom: 8px; break-inside: avoid; page-break-inside: avoid; }
+/* ── Experience & education ──────────────────────────────────────────────── */
+
+/* A role split across the fold is the usual way a two-page CV looks careless,
+   so each block is kept whole. */
+.rz-role, .rz-edu, .rz-proj, .rz-award {
+  break-inside: avoid; page-break-inside: avoid;
+}
+.rz-role { margin-bottom: 9px; }
+.rz-edu  { margin-bottom: 7px; }
 .rz-role:last-child, .rz-edu:last-child { margin-bottom: 0; }
 
-.rz-role-head, .rz-edu-head {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+.rz-role-head, .rz-edu-head, .rz-proj-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
 }
-.rz-role-title { margin: 0; font-size: 11pt; font-weight: 700; }
-.rz-role-org   { margin: 1px 0 0; font-size: 9.4pt; color: $muted; }
-.rz-period     { font-size: 8.8pt; color: $muted; white-space: nowrap; font-weight: 600; }
+.rz-role-title { margin: 0; font-size: 10.8pt; font-weight: 700; color: $strong; }
+.rz-role-org   { margin: 1px 0 0; font-size: 9.2pt; color: $muted; font-weight: 500; }
+
+/* Dates share one right-hand column across every section so the eye can run
+   down them. */
+.rz-period {
+  font-size: 8.5pt; color: $muted; white-space: nowrap;
+  font-weight: 600; letter-spacing: .015em;
+}
 
 .rz-bullets {
-  margin: 4px 0 0; padding-left: 14px;
-  li { margin-bottom: 2px; }
+  margin: 5px 0 0; padding-left: 0; list-style: none;
+  li {
+    position: relative; padding-left: 11px; margin-bottom: 2.5px;
+    &::before {
+      content: ''; position: absolute; left: 1px; top: .52em;
+      width: 3px; height: 3px; border-radius: 50%; background: $muted;
+    }
+  }
 }
 
-.rz-proj { margin-bottom: 7px; break-inside: avoid; page-break-inside: avoid; }
-.rz-proj:last-child { margin-bottom: 0; }
-.rz-proj-head {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+/* ── Projects ────────────────────────────────────────────────────────────── */
+
+/* A hairline on the left groups the three lines of each entry without drawing
+   a box around it. */
+.rz-proj {
+  margin-bottom: 8px;
+  padding-left: 9px;
+  border-left: 2px solid $rule;
 }
-.rz-proj-name { margin: 0; font-size: 10.4pt; font-weight: 700; }
+.rz-proj:last-child { margin-bottom: 0; }
+.rz-proj-name { margin: 0; font-size: 10.1pt; font-weight: 700; color: $strong; }
 .rz-proj-link {
-  font-size: 8.5pt; color: $accent; text-decoration: none; white-space: nowrap;
+  font-size: 8.4pt; color: $accent; text-decoration: none;
+  white-space: nowrap; font-weight: 600;
 }
 .rz-proj-stack {
-  margin: 1px 0 0; font-size: 8.7pt; color: $accent; font-weight: 600;
+  margin: 2px 0 0; font-size: 8.5pt; color: $accent;
+  font-weight: 600; letter-spacing: .012em;
 }
-.rz-proj-summary { margin: 2px 0 0; font-size: 9.4pt; }
+.rz-proj-summary { margin: 2px 0 0; font-size: 9.3pt; }
 
-.rz-skills { display: flex; flex-direction: column; gap: 4px; }
-.rz-skill-row { display: flex; gap: 10px; align-items: baseline; }
+/* ── Skills ──────────────────────────────────────────────────────────────── */
+
+.rz-skills { display: flex; flex-direction: column; }
+.rz-skill-row {
+  display: flex; gap: 12px; align-items: baseline;
+  padding: 2.5px 0;
+  & + & { border-top: 1px solid rgba(223, 227, 233, .7); }
+}
 .rz-skill-label {
-  flex: 0 0 88px; font-weight: 700; font-size: 8.8pt; color: $accent;
+  flex: 0 0 86px;
+  font-weight: 700; font-size: 8.5pt; color: $accent;
+  text-transform: uppercase; letter-spacing: .07em;
 }
-.rz-skill-items { flex: 1; font-size: 9.5pt; }
+.rz-skill-items { flex: 1; font-size: 9.3pt; }
 
-.rz-edu-degree { margin: 0; font-size: 10.2pt; font-weight: 700; }
-.rz-edu-org    { margin: 1px 0 0; font-size: 9.3pt; color: $muted; }
-.rz-edu-note   { margin: 3px 0 0; font-size: 8.9pt; color: $muted; }
-.rz-score      { color: $accent; font-weight: 700; }
+/* ── Education, certifications, awards ───────────────────────────────────── */
 
-.rz-award {
-  display: flex; justify-content: space-between; gap: 14px;
-  break-inside: avoid;
-}
-.rz-award-title { font-weight: 700; }
-.rz-award-org   { font-size: 9.1pt; color: $muted; }
+.rz-edu-degree { margin: 0; font-size: 10pt; font-weight: 700; color: $strong; }
+.rz-edu-org    { margin: 1px 0 0; font-size: 9.1pt; color: $muted; }
+.rz-edu-note   { margin: 3px 0 0; font-size: 8.7pt; color: $muted; }
+.rz-score      { color: $accent; font-weight: 800; }
+
+.rz-award { display: flex; justify-content: space-between; gap: 16px; }
+.rz-award-title { font-weight: 700; color: $strong; }
+.rz-award-org   { font-size: 9pt; color: $muted; }
+
+.rz-langs { margin: 0; font-size: 9.3pt; }
 
 .rz-foot {
-  margin: 14px 0 0; padding-top: 7px; border-top: 1px solid $line;
-  font-size: 8.8pt; color: $muted; text-align: center;
+  margin: 14px 0 0; padding-top: 8px; border-top: 1px solid $rule;
+  font-size: 8.6pt; color: $muted; text-align: center; letter-spacing: .01em;
 }
 
 /* ── Print ───────────────────────────────────────────────────────────────── */
@@ -166,16 +225,23 @@ $accent: #0f5c4a;
     width: auto; margin: 0; box-shadow: none;
     padding: 11mm 13mm;
   }
-  /* Skills onward start the second page, so Experience is never cut mid-role
-     and page two opens on a heading rather than a stray bullet. */
+  /* Skills onward open page two, so Experience is never cut mid-role and the
+     second page starts on a heading rather than a stray bullet. */
   .rz-page-break { break-before: page; page-break-before: always; }
   a { color: inherit; text-decoration: none; }
+  /* Without this the accent rules and bullets drop out of most printers. */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
+/* ── Small screens ───────────────────────────────────────────────────────── */
+
 @media (max-width: 760px) {
-  .rz-doc { padding: 20px 16px; font-size: 10.5pt; }
-  .rz-head { flex-direction: column; gap: 8px; }
+  .rz-wrap { padding: 14px 10px 44px; }
+  .rz-doc { padding: 20px 17px; font-size: 10.3pt; }
+  .rz-head { flex-direction: column; align-items: flex-start; gap: 9px; }
   .rz-contact { text-align: left; }
-  .rz-skill-row { flex-direction: column; gap: 1px; }
   .rz-highlights { grid-template-columns: 1fr; }
+  .rz-skill-row { flex-direction: column; gap: 1px; padding: 4px 0; }
+  .rz-skill-label { flex: none; }
+  .rz-role-head, .rz-edu-head, .rz-proj-head { flex-direction: column; gap: 2px; }
 }
