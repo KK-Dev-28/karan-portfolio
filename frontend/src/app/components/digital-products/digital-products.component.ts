@@ -27,9 +27,8 @@ export class DigitalProductsComponent {
       title: 'Portfolio Starter Kit',
       desc: 'The full Angular 19 + NestJS portfolio template — clean architecture, CMS, admin panel, Razorpay, CI/CD. Deploy-ready in under an hour.',
       bullets: ['Angular 19 standalone + NestJS', 'Full admin CMS dashboard', 'Payment integration', 'Railway + Vercel CI/CD config', 'TypeORM + PostgreSQL setup'],
-      badge: 'Best Seller',
       featured: true,
-      waText: 'Hi Karan, I\'m interested in the Portfolio Starter Kit. Can you share pricing details?',
+      waText: 'Hi Karan, I\'d like the Portfolio Starter Kit when it ships. Please let me know.',
     },
     {
       id: 'api-boilerplate',
@@ -37,7 +36,7 @@ export class DigitalProductsComponent {
       title: 'NestJS API Boilerplate',
       desc: 'Production-ready NestJS starter: JWT auth, CQRS, throttling, Swagger, TypeORM, CORS, Railway deploy. Skip weeks of setup.',
       bullets: ['JWT auth + role guards', 'CQRS command/handler pattern', 'Swagger + rate limiting', 'TypeORM + Postgres migrations', 'Docker + Railway ready'],
-      waText: 'Hi Karan, I\'m interested in the NestJS API Boilerplate. Can you share pricing details?',
+      waText: 'Hi Karan, I\'d like the NestJS API Boilerplate when it ships. Please let me know.',
     },
     {
       id: 'angular-ui-kit',
@@ -45,7 +44,7 @@ export class DigitalProductsComponent {
       title: 'Angular UI Component Kit',
       desc: 'Charcoal+gold design system — 20+ production components: cards, modals, forms, charts, tables, animations. Drop into any Angular 17+ project.',
       bullets: ['20+ standalone components', 'CSS custom properties theme', 'Intersection observer reveals', 'Dark mode ready', 'SCSS design token system'],
-      waText: 'Hi Karan, I\'m interested in the Angular UI Component Kit. Can you share pricing details?',
+      waText: 'Hi Karan, I\'d like the Angular UI Component Kit when it ships. Please let me know.',
     },
   ];
 

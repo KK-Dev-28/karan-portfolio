@@ -5,26 +5,17 @@ import { HeroComponent }        from '../../components/hero/hero.component';
 import { ServicesComponent }    from '../../components/services/services.component';
 import { SkillsComponent }      from '../../components/skills/skills.component';
 import { ProjectsComponent }    from '../../components/projects/projects.component';
-import { JournalFeedComponent } from '../../components/journal-feed/journal-feed.component';
 import { ExperienceComponent }  from '../../components/experience/experience.component';
-import { GigsComponent }        from '../../components/gigs/gigs.component';
 import { HirePricingComponent } from '../../components/hire-pricing/hire-pricing.component';
 import { TestimonialsComponent } from '../../components/testimonials/testimonials.component';
 import { ReviewsComponent }     from '../../components/reviews/reviews.component';
 import { FaqComponent }         from '../../components/faq/faq.component';
-import { NewsletterStripComponent } from '../../components/newsletter-strip/newsletter-strip.component';
 import { ContactComponent }     from '../../components/contact/contact.component';
 import { FooterComponent }      from '../../components/footer/footer.component';
-import { SourceOfferingComponent } from '../../components/source-offering/source-offering.component';
 import { LoadingScreenComponent } from '../../components/loading-screen/loading-screen.component';
-import { DemosComponent } from '../../components/demos/demos.component';
-import { BookingComponent } from '../../components/booking/booking.component';
-import { EstimatorComponent } from '../../components/estimator/estimator.component';
 import { DigitalProductsComponent } from '../../components/digital-products/digital-products.component';
-import { SurveyBannerComponent } from '../../components/survey-banner/survey-banner.component';
 import { StoryComponent } from '../../components/story/story.component';
 import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.component';
-import { GithubActivityComponent } from '../../components/github-activity/github-activity.component';
 
 @Component({
   selector: 'app-home-page',
@@ -38,26 +29,25 @@ import { GithubActivityComponent } from '../../components/github-activity/github
     ServicesComponent,
     SkillsComponent,
     ProjectsComponent,
-    GithubActivityComponent,
-    JournalFeedComponent,
     ExperienceComponent,
-    GigsComponent,
     HirePricingComponent,
     TestimonialsComponent,
     ReviewsComponent,
     FaqComponent,
-    NewsletterStripComponent,
     ContactComponent,
     FooterComponent,
-    SourceOfferingComponent,
-    DemosComponent,
-    SurveyBannerComponent,
     StoryComponent,
-    BookingComponent,
-    EstimatorComponent,
     DigitalProductsComponent,
   ],
-  /* The 3D cursor, the scrolling marquee and the command palette were removed
+  /* Nine sections were taken off this page: GitHub activity, demos, the survey
+     banner, the journal feed, gigs, booking, the estimator, source offering and
+     the newsletter strip. Twenty-two sections meant the work itself sat sixth,
+     below services and skills, and anything past about the tenth was reached by
+     almost nobody — so the weakest material was crowding out the strongest. The
+     components are untouched and a removed section is one import and one tag
+     from coming back, or from getting a route of its own.
+
+     The 3D cursor, the scrolling marquee and the command palette were removed
      from the page. They competed with the content for a visitor's attention and
      the cursor in particular overrode normal pointer behaviour, which reads as
      a demo rather than as a developer who ships. The components still exist and
@@ -69,26 +59,27 @@ import { GithubActivityComponent } from '../../components/github-activity/github
     <app-sidebar-nav></app-sidebar-nav>
     <div class="global-stars" aria-hidden="true"></div>
     <app-navbar></app-navbar>
+
+    <!-- Proof first. Work is the thing a visitor is deciding on, and it used to
+         sit behind services and skills where many never reached it. -->
     <app-hero></app-hero>
-    <app-services></app-services>
-    <app-skills></app-skills>
     <app-projects></app-projects>
-    <app-github-activity></app-github-activity>
-    <app-story></app-story>
-    <app-demos></app-demos>
-    <app-survey-banner></app-survey-banner>
-    <app-journal-feed></app-journal-feed>
+    <app-skills></app-skills>
+
+    <!-- Who I am: career and education, then the story behind it. -->
     <app-experience></app-experience>
-    <app-gigs></app-gigs>
+    <app-story></app-story>
+
+    <!-- What I can be hired for, and on what terms. -->
+    <app-services></app-services>
     <app-hire-pricing></app-hire-pricing>
-    <app-booking></app-booking>
-    <app-estimator></app-estimator>
     <app-digital-products></app-digital-products>
+
+    <!-- Other people vouching, and the form that collects it. -->
     <app-testimonials></app-testimonials>
     <app-reviews></app-reviews>
+
     <app-faq></app-faq>
-    <app-source-offering></app-source-offering>
-    <app-newsletter-strip></app-newsletter-strip>
     <app-contact></app-contact>
     <app-footer></app-footer>
   `,

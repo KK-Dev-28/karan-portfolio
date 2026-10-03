@@ -1,15 +1,15 @@
 <section class="dp-sec reveal" id="digital-products">
   <div class="container">
     <div class="sec-label">Digital Products</div>
-    <h2 class="sec-title">Buy once, <span class="italic">use forever</span></h2>
-    <p class="dp-lead">Production-ready templates and starter kits built from real projects. Skip weeks of boilerplate — ship in hours.</p>
+    <h2 class="sec-title">In the works, <span class="italic">not yet for sale</span></h2>
+    <p class="dp-lead">Starter kits being extracted from the systems on this site. None of them is finished, so none of them is on sale yet — tell me which is worth building first and I'll let you know when it ships.</p>
 
     <div class="dp-grid">
       <div
         class="dp-card"
         *ngFor="let p of products"
         [class.dp-featured]="p.featured">
-        <div class="dp-badge" *ngIf="p.badge">{{ p.badge }}</div>
+        <div class="dp-badge dp-soon">Coming soon</div>
         <div class="dp-icon">{{ p.icon }}</div>
         <h3 class="dp-title">{{ p.title }}</h3>
         <p class="dp-desc">{{ p.desc }}</p>
@@ -18,12 +18,12 @@
         </ul>
         <div class="dp-footer">
           <a class="dp-btn" [href]="waUrl(p.waText)" target="_blank" rel="noopener">
-            <span class="wa-dot"></span> Get Pricing on WhatsApp →
+            <span class="wa-dot"></span> Tell me to build this first →
           </a>
         </div>
       </div>
     </div>
 
-    <p class="dp-guarantee">Pricing discussed on WhatsApp · Lifetime updates · Instant delivery after confirmation</p>
+    <p class="dp-guarantee">Nothing here is purchasable yet · Interest decides what gets built first</p>
   </div>
 </section>
