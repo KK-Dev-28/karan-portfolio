@@ -18,60 +18,75 @@ interface Chapter {
   styleUrls: ['./story.component.scss']
 })
 export class StoryComponent implements AfterViewInit, OnDestroy {
+  /* Every chapter here is taken from the CV and the dates on the experience
+     timeline. The version this replaced was invented — it opened with a first
+     line of code in 2020, a year after the DCA; put the MCA in 2023, when the
+     BCA was still being finished; and described 2024 as the year freelancing
+     began, which is when the CS Soft Solutions internship started. A story a
+     reader can check against the timeline below it is worth more than a
+     better-sounding one that contradicts it. */
   chapters: Chapter[] = [
     {
+      year: '2017',
+      title: 'School, and a First Look',
+      body: 'Finished matriculation at V.D.M. High School with 70%. Computers were still a subject rather than a direction, but the interest was there.',
+      tags: ['Matriculation', '70%'],
+      icon: '📘',
+      accent: '#64748b'
+    },
+    {
+      year: '2019',
+      title: 'First Formal Training',
+      body: 'Took a Diploma in Computer Applications at Ideal Computer Center — the first time software was something to be studied deliberately rather than poked at.',
+      tags: ['DCA', 'Foundations'],
+      icon: '🧭',
+      accent: '#0ea5e9'
+    },
+    {
       year: '2020',
-      title: 'The Spark',
-      body: 'Opened a code editor for the first time — wrote "Hello World" and somehow broke it twice. That single moment of curiosity lit a fire that hasn\'t gone out since.',
-      tags: ['Python', 'HTML', 'First Steps'],
-      icon: '⚡',
-      accent: '#f59e0b'
+      title: 'Senior Secondary',
+      body: 'Completed senior secondary at P.S.K.N. Senior Secondary School with 85%, and committed to computer applications as the thing to study properly.',
+      tags: ['12th', '85%'],
+      icon: '🎓',
+      accent: '#14b8a6'
     },
     {
-      year: '2021',
-      title: 'Web Unlocked',
-      body: 'JavaScript clicked. CSS felt like painting. Built my first interactive pages and realised I wanted to make things people could actually feel and use — not just read.',
-      tags: ['JavaScript', 'CSS3', 'DOM'],
-      icon: '🌐',
-      accent: '#06b6d4'
-    },
-    {
-      year: '2022',
-      title: 'Backend Descent',
-      body: 'Node.js, Express, MongoDB — the backend opened a whole new dimension. Shipped my first REST API and felt the genuine rush of something real running in the cloud.',
-      tags: ['Node.js', 'MongoDB', 'REST'],
-      icon: '🔩',
-      accent: '#10b981'
+      year: '2021–23',
+      title: 'BCA at Anglo Sanskrit College',
+      body: 'Three years of computer applications at A.S. College, Khanna, finishing with 93%. Programming stopped being coursework somewhere in the middle of it and became the thing I actually wanted to do.',
+      tags: ['BCA', '93%', 'Khanna'],
+      icon: '📗',
+      accent: '#22c55e'
     },
     {
       year: '2023',
-      title: 'Angular Era',
-      body: 'Adopted Angular for serious project scale — RxJS, lazy-loading, smart architecture. MCA pushed design-thinking; software engineering clicked as a craft, not just code.',
-      tags: ['Angular', 'TypeScript', 'Architecture'],
-      icon: '🔴',
-      accent: '#e11d48'
-    },
-    {
-      year: '2024',
-      title: 'First Clients',
-      body: 'Turned design briefs into shipped products. Learned that great software is also great communication — with real users, not just machines. Freelancing changed everything.',
-      tags: ['Freelance', 'UI/UX', 'Delivery'],
-      icon: '💼',
+      title: 'Industrial Training — Four Builds',
+      body: 'Six months at CS Infotech, building four projects end to end: an ASP.NET Core MVC e-commerce platform on Entity Framework and Identity, a national-park ticketing system, an Angular client against a .NET API, and a React storefront on Node and MongoDB. This is where the stack I still work in was settled.',
+      tags: ['ASP.NET Core', 'Angular', 'React'],
+      icon: '🛠️',
       accent: '#7c3aed'
     },
     {
-      year: '2025',
-      title: 'Building at Scale',
-      body: 'Launched this portfolio as a living product — AI integrations, real-time CMS, full booking flows. Engineering and design converging into one coherent practice.',
-      tags: ['AI', 'Full-Stack', 'Products'],
-      icon: '🚀',
+      year: '2024',
+      title: 'Into Production at CS Soft Solutions',
+      body: 'Joined as a Software Developer Intern in January and was contributing to live client projects within the first month. Took the full-time Junior Software Developer role in July. Training projects became systems with real users and real consequences.',
+      tags: ['Internship', 'Full-time', 'Mohali'],
+      icon: '💼',
       accent: '#f59e0b'
     },
     {
+      year: '2025',
+      title: 'Enterprise Scale',
+      body: 'Delivered the Swaraj Mahindra department management app, then moved onto the Enterprise Inventory Management System — multi-branch stock across Head Office, Back Office and HHT/POS devices, with real-time messaging between branches. Awarded High Productivity in the .NET department for the work.',
+      tags: ['Angular', '.NET', 'Kafka', 'Award'],
+      icon: '🏆',
+      accent: '#eab308'
+    },
+    {
       year: '2026',
-      title: 'Now →',
-      body: 'Partnering with ambitious builders to create digital experiences that actually matter. If you found this page — you found the right person. Let\'s build something extraordinary.',
-      tags: ['Open to Work', 'Collabs', 'Let\'s Go'],
+      title: 'MCA, and Research of My Own',
+      body: 'Pursuing an MCA at Lovely Professional University alongside full-time work. The capstone studies how people shop locally and what street vendors are up against — a live survey, and LocalHaat, the marketplace built from what it found.',
+      tags: ['MCA', 'LocalHaat', 'Research'],
       icon: '✦',
       accent: '#fbbf24'
     }
