@@ -262,8 +262,8 @@ const DEFAULTS: Record<string, any> = {
       {
         "link": "",
         "name": "Swiftec",
-        "stack": "Angular, ASP.NET Web API, C#, SQL Server",
-        "summary": "Client platform led end to end as full-stack developer, covering both the Angular client and the Web API services behind it."
+        "stack": "Angular, ASP.NET Web API, C#, Microsoft SQL Server, REST APIs",
+        "summary": "Retail management platform spanning head office and individual stores. Head office holds the master database of item, supplier, manufacturer and brand records with currency exchange rates; each store runs a back office and POS against it, recording its own transactions. Led end to end, covering item master maintenance, role-based permissions, transaction processing and reporting."
       },
       {
         "link": "",
@@ -337,7 +337,7 @@ const DEFAULTS: Record<string, any> = {
         "role": "Software Developer",
         "period": "July 2025 - Present",
         "bullets": [
-          "Lead full-stack development of Swiftec, holding end-to-end ownership of the Angular client and the ASP.NET Web API services supporting it.",
+          "Lead full-stack development of Swiftec, a head-office and store retail platform covering item, supplier, manufacturer and brand master data, currency exchange, role-based permissions, store transactions and reporting - owning the Angular client and the ASP.NET Web API services behind it.",
           "Deliver the Enterprise Inventory Management System, a multi-branch platform spanning head office, back office and HHT/POS Android devices, covering stock control, order requests, inter-store transfers and supplier price lists.",
           "Integrate Apache Kafka for real-time inter-branch messaging and SymmetricDS for database replication, keeping distributed branch data consistent.",
           "Develop the AI Resume Builder job portal, implementing AI-assisted document generation over a document store with per-client data synchronisation.",
