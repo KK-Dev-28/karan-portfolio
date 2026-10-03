@@ -2,7 +2,6 @@ import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent }      from '../../components/navbar/navbar.component';
 import { HeroComponent }        from '../../components/hero/hero.component';
-import { MarqueeComponent }     from '../../components/marquee/marquee.component';
 import { ServicesComponent }    from '../../components/services/services.component';
 import { SkillsComponent }      from '../../components/skills/skills.component';
 import { ProjectsComponent }    from '../../components/projects/projects.component';
@@ -16,7 +15,6 @@ import { FaqComponent }         from '../../components/faq/faq.component';
 import { NewsletterStripComponent } from '../../components/newsletter-strip/newsletter-strip.component';
 import { ContactComponent }     from '../../components/contact/contact.component';
 import { FooterComponent }      from '../../components/footer/footer.component';
-import { Cursor3dComponent }    from '../../components/cursor-3d/cursor-3d.component';
 import { SourceOfferingComponent } from '../../components/source-offering/source-offering.component';
 import { LoadingScreenComponent } from '../../components/loading-screen/loading-screen.component';
 import { DemosComponent } from '../../components/demos/demos.component';
@@ -26,7 +24,6 @@ import { DigitalProductsComponent } from '../../components/digital-products/digi
 import { SurveyBannerComponent } from '../../components/survey-banner/survey-banner.component';
 import { StoryComponent } from '../../components/story/story.component';
 import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.component';
-import { CommandPaletteComponent } from '../../components/command-palette/command-palette.component';
 import { GithubActivityComponent } from '../../components/github-activity/github-activity.component';
 
 @Component({
@@ -36,10 +33,8 @@ import { GithubActivityComponent } from '../../components/github-activity/github
     CommonModule,
     LoadingScreenComponent,
     SidebarNavComponent,
-    CommandPaletteComponent,
     NavbarComponent,
     HeroComponent,
-    MarqueeComponent,
     ServicesComponent,
     SkillsComponent,
     ProjectsComponent,
@@ -54,7 +49,6 @@ import { GithubActivityComponent } from '../../components/github-activity/github
     NewsletterStripComponent,
     ContactComponent,
     FooterComponent,
-    Cursor3dComponent,
     SourceOfferingComponent,
     DemosComponent,
     SurveyBannerComponent,
@@ -63,15 +57,19 @@ import { GithubActivityComponent } from '../../components/github-activity/github
     EstimatorComponent,
     DigitalProductsComponent,
   ],
+  /* The 3D cursor, the scrolling marquee and the command palette were removed
+     from the page. They competed with the content for a visitor's attention and
+     the cursor in particular overrode normal pointer behaviour, which reads as
+     a demo rather than as a developer who ships. The components still exist and
+     can be put back by restoring their import and tag. Theme and layout
+     switching, which the palette also hosted, lives in the navbar and the
+     sidebar. */
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
-    <app-command-palette></app-command-palette>
-    <app-cursor-3d></app-cursor-3d>
     <app-sidebar-nav></app-sidebar-nav>
     <div class="global-stars" aria-hidden="true"></div>
     <app-navbar></app-navbar>
     <app-hero></app-hero>
-    <app-marquee></app-marquee>
     <app-services></app-services>
     <app-skills></app-skills>
     <app-projects></app-projects>

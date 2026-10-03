@@ -4,13 +4,14 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-import { ThemeService, THEMES, LAYOUTS, ThemeId, LayoutId } from '../../services/theme.service';
+import { ThemeService, THEMES, LayoutMeta, ThemeId, LayoutId } from '../../services/theme.service';
+import { LayoutPreviewComponent } from '../layout-preview/layout-preview.component';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, LayoutPreviewComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
@@ -25,7 +26,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   form!:         FormGroup;
 
   themes         = THEMES;
-  layouts        = LAYOUTS;
+  /* Filled in ngOnInit, not here: a field initializer can run before the
+     injected service is assigned, and this must also pick up layouts the
+     registry gains at runtime rather than the load-time snapshot. */
+  layouts: LayoutMeta[] = [];
   currentTheme:  ThemeId = 'midnight-gold';
   currentLayout: LayoutId = 'standard';
   themeMenuOpen  = false;
@@ -51,6 +55,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.fb.group({ password: ['', Validators.required] });
+    this.layouts = this.themeSvc.layouts();
     this.currentTheme = this.themeSvc.getTheme();
     this.currentLayout = this.themeSvc.getLayout();
     this.initSectionObserver();

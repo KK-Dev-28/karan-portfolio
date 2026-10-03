@@ -59,7 +59,7 @@
           <!-- Layout options -->
           <div class="picker-list" *ngIf="activePickerTab === 'layouts'">
             <button *ngFor="let l of layouts" class="theme-option layout-option" [class.active]="l.id === currentLayout" (click)="pickLayout(l.id)">
-              <span class="layout-icon">📐</span>
+              <app-layout-preview [layoutId]="l.id"></app-layout-preview>
               <span class="theme-option-text">
                 <span class="theme-option-label">{{ l.label }}</span>
                 <span class="theme-option-blurb">{{ l.blurb }}</span>
