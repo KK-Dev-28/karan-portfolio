@@ -48,6 +48,8 @@ import { BlogModule }   from './blog/blog.module';
 import { AiToolsModule } from './ai-tools/ai-tools.module';
 import { ReactionModule } from './reactions/reaction.module';
 import { parseDatabaseUrl } from './database/parse-database-url';
+import { TaskflowModule } from './taskflow/taskflow.module';
+import { TaskflowUser, TaskflowTodo } from './taskflow/taskflow.entity';
 
 @Module({
   imports: [
@@ -117,6 +119,8 @@ import { parseDatabaseUrl } from './database/parse-database-url';
           FreeUsage,
           EmailVerification,
           Reaction,
+          TaskflowUser,
+          TaskflowTodo,
         ],
         synchronize,
         logging:     false,
@@ -152,6 +156,7 @@ import { parseDatabaseUrl } from './database/parse-database-url';
     AiToolsModule,
     ReactionModule,
     AdminModule,
+    TaskflowModule
   ],
   providers: [
     /* Without this, ThrottlerGuard only runs where a controller declares it in
