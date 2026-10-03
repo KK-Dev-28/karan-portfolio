@@ -58,6 +58,17 @@ const routes: Routes = [
     },
   },
   {
+    path: 'resume',
+    loadComponent: () => import('./pages/resume/resume.page').then(m => m.ResumePageComponent),
+    data: {
+      seo: {
+        title: 'Resume — Karan Kapoor',
+        description: 'Full Stack Developer — Angular and ASP.NET Web API. Experience, skills, education and awards.',
+        path: '/resume',
+      },
+    },
+  },
+  {
     path: 'resume-review',
     loadComponent: () => import('./pages/resume-review/resume-review.page').then(m => m.ResumeReviewPageComponent),
     data: {

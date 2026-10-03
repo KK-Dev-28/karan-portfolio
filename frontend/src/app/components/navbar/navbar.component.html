@@ -21,6 +21,7 @@
 
     <!-- Right controls -->
     <div class="nav-controls">
+      <a class="nav-blog-link" routerLink="/resume">Resume</a>
       <a class="nav-blog-link" routerLink="/blog">Blog</a>
 
       <!-- Theme & Layout Studio Picker -->
@@ -86,6 +87,7 @@
     <li *ngFor="let l of links">
       <a [href]="'#'+l.id" (click)="scrollTo(l.id, $event); menuOpen=false">{{ l.label }}</a>
     </li>
+    <li><a routerLink="/resume" (click)="menuOpen=false">Resume</a></li>
     <li><a routerLink="/blog" (click)="menuOpen=false">Blog</a></li>
     <li><a href="/insights" (click)="menuOpen=false">Visitor Logs</a></li>
   </ul>

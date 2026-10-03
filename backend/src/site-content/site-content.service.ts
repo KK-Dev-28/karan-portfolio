@@ -177,6 +177,173 @@ const DEFAULTS: Record<string, any> = {
       { target: 'contact',    title: "Let's talk",   body: 'That’s the tour. If something here fits what you need, send a message — I reply quickly.' },
     ],
   },
+  /* The structured CV behind the public resume page. Kept in the CMS rather
+     than hardcoded so it can be corrected from the admin without a deploy —
+     a resume dates faster than anything else on the site. */
+  resume: {
+    "name": "Karan Kapoor",
+    "title": "Full Stack Developer",
+    "tagline": "Angular + .NET · enterprise systems that run in production",
+    "location": "Ludhiana, Punjab, India",
+    "email": "kkcode28012002@gmail.com",
+    "phone": "+91-6239589464",
+    "availability": "Open to freelance, remote and part-time engagements",
+    "links": [
+      {
+        "label": "Portfolio",
+        "url": "https://karan-portfolio-six-sigma.vercel.app"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/Karan28012002"
+      }
+    ],
+    "summary": "Full Stack Developer building enterprise web applications at CS Soft Solutions since January 2024, working across Angular front ends and ASP.NET Web API back ends. Work has run from modernising a legacy data layer onto Entity Framework, through owning front-end delivery on several concurrent client projects, to multi-branch systems replicating data between branches and handheld devices. Awarded High Productivity in the .NET department. Completing an MCA at Lovely Professional University alongside full-time work.",
+    "experience": [
+      {
+        "role": "Software Developer",
+        "company": "CS Soft Solutions (India) Pvt. Ltd.",
+        "location": "Mohali, Punjab",
+        "period": "July 2025 – Present",
+        "bullets": [
+          "Lead full-stack developer on a client platform, owning both the Angular front end and the ASP.NET Web API services behind it.",
+          "Enterprise Inventory Management System: multi-branch stock platform spanning Head Office, Back Office and HHT/POS Android devices, with Apache Kafka messaging and SymmetricDS replication keeping branches in step.",
+          "AI Resume Builder: job-portal platform with AI-assisted resume generation on a document database, synchronised per client ID.",
+          "Built reporting with DevExpress and worked across proxy-server configuration, Azure DevOps and Bruno for API testing.",
+          "Awarded High Productivity in the .NET department."
+        ]
+      },
+      {
+        "role": "Junior Software Developer",
+        "company": "CS Soft Solutions (India) Pvt. Ltd.",
+        "location": "Mohali, Punjab",
+        "period": "July 2024 – July 2025",
+        "bullets": [
+          "Angular front-end developer across several concurrent client projects, coordinating API contracts directly with the back-end team.",
+          "3T — Task & Time Tracking: in-house system for logging tasks, time and project contribution.",
+          "Mastermind Duo Tax: property application covering depreciation and capital-loss tracking; implemented the data sync process.",
+          "Swaraj Mahindra: enterprise department management portal supporting multiple admin roles.",
+          "Worked in Agile/Scrum throughout, using Jira, Trello, Git and GitHub."
+        ]
+      },
+      {
+        "role": "Software Developer Intern",
+        "company": "CS Soft Solutions (India) Pvt. Ltd.",
+        "location": "Mohali, Punjab",
+        "period": "January 2024 – June 2024",
+        "bullets": [
+          "Joined a 7-person team and was contributing to live client projects within the first month.",
+          "GeoData property portal: migrated the legacy internal data layer to Entity Framework and rewrote queries in LINQ, substantially reducing the code involved. The system tracks ownership, tenancy, mortgages and leases.",
+          "Built an open-authentication flow verifying login against an external identity server.",
+          "Contributed to a Learning Management System still in development.",
+          "Worked in HTML, CSS, JavaScript and AJAX against ASP.NET MVC, Web API and SQL Server."
+        ]
+      }
+    ],
+    "education": [
+      {
+        "degree": "MCA — Master of Computer Applications",
+        "institution": "Lovely Professional University",
+        "period": "Pursuing",
+        "score": "",
+        "note": "Online, alongside full-time work"
+      },
+      {
+        "degree": "Full Stack Developer — Industrial Training",
+        "institution": "CS Infotech",
+        "period": "Jul – Dec 2023",
+        "score": "6 months",
+        "note": "Four projects: ASP.NET Core MVC e-commerce on Entity Framework and Identity, a national-park ticketing API, an Angular client against a .NET API, and a React storefront on Node and MongoDB"
+      },
+      {
+        "degree": "BCA — Bachelor of Computer Applications",
+        "institution": "Anglo Sanskrit College, Khanna",
+        "period": "Sep 2021 – May 2023",
+        "score": "93%",
+        "note": ""
+      },
+      {
+        "degree": "Diploma in Computer Applications",
+        "institution": "Ideal Computer Center",
+        "period": "2019",
+        "score": "",
+        "note": ""
+      },
+      {
+        "degree": "Senior Secondary (12th)",
+        "institution": "P.S.K.N. Senior Secondary School",
+        "period": "2020",
+        "score": "85%",
+        "note": ""
+      },
+      {
+        "degree": "Matriculation (10th)",
+        "institution": "V.D.M. High School",
+        "period": "2017",
+        "score": "70%",
+        "note": ""
+      }
+    ],
+    "skills": {
+      "Frontend": [
+        "Angular",
+        "TypeScript",
+        "JavaScript",
+        "RxJS",
+        "HTML5",
+        "CSS3",
+        "AJAX",
+        "React",
+        "Responsive Design"
+      ],
+      "Backend": [
+        "ASP.NET Web API",
+        "ASP.NET Core",
+        "ASP.NET MVC",
+        "C#",
+        ".NET",
+        "VB.NET",
+        "NestJS",
+        "Node.js",
+        "REST APIs",
+        "OAuth"
+      ],
+      "Data": [
+        "SQL Server",
+        "Entity Framework",
+        "LINQ",
+        "PostgreSQL",
+        "MongoDB",
+        "Mongoose",
+        "TypeORM"
+      ],
+      "Integration": [
+        "Apache Kafka",
+        "SymmetricDS",
+        "DevExpress",
+        "Proxy Server Configuration"
+      ],
+      "Tooling": [
+        "Git",
+        "GitHub",
+        "Jira",
+        "Trello",
+        "Azure DevOps",
+        "Bruno",
+        "Postman",
+        "Agile",
+        "Scrum"
+      ]
+    },
+    "awards": [
+      {
+        "title": "High Productivity — .NET Department",
+        "issuer": "CS Soft Solutions (India) Pvt. Ltd.",
+        "date": ""
+      }
+    ]
+  },
+
   appearance: {
     theme: 'midnight-gold',
     layout: 'standard',

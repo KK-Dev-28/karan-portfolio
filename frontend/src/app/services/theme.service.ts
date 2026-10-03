@@ -4,6 +4,7 @@ import {
   registerLayout, DEFAULT_LAYOUT_ID,
 } from '../design/layout-registry';
 import { SiteContentService } from './site-content.service';
+import { LayoutsService } from './layouts.service';
 
 export type ThemeId =
   | 'midnight-gold'
@@ -177,7 +178,10 @@ export class ThemeService {
   private layout: LayoutId = 'standard';
   private design: DesignConfig = defaultDesign();
 
-  constructor(private siteContent: SiteContentService) {}
+  constructor(
+    private siteContent: SiteContentService,
+    private layoutsApi: LayoutsService,
+  ) {}
 
   themes()  { return THEMES; }
   layouts(): LayoutDef[] { return allLayouts(); }
@@ -201,6 +205,7 @@ export class ThemeService {
     this.applyTheme(this.readLocal(LS_THEME, THEMES, 'midnight-gold'));
     this.applyLayout(this.readLocal(LS_LAYOUT, this.layouts(), DEFAULT_LAYOUT_ID));
     this.applyDesign(this.readLocalDesign(), false);
+    this.loadGeneratedLayouts();
 
     const hasOverride = localStorage.getItem(LS_OVERRIDE) === '1';
     this.siteContent.getSection('appearance').subscribe({
@@ -276,6 +281,35 @@ export class ThemeService {
     this.layout = resolved;
     document.documentElement.setAttribute('data-layout', resolved);
     if (persist) localStorage.setItem(LS_LAYOUT, resolved);
+  }
+
+  /**
+   * Pulls layouts published from the Design Studio and registers them beside
+   * the built-ins. Runs after the stored layout has already been applied, so a
+   * slow or failed request never delays first paint; if the visitor's saved
+   * choice is a generated one, it resolves to Standard until this lands and is
+   * then re-applied. Failure is silent on purpose — the built-in layouts are
+   * unaffected and an error here is not the visitor's problem.
+   */
+  private loadGeneratedLayouts(): void {
+    this.layoutsApi.list().subscribe({
+      next: defs => {
+        let added = 0;
+        for (const d of defs) {
+          if (registerLayout({ ...d, generated: true })) added++;
+        }
+        if (!added) return;
+        this.syncLayoutStylesheet();
+
+        /* The stored choice may have been one of these, in which case the
+           earlier apply fell back to Standard. */
+        const saved = localStorage.getItem(LS_LAYOUT);
+        if (saved && saved !== this.layout && isKnownLayout(saved)) {
+          this.applyLayout(saved, false);
+        }
+      },
+      error: () => {},
+    });
   }
 
   /* Rewrites the single stylesheet holding every layout's tokens. Called once at

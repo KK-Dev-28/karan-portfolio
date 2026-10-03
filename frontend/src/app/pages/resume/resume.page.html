@@ -1,0 +1,91 @@
+<div class="rz-wrap">
+
+  <!-- Screen-only chrome. Hidden in print so the PDF is the document alone. -->
+  <div class="rz-bar no-print">
+    <a routerLink="/" class="rz-back">← Portfolio</a>
+    <div class="rz-bar-actions">
+      <span class="rz-hint">Saves as PDF · 2 pages</span>
+      <button class="rz-dl" (click)="download()">Download PDF</button>
+    </div>
+  </div>
+
+  <div class="rz-loading no-print" *ngIf="loading">Loading…</div>
+
+  <article class="rz-doc" *ngIf="cv as c">
+
+    <header class="rz-head">
+      <div class="rz-head-main">
+        <h1 class="rz-name">{{ c.name }}</h1>
+        <p class="rz-title">{{ c.title }}</p>
+        <p class="rz-tagline" *ngIf="c.tagline">{{ c.tagline }}</p>
+      </div>
+      <ul class="rz-contact">
+        <li *ngIf="c.email"><a [href]="'mailto:' + c.email">{{ c.email }}</a></li>
+        <li *ngIf="c.phone"><a [href]="telHref(c.phone)">{{ c.phone }}</a></li>
+        <li *ngIf="c.location">{{ c.location }}</li>
+        <li *ngFor="let l of c.links">
+          <a [href]="l.url" target="_blank" rel="noopener">{{ l.label }}</a>
+        </li>
+      </ul>
+    </header>
+
+    <section class="rz-sec" *ngIf="c.summary">
+      <h2 class="rz-h2">Profile</h2>
+      <p class="rz-summary">{{ c.summary }}</p>
+    </section>
+
+    <section class="rz-sec">
+      <h2 class="rz-h2">Experience</h2>
+      <div class="rz-role" *ngFor="let r of c.experience">
+        <div class="rz-role-head">
+          <div>
+            <h3 class="rz-role-title">{{ r.role }}</h3>
+            <p class="rz-role-org">{{ r.company }}<span *ngIf="r.location"> · {{ r.location }}</span></p>
+          </div>
+          <span class="rz-period">{{ r.period }}</span>
+        </div>
+        <ul class="rz-bullets">
+          <li *ngFor="let b of r.bullets">{{ b }}</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Forced to page two: experience runs long and would otherwise split a
+         role across the fold. -->
+    <section class="rz-sec rz-page-break">
+      <h2 class="rz-h2">Technical Skills</h2>
+      <div class="rz-skills">
+        <div class="rz-skill-row" *ngFor="let g of skillGroups()">
+          <span class="rz-skill-label">{{ g.name }}</span>
+          <span class="rz-skill-items">{{ g.items.join(' · ') }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="rz-sec">
+      <h2 class="rz-h2">Education &amp; Training</h2>
+      <div class="rz-edu" *ngFor="let e of c.education">
+        <div class="rz-edu-head">
+          <div>
+            <h3 class="rz-edu-degree">{{ e.degree }}</h3>
+            <p class="rz-edu-org">{{ e.institution }}</p>
+          </div>
+          <span class="rz-period">
+            {{ e.period }}<span class="rz-score" *ngIf="e.score"> · {{ e.score }}</span>
+          </span>
+        </div>
+        <p class="rz-edu-note" *ngIf="e.note">{{ e.note }}</p>
+      </div>
+    </section>
+
+    <section class="rz-sec" *ngIf="c.awards?.length">
+      <h2 class="rz-h2">Awards</h2>
+      <div class="rz-award" *ngFor="let a of c.awards">
+        <span class="rz-award-title">{{ a.title }}</span>
+        <span class="rz-award-org">{{ a.issuer }}<span *ngIf="a.date"> · {{ a.date }}</span></span>
+      </div>
+    </section>
+
+    <p class="rz-foot" *ngIf="c.availability">{{ c.availability }}</p>
+  </article>
+</div>

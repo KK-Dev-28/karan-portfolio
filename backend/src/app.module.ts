@@ -49,7 +49,9 @@ import { AiToolsModule } from './ai-tools/ai-tools.module';
 import { ReactionModule } from './reactions/reaction.module';
 import { parseDatabaseUrl } from './database/parse-database-url';
 import { TaskflowModule } from './taskflow/taskflow.module';
+import { LayoutModule } from './layouts/layout.module';
 import { TaskflowUser, TaskflowTodo } from './taskflow/taskflow.entity';
+import { GeneratedLayout } from './layouts/layout.entity';
 
 @Module({
   imports: [
@@ -121,6 +123,7 @@ import { TaskflowUser, TaskflowTodo } from './taskflow/taskflow.entity';
           Reaction,
           TaskflowUser,
           TaskflowTodo,
+          GeneratedLayout,
         ],
         synchronize,
         logging:     false,
@@ -156,7 +159,8 @@ import { TaskflowUser, TaskflowTodo } from './taskflow/taskflow.entity';
     AiToolsModule,
     ReactionModule,
     AdminModule,
-    TaskflowModule
+    TaskflowModule,
+    LayoutModule
   ],
   providers: [
     /* Without this, ThrottlerGuard only runs where a controller declares it in
