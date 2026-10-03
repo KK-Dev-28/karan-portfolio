@@ -83,6 +83,23 @@ $accent: #0f5c4a;
 }
 .rz-summary { margin: 0; text-align: justify; }
 
+/* No heading: these are a continuation of the profile, and a heading would
+   make four short lines look like a section in their own right. */
+.rz-hl-sec { margin-top: 7px; }
+.rz-highlights {
+  margin: 0; padding: 0; list-style: none;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px 16px;
+  li {
+    position: relative; padding-left: 11px;
+    font-size: 9.1pt; font-weight: 600;
+    &::before {
+      content: ''; position: absolute; left: 0; top: .42em;
+      width: 4px; height: 4px; border-radius: 50%; background: $accent;
+    }
+  }
+}
+.rz-langs { margin: 0; font-size: 9.5pt; }
+
 /* A role split across the page fold is the usual way a two-page CV looks
    careless, so each block is kept whole. */
 .rz-role, .rz-edu { margin-bottom: 8px; break-inside: avoid; page-break-inside: avoid; }
@@ -160,4 +177,5 @@ $accent: #0f5c4a;
   .rz-head { flex-direction: column; gap: 8px; }
   .rz-contact { text-align: left; }
   .rz-skill-row { flex-direction: column; gap: 1px; }
+  .rz-highlights { grid-template-columns: 1fr; }
 }

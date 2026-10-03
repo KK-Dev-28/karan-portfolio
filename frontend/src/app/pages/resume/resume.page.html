@@ -34,6 +34,12 @@
       <p class="rz-summary">{{ c.summary }}</p>
     </section>
 
+    <section class="rz-sec rz-hl-sec" *ngIf="c.highlights?.length">
+      <ul class="rz-highlights">
+        <li *ngFor="let h of c.highlights">{{ h }}</li>
+      </ul>
+    </section>
+
     <section class="rz-sec">
       <h2 class="rz-h2">Experience</h2>
       <div class="rz-role" *ngFor="let r of c.experience">
@@ -111,6 +117,11 @@
         <span class="rz-award-title">{{ a.title }}</span>
         <span class="rz-award-org">{{ a.issuer }}<span *ngIf="a.date"> · {{ a.date }}</span></span>
       </div>
+    </section>
+
+    <section class="rz-sec" *ngIf="c.languages?.length">
+      <h2 class="rz-h2">Languages</h2>
+      <p class="rz-langs">{{ c.languages.join(' · ') }}</p>
     </section>
 
     <p class="rz-foot" *ngIf="c.availability">{{ c.availability }}</p>

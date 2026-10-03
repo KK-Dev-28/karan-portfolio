@@ -16,6 +16,8 @@ interface Resume {
   links: Link[]; summary: string;
   experience: Role[]; education: Education[];
   skills: Record<string, string[]>;
+  highlights?: string[];
+  languages?: string[];
   projects?: Project[];
   certifications?: Cert[];
   awards: Award[];

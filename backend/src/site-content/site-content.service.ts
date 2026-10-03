@@ -327,6 +327,11 @@ const DEFAULTS: Record<string, any> = {
         "institution": "V.D.M. High School"
       }
     ],
+    "languages": [
+      "English",
+      "Hindi",
+      "Punjabi"
+    ],
     "experience": [
       {
         "role": "Software Developer",
@@ -369,13 +374,31 @@ const DEFAULTS: Record<string, any> = {
         "location": "Mohali, Punjab"
       }
     ],
+    "highlights": [
+      "2+ years delivering enterprise applications for client organisations",
+      "Intern to lead developer within two years",
+      "Multi-branch distributed systems - Kafka, SymmetricDS, POS devices",
+      "Legacy modernisation - ADO-era data access to Entity Framework and LINQ"
+    ],
     "availability": "Open to freelance, remote and part-time engagements - Saturdays & Sundays · Weeknights from 10 PM IST",
     "certifications": [
       {
         "date": "Jul - Dec 2023",
-        "note": "Six months across four projects: an ASP.NET Core MVC e-commerce platform on Entity Framework and Identity, a national-park ticketing API, an Angular client against a .NET API, and a React storefront on Node and MongoDB.",
+        "note": "Six months across four builds: an ASP.NET Core MVC e-commerce platform on Entity Framework and Identity, a national-park ticketing API, an Angular client against a .NET API, and a React storefront on Node and MongoDB.",
         "title": "Full Stack Developer - Industrial Training",
         "issuer": "CS Infotech"
+      },
+      {
+        "date": "2025",
+        "note": "",
+        "title": "Summer Training - MCA 3rd Semester",
+        "issuer": "STS"
+      },
+      {
+        "date": "BCA",
+        "note": "Awarded for academic standing during the BCA programme.",
+        "title": "Semester Merit Certificate",
+        "issuer": "Anglo Sanskrit College, Khanna"
       }
     ]
   },
