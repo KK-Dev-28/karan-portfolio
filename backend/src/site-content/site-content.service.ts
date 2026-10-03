@@ -214,78 +214,80 @@ const DEFAULTS: Record<string, any> = {
         "ASP.NET Web API",
         "ASP.NET Core",
         "ASP.NET MVC",
-        "C#",
         ".NET",
-        "VB.NET",
         "NestJS",
         "Node.js",
-        "REST APIs",
+        "REST API Design",
         "OAuth",
         "JWT"
       ],
       "Frontend": [
         "Angular",
-        "TypeScript",
-        "JavaScript",
         "RxJS",
-        "HTML5",
-        "CSS3",
-        "AJAX",
         "React",
+        "AJAX",
         "Responsive Design"
       ],
-      "Practice": [
+      "Languages": [
+        "C#",
+        "TypeScript",
+        "JavaScript",
+        "VB.NET",
+        "SQL",
+        "HTML5",
+        "CSS3"
+      ],
+      "Distributed": [
+        "Apache Kafka",
+        "SymmetricDS",
+        "DevExpress",
+        "Proxy Server Configuration"
+      ],
+      "Engineering": [
         "Agile",
         "Scrum",
         "Jira",
         "Git",
         "GitHub",
         "Azure DevOps",
-        "Bruno",
-        "Postman",
         "CI/CD",
-        "AI-Assisted Development"
-      ],
-      "Integration": [
-        "Apache Kafka",
-        "SymmetricDS",
-        "DevExpress",
-        "Proxy Server Configuration"
+        "Bruno",
+        "Postman"
       ]
     },
-    "summary": "Full Stack Developer at CS Soft Solutions, building enterprise web applications on Angular front ends and ASP.NET Web API back ends since January 2024. Progressed from intern to leading full-stack delivery on a client platform in under two years. Work spans legacy modernisation - migrating a production data layer onto Entity Framework and rewriting its queries in LINQ - through multi-branch systems replicating data across branches and handheld POS devices with Apache Kafka and SymmetricDS. Completing an MCA at Lovely Professional University alongside full-time work, including original field research built into a live product.",
-    "tagline": "Angular + .NET - multi-branch enterprise systems, legacy modernisation, real-time data",
+    "summary": "Full Stack Developer with over two years delivering enterprise web applications for client organisations at CS Soft Solutions, working across Angular front ends and ASP.NET Web API services on SQL Server. Advanced from intern to lead developer on a client platform within two years. Delivery experience covers multi-branch retail systems synchronised across head office, back office and handheld POS devices; applicant tracking and property management portals; and the modernisation of a legacy data access layer onto Entity Framework. Currently completing an MCA at Lovely Professional University alongside full-time employment.",
+    "tagline": "Angular - ASP.NET Web API - SQL Server - distributed data",
     "location": "Ludhiana, Punjab, India",
     "projects": [
       {
         "link": "",
         "name": "Swiftec",
-        "stack": "Angular - ASP.NET Web API - C# - SQL Server",
-        "summary": "Client platform led end to end as full-stack developer, owning both the Angular front end and the Web API services behind it."
+        "stack": "Angular, ASP.NET Web API, C#, SQL Server",
+        "summary": "Client platform led end to end as full-stack developer, covering both the Angular client and the Web API services behind it."
       },
       {
         "link": "",
         "name": "Enterprise Inventory Management System",
-        "stack": "Angular - ASP.NET Web API - C# - Entity Framework - SQL Server - Apache Kafka - SymmetricDS",
-        "summary": "Multi-branch inventory platform spanning Head Office, Back Office and HHT/POS Android devices, with real-time branch-to-branch messaging and database replication."
+        "stack": "Angular, ASP.NET Web API, C#, Entity Framework, SQL Server, Apache Kafka, SymmetricDS",
+        "summary": "Multi-branch inventory platform spanning head office, back office and HHT/POS Android devices, with real-time inter-branch messaging and database replication across sites."
       },
       {
         "link": "karan-portfolio-six-sigma.vercel.app",
-        "name": "Portfolio Platform - full-stack product",
-        "stack": "Angular 19 - NestJS - PostgreSQL - TypeORM - Claude API",
-        "summary": "Built as a production system rather than a static page: a JWT-secured admin CMS driving every section, payment checkout, consultation booking, a blog, an AI assistant, a runtime design system and a GitHub Actions pipeline."
+        "name": "Portfolio Platform",
+        "stack": "Angular 19, NestJS, PostgreSQL, TypeORM, Claude API",
+        "summary": "Personal site engineered as a production system: JWT-secured administrative CMS driving every section, payment checkout, consultation booking, publishing, an AI assistant, a runtime design system and a CI/CD pipeline."
       },
       {
         "link": "localhaat.onrender.com",
-        "name": "LocalHaat - MCA capstone research and marketplace",
-        "stack": "React - Vite - Firebase - PWA - Supabase",
-        "summary": "Field research into local shopping behaviour and street-vendor challenges, built first into a live survey instrument and then into a marketplace connecting shoppers with nearby vendors."
+        "name": "LocalHaat",
+        "stack": "React, Vite, Firebase, PWA, Supabase",
+        "summary": "MCA capstone research into local shopping behaviour and street-vendor constraints, implemented first as a live survey instrument and subsequently as a marketplace connecting shoppers with nearby vendors."
       },
       {
         "link": "",
-        "name": "GeoData - property management portal",
-        "stack": "VB.NET - C# - .NET - Entity Framework - LINQ - SQL Server",
-        "summary": "Legacy modernisation of the data access layer, alongside end-to-end property lifecycle tracking covering ownership, tenancy, rentals and map integration."
+        "name": "GeoData Property Portal",
+        "stack": "VB.NET, C#, .NET, Entity Framework, LINQ, SQL Server",
+        "summary": "Property lifecycle management covering ownership, tenancy, rentals, mortgages and leases, with map integration; subject of the Entity Framework modernisation above."
       }
     ],
     "education": [
@@ -330,10 +332,11 @@ const DEFAULTS: Record<string, any> = {
         "role": "Software Developer",
         "period": "July 2025 - Present",
         "bullets": [
-          "Lead full-stack developer on Swiftec, owning the Angular front end and the ASP.NET Web API services behind it end to end.",
-          "Enterprise Inventory Management System - multi-branch stock platform covering Head Office, Back Office and HHT/POS Android devices. Apache Kafka carries real-time messaging between branches and SymmetricDS keeps their databases replicated; modules span stock management, order requests, inter-store transfers and supplier price lists.",
-          "AI Resume Builder - job-portal platform with AI-assisted resume generation on a document database, synchronised per client ID.",
-          "Built operational reporting with DevExpress, and worked across proxy-server configuration, Azure DevOps and Bruno for API verification."
+          "Lead full-stack development of Swiftec, holding end-to-end ownership of the Angular client and the ASP.NET Web API services supporting it.",
+          "Deliver the Enterprise Inventory Management System, a multi-branch platform spanning head office, back office and HHT/POS Android devices, covering stock control, order requests, inter-store transfers and supplier price lists.",
+          "Integrate Apache Kafka for real-time inter-branch messaging and SymmetricDS for database replication, keeping distributed branch data consistent.",
+          "Develop the AI Resume Builder job portal, implementing AI-assisted document generation over a document store with per-client data synchronisation.",
+          "Produce operational reporting in DevExpress, and administer proxy-server configuration, Azure DevOps pipelines and API verification in Bruno."
         ],
         "company": "CS Soft Solutions (India) Pvt. Ltd.",
         "location": "Mohali, Punjab"
@@ -342,12 +345,12 @@ const DEFAULTS: Record<string, any> = {
         "role": "Junior Software Developer",
         "period": "July 2024 - July 2025",
         "bullets": [
-          "Angular front-end developer across several concurrent client projects, owning client-side delivery and agreeing API contracts directly with the back-end team.",
-          "Talent Arbor - applicant tracking system covering job posting, candidate pipelines with status workflows, CV management and recruiter administration.",
-          "Swaraj Mahindra - enterprise department management portal supporting multiple administrative roles at organisational scale.",
-          "Mastermind Duo Tax - property application handling depreciation and capital-loss tracking; implemented its data synchronisation process.",
-          "3T Task and Time Tracking - internal system for logging tasks, time and project contribution, giving managers visibility of resource utilisation.",
-          "Worked in Agile/Scrum throughout, tracked in Jira and Trello with Git and GitHub."
+          "Owned Angular front-end delivery across four concurrent client projects, defining API contracts in direct collaboration with the back-end team.",
+          "Built Talent Arbor, an applicant tracking system covering job publication, candidate pipelines with status workflows, CV management and recruiter administration.",
+          "Delivered Swaraj Mahindra, an enterprise department management portal supporting multiple administrative roles at organisational scale.",
+          "Implemented the data synchronisation process for Mastermind Duo Tax, a property application handling depreciation and capital-loss tracking.",
+          "Developed 3T Task and Time Tracking, an internal system giving management visibility of task effort and project-level resource utilisation.",
+          "Operated within Agile/Scrum delivery cycles, tracked in Jira and Trello under Git and GitHub version control."
         ],
         "company": "CS Soft Solutions (India) Pvt. Ltd.",
         "location": "Mohali, Punjab"
@@ -356,11 +359,11 @@ const DEFAULTS: Record<string, any> = {
         "role": "Software Developer Intern",
         "period": "January 2024 - June 2024",
         "bullets": [
-          "Joined a seven-person team and was contributing to live client projects within the first month.",
-          "GeoData - migrated the legacy internal data access layer to Entity Framework and rewrote its queries in LINQ, substantially reducing the code involved. The portal tracks property lifecycle across ownership, tenancy, rentals, mortgages and leases.",
-          "Implemented an OAuth flow verifying login against an external identity server.",
-          "Contributed to a Learning Management System still under active development.",
-          "Worked in HTML, CSS, JavaScript and AJAX against ASP.NET MVC, Web API and SQL Server."
+          "Migrated the legacy data access layer of the GeoData property portal to Entity Framework, re-expressing its queries in LINQ and materially reducing the volume of data access code in production.",
+          "Implemented an OAuth authentication flow validating credentials against an external identity server.",
+          "Contributed to a Learning Management System platform that remains under active development.",
+          "Built client-side functionality in JavaScript, AJAX, HTML and CSS against ASP.NET MVC, Web API and SQL Server back ends.",
+          "Joined a seven-person delivery team and contributed to live client projects within the first month."
         ],
         "company": "CS Soft Solutions (India) Pvt. Ltd.",
         "location": "Mohali, Punjab"

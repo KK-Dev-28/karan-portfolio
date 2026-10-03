@@ -45,23 +45,23 @@ $accent: #0f5c4a;
   width: 210mm;
   max-width: 100%;
   margin: 0 auto;
-  padding: 14mm 15mm;
+  padding: 12mm 14mm;
   background: #fff;
   color: $ink;
   box-shadow: 0 10px 40px rgba(0, 0, 0, .13);
   /* Measured for print, not for a screen reading distance. */
   font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
-  font-size: 10.1pt;
-  line-height: 1.45;
+  font-size: 9.7pt;
+  line-height: 1.4;
 }
 
 .rz-head {
   display: flex; justify-content: space-between; align-items: flex-start;
-  gap: 18px; padding-bottom: 9px; border-bottom: 2px solid $accent;
+  gap: 18px; padding-bottom: 8px; border-bottom: 1.5px solid $accent;
 }
 .rz-name {
-  margin: 0; font-size: 23pt; font-weight: 800;
-  letter-spacing: -.02em; line-height: 1.05;
+  margin: 0; font-size: 21pt; font-weight: 800;
+  letter-spacing: -.015em; line-height: 1.05;
 }
 .rz-title {
   margin: 3px 0 0; font-size: 11.5pt; font-weight: 600; color: $accent;
@@ -74,7 +74,7 @@ $accent: #0f5c4a;
   a { color: $muted; text-decoration: none; }
 }
 
-.rz-sec { margin-top: 13px; }
+.rz-sec { margin-top: 11px; }
 .rz-h2 {
   margin: 0 0 7px;
   font-size: 9pt; font-weight: 800;
@@ -85,7 +85,7 @@ $accent: #0f5c4a;
 
 /* A role split across the page fold is the usual way a two-page CV looks
    careless, so each block is kept whole. */
-.rz-role, .rz-edu { margin-bottom: 10px; break-inside: avoid; page-break-inside: avoid; }
+.rz-role, .rz-edu { margin-bottom: 8px; break-inside: avoid; page-break-inside: avoid; }
 .rz-role:last-child, .rz-edu:last-child { margin-bottom: 0; }
 
 .rz-role-head, .rz-edu-head {
@@ -96,11 +96,11 @@ $accent: #0f5c4a;
 .rz-period     { font-size: 8.8pt; color: $muted; white-space: nowrap; font-weight: 600; }
 
 .rz-bullets {
-  margin: 5px 0 0; padding-left: 15px;
-  li { margin-bottom: 2.5px; }
+  margin: 4px 0 0; padding-left: 14px;
+  li { margin-bottom: 2px; }
 }
 
-.rz-proj { margin-bottom: 9px; break-inside: avoid; page-break-inside: avoid; }
+.rz-proj { margin-bottom: 7px; break-inside: avoid; page-break-inside: avoid; }
 .rz-proj:last-child { margin-bottom: 0; }
 .rz-proj-head {
   display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
@@ -117,7 +117,7 @@ $accent: #0f5c4a;
 .rz-skills { display: flex; flex-direction: column; gap: 4px; }
 .rz-skill-row { display: flex; gap: 10px; align-items: baseline; }
 .rz-skill-label {
-  flex: 0 0 82px; font-weight: 700; font-size: 9.1pt; color: $accent;
+  flex: 0 0 88px; font-weight: 700; font-size: 8.8pt; color: $accent;
 }
 .rz-skill-items { flex: 1; font-size: 9.5pt; }
 
@@ -147,7 +147,7 @@ $accent: #0f5c4a;
   .no-print { display: none !important; }
   .rz-doc {
     width: auto; margin: 0; box-shadow: none;
-    padding: 12mm 14mm;
+    padding: 11mm 13mm;
   }
   /* Skills onward start the second page, so Experience is never cut mid-role
      and page two opens on a heading rather than a stray bullet. */
