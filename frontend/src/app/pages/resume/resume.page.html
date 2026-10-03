@@ -52,7 +52,20 @@
 
     <!-- Forced to page two: experience runs long and would otherwise split a
          role across the fold. -->
-    <section class="rz-sec rz-page-break">
+    <section class="rz-sec rz-page-break" *ngIf="c.projects?.length">
+      <h2 class="rz-h2">Selected Projects</h2>
+      <div class="rz-proj" *ngFor="let p of c.projects">
+        <div class="rz-proj-head">
+          <h3 class="rz-proj-name">{{ p.name }}</h3>
+          <a class="rz-proj-link" *ngIf="p.link" [href]="'https://' + p.link"
+             target="_blank" rel="noopener">{{ p.link }}</a>
+        </div>
+        <p class="rz-proj-stack">{{ p.stack }}</p>
+        <p class="rz-proj-summary">{{ p.summary }}</p>
+      </div>
+    </section>
+
+    <section class="rz-sec">
       <h2 class="rz-h2">Technical Skills</h2>
       <div class="rz-skills">
         <div class="rz-skill-row" *ngFor="let g of skillGroups()">
@@ -75,6 +88,20 @@
           </span>
         </div>
         <p class="rz-edu-note" *ngIf="e.note">{{ e.note }}</p>
+      </div>
+    </section>
+
+    <section class="rz-sec" *ngIf="c.certifications?.length">
+      <h2 class="rz-h2">Training &amp; Certifications</h2>
+      <div class="rz-edu" *ngFor="let t of c.certifications">
+        <div class="rz-edu-head">
+          <div>
+            <h3 class="rz-edu-degree">{{ t.title }}</h3>
+            <p class="rz-edu-org">{{ t.issuer }}</p>
+          </div>
+          <span class="rz-period">{{ t.date }}</span>
+        </div>
+        <p class="rz-edu-note" *ngIf="t.note">{{ t.note }}</p>
       </div>
     </section>
 

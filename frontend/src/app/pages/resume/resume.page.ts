@@ -7,6 +7,8 @@ interface Link      { label: string; url: string }
 interface Role      { role: string; company: string; location: string; period: string; bullets: string[] }
 interface Education { degree: string; institution: string; period: string; score: string; note: string }
 interface Award     { title: string; issuer: string; date: string }
+interface Project   { name: string; stack: string; summary: string; link?: string }
+interface Cert      { title: string; issuer: string; date: string; note: string }
 
 interface Resume {
   name: string; title: string; tagline: string; location: string;
@@ -14,6 +16,8 @@ interface Resume {
   links: Link[]; summary: string;
   experience: Role[]; education: Education[];
   skills: Record<string, string[]>;
+  projects?: Project[];
+  certifications?: Cert[];
   awards: Award[];
 }
 
