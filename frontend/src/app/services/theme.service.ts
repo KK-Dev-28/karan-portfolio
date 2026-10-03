@@ -1,4 +1,8 @@
 import { Injectable } from '@angular/core';
+import {
+  LayoutDef, allLayouts, getLayout, isKnownLayout, layoutsToCss,
+  registerLayout, DEFAULT_LAYOUT_ID,
+} from '../design/layout-registry';
 import { SiteContentService } from './site-content.service';
 
 export type ThemeId =
@@ -11,15 +15,10 @@ export type ThemeId =
   | 'quantum-violet'
   | 'emerald-gold';
 
-export type LayoutId =
-  | 'standard'
-  | 'dossier'
-  | 'atelier-grid'
-  | 'zen'
-  | 'command'
-  | 'canvas'
-  | 'bento-hud'
-  | 'cinematic-wide';
+/* Any id the registry knows, so a new layout needs no change here. The union
+   this replaced had to be widened for every addition, and a missed edit was a
+   compile error in unrelated files. */
+export type LayoutId = string;
 
 export interface ThemeMeta {
   id: ThemeId;
@@ -29,11 +28,8 @@ export interface ThemeMeta {
   dark: boolean;
 }
 
-export interface LayoutMeta {
-  id: LayoutId;
-  label: string;
-  blurb: string;
-}
+/* Re-exported from the registry so existing imports keep working. */
+export type LayoutMeta = LayoutDef;
 
 export const THEMES: ThemeMeta[] = [
   {
@@ -94,48 +90,10 @@ export const THEMES: ThemeMeta[] = [
   },
 ];
 
-export const LAYOUTS: LayoutMeta[] = [
-  {
-    id: 'standard',
-    label: 'Standard',
-    blurb: 'The default flow — balanced width (1200px), generous section breathing room.',
-  },
-  {
-    id: 'dossier',
-    label: 'Dossier',
-    blurb: 'Narrower editorial column (880px), tighter rhythm, hairline dividers between sections.',
-  },
-  {
-    id: 'atelier-grid',
-    label: 'Atelier Grid',
-    blurb: 'Wider canvas (1280px), bigger radius and gaps — project/skill grids read as a bento board.',
-  },
-  {
-    id: 'zen',
-    label: 'Zen',
-    blurb: 'Calm and airy (960px) — narrow column, huge section breathing room, soft corners.',
-  },
-  {
-    id: 'command',
-    label: 'Command',
-    blurb: 'Dense control-panel feel (1440px) — very wide, tight gaps, crisp small corners.',
-  },
-  {
-    id: 'canvas',
-    label: 'Canvas',
-    blurb: 'Full-bleed gallery (1400px) — spacious tiles and relaxed padding.',
-  },
-  {
-    id: 'bento-hud',
-    label: 'Bento HUD',
-    blurb: 'High-tech interactive bento grid (1320px) with telemetry borders and micro-cards.',
-  },
-  {
-    id: 'cinematic-wide',
-    label: 'Cinematic Wide',
-    blurb: 'Ultra-wide presentation canvas (1520px) with fluid margins and cinematic scale.',
-  },
-];
+/* Snapshot of the registry at module load, kept so the many existing
+   `import { LAYOUTS }` call sites stay valid. Anything that must see layouts
+   added later should call ThemeService.layouts() instead. */
+export const LAYOUTS: LayoutMeta[] = allLayouts();
 
 export type TokenKind  = 'color' | 'size';
 export type TokenGroup = 'Brand' | 'Surfaces' | 'Text' | 'Shape' | 'Spacing' | 'Grid';
@@ -211,6 +169,7 @@ const LS_LAYOUT   = 'kk_layout_id';
 const LS_DESIGN   = 'kk_design';
 const LS_OVERRIDE = 'kk_appearance_override';
 const LEGACY_MODE  = 'kk_theme_mode';
+const LAYOUT_CSS_EL_ID = 'kk-layout-css';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
@@ -221,7 +180,7 @@ export class ThemeService {
   constructor(private siteContent: SiteContentService) {}
 
   themes()  { return THEMES; }
-  layouts() { return LAYOUTS; }
+  layouts(): LayoutDef[] { return allLayouts(); }
   designTokens() { return DESIGN_TOKENS; }
 
   getTheme(): ThemeId   { return this.theme; }
@@ -236,8 +195,11 @@ export class ThemeService {
 
   init(): void {
     this.migrateLegacyKey();
+    /* Must run before any layout is applied, or the first paint would have no
+       structural tokens and the page would visibly resettle. */
+    this.syncLayoutStylesheet();
     this.applyTheme(this.readLocal(LS_THEME, THEMES, 'midnight-gold'));
-    this.applyLayout(this.readLocal(LS_LAYOUT, LAYOUTS, 'standard'));
+    this.applyLayout(this.readLocal(LS_LAYOUT, this.layouts(), DEFAULT_LAYOUT_ID));
     this.applyDesign(this.readLocalDesign(), false);
 
     const hasOverride = localStorage.getItem(LS_OVERRIDE) === '1';
@@ -308,9 +270,45 @@ export class ThemeService {
   }
 
   private applyLayout(id: LayoutId, persist = false) {
-    this.layout = id;
-    document.documentElement.setAttribute('data-layout', id);
-    if (persist) localStorage.setItem(LS_LAYOUT, id);
+    /* An unknown id would set an attribute no rule matches, leaving the page on
+       whatever the previous layout had set. */
+    const resolved = isKnownLayout(id) ? id : DEFAULT_LAYOUT_ID;
+    this.layout = resolved;
+    document.documentElement.setAttribute('data-layout', resolved);
+    if (persist) localStorage.setItem(LS_LAYOUT, resolved);
+  }
+
+  /* Rewrites the single stylesheet holding every layout's tokens. Called once at
+     startup and again only when a layout is added or removed, never on a
+     switch — switching is just the attribute above. */
+  private syncLayoutStylesheet(): void {
+    let el = document.getElementById(LAYOUT_CSS_EL_ID) as HTMLStyleElement | null;
+    if (!el) {
+      el = document.createElement('style');
+      el.id = LAYOUT_CSS_EL_ID;
+      /* Ahead of any other injected stylesheet, so a hand-written override in
+         the Studio still beats a layout's own value. */
+      document.head.prepend(el);
+    }
+    el.textContent = layoutsToCss(this.layouts());
+  }
+
+  /**
+   * Adds a layout at runtime and makes it immediately selectable. Returns the
+   * stored definition, or null when the input fails validation.
+   */
+  addLayout(input: {
+    id: string; label?: string; blurb?: string;
+    tokens: Record<string, unknown>; generated?: boolean;
+  }): LayoutDef | null {
+    const def = registerLayout(input);
+    if (def) this.syncLayoutStylesheet();
+    return def;
+  }
+
+  /** The tokens a layout resolves to — what the picker previews read. */
+  layoutTokens(id: LayoutId): Record<string, string> {
+    return { ...(getLayout(id) ?? getLayout(DEFAULT_LAYOUT_ID)!).tokens };
   }
 
   private applyDesign(design: DesignConfig, persist = false) {
@@ -378,7 +376,9 @@ function isThemeId(v: unknown): v is ThemeId {
   return typeof v === 'string' && THEMES.some(t => t.id === v);
 }
 function isLayoutId(v: unknown): v is LayoutId {
-  return typeof v === 'string' && LAYOUTS.some(l => l.id === v);
+  /* Asks the registry rather than the load-time snapshot, so a layout added
+     after startup is accepted too. */
+  return isKnownLayout(v);
 }
 
 export function normalizeDesign(data: any): DesignConfig {

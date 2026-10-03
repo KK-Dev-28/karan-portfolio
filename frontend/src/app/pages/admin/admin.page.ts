@@ -163,21 +163,13 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   appearanceSuccess = false;
   appearanceError   = '';
 
-  /** Column count each layout actually renders for its 3-up sections — mirrors
-   *  --grid-cols-3 in styles.scss, so the picker thumbnail shows real density
-   *  rather than an arbitrary decorative count. */
-  private readonly layoutColCount: Record<LayoutId, number> = {
-    'standard':       3,
-    'dossier':        2,
-    'atelier-grid':   3,
-    'zen':            2,
-    'command':        4,
-    'canvas':         3,
-    'bento-hud':      3,
-    'cinematic-wide': 4,
-  };
+  /** Column count a layout renders for its 3-up sections, read from the layout
+   *  registry so the thumbnail always shows real density. The hardcoded map
+   *  this replaced had drifted: it claimed Command and Cinematic Wide rendered
+   *  four columns while both define three. */
   layoutCols(id: LayoutId): number[] {
-    return Array(this.layoutColCount[id] ?? 3);
+    const cols = Number(this.themeSvc.layoutTokens(id)['--grid-cols-3']);
+    return Array(Number.isFinite(cols) && cols > 0 ? cols : 3);
   }
 
   pickAppearanceTheme(id: ThemeId) {

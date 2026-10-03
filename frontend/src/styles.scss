@@ -329,101 +329,11 @@ html[data-theme="emerald-gold"] {
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
-   LAYOUT TOKENS — structural, independent of theme.
-   Selected via `html[data-layout="…"]`. See /DESIGN_SYSTEM.md §Layouts
-   for what each one is for and which components read --grid-cols-*.
+   LAYOUT TOKENS — now defined in app/design/layout-registry.ts and emitted
+   into a single <style> element at startup, so adding a layout needs no edit
+   here. Structural rules that go beyond tokens still live below, keyed on the
+   same `html[data-layout="…"]` attribute. See /DESIGN_SYSTEM.md §Layouts.
 ═════════════════════════════════════════════════════════════════════════ */
-
-/* Dossier — narrower editorial column, tighter rhythm, denser grids */
-html[data-layout="dossier"] {
-  --container:   880px;
-  --layout-gap:  1.25rem;
-  --section-py:  4rem;
-  --radius:      8px;
-  --radius-lg:   14px;
-  --grid-cols-2: 1;
-  --grid-cols-3: 2;
-  --grid-cols-4: 2;
-  --grid-tile-min: 220px;
-}
-
-/* Atelier Grid — wide canvas, big radius/gaps, bento-style grids */
-html[data-layout="atelier-grid"] {
-  --container:   1360px;
-  --layout-gap:  2.75rem;
-  --section-py:  6.5rem;
-  --radius:      18px;
-  --radius-lg:   28px;
-  --grid-cols-2: 2;
-  --grid-cols-3: 3;
-  --grid-cols-4: 4;
-  --grid-tile-min: 320px;
-}
-
-/* Zen — calm & airy: narrow column, generous whitespace, soft corners */
-html[data-layout="zen"] {
-  --container:   1040px;
-  --layout-gap:  2.5rem;
-  --section-py:  8rem;
-  --radius:      16px;
-  --radius-lg:   26px;
-  --grid-cols-2: 2;
-  --grid-cols-3: 2;
-  --grid-cols-4: 3;
-  --grid-tile-min: 300px;
-}
-
-/* Command — dense control-panel: very wide, tight gaps, crisp small corners */
-html[data-layout="command"] {
-  --container:   1440px;
-  --layout-gap:  1rem;
-  --section-py:  3.25rem;
-  --radius:      8px;
-  --radius-lg:   12px;
-  --grid-cols-2: 2;
-  --grid-cols-3: 3;
-  --grid-cols-4: 4;
-  --grid-tile-min: 240px;
-}
-
-/* Canvas — full-bleed gallery: widest container, large radius, spacious tiles */
-html[data-layout="canvas"] {
-  --container:   1600px;
-  --layout-gap:  3rem;
-  --section-py:  6rem;
-  --radius:      22px;
-  --radius-lg:   34px;
-  --grid-cols-2: 2;
-  --grid-cols-3: 3;
-  --grid-cols-4: 4;
-  --grid-tile-min: 360px;
-}
-
-/* Bento HUD — high-density interactive bento grid with telemetry borders */
-html[data-layout="bento-hud"] {
-  --container:   1320px;
-  --layout-gap:  1.5rem;
-  --section-py:  4.5rem;
-  --radius:      14px;
-  --radius-lg:   22px;
-  --grid-cols-2: 2;
-  --grid-cols-3: 3;
-  --grid-cols-4: 4;
-  --grid-tile-min: 290px;
-}
-
-/* Cinematic Wide — ultra-wide presentation canvas with fluid margins */
-html[data-layout="cinematic-wide"] {
-  --container:   1520px;
-  --layout-gap:  2.5rem;
-  --section-py:  6.5rem;
-  --radius:      16px;
-  --radius-lg:   26px;
-  --grid-cols-2: 2;
-  --grid-cols-3: 3;
-  --grid-cols-4: 4;
-  --grid-tile-min: 340px;
-}
 
 /* ═════════════════════════════════════════════════════════════════════════
    RADICAL LAYOUT TRANSFORMATIONS — Deep Structural Redesigns
