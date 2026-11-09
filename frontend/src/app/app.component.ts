@@ -29,11 +29,25 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.themeSvc.init();
+    this.greetDevtools();
     this.router.events.pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: any) => {
         this.visitor.log(e.urlAfterRedirects);
         this.applyRouteSeo(e.urlAfterRedirects);
       });
+  }
+
+  /** A note for the developers and recruiters who open devtools. */
+  private greetDevtools() {
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#f59e0b';
+    console.log(
+      '%cKK.%c  Hey, you opened the console. 👋\n\n'
+      + 'This site is Angular 19 + NestJS + PostgreSQL, built by hand.\n'
+      + 'Like what you see under the hood? Let\'s talk → /#contact\n'
+      + 'Bored? Squash some bugs → /#play',
+      `font:700 28px "Space Grotesk",sans-serif;color:${accent}`,
+      'font:13px/1.6 "JetBrains Mono",monospace;color:inherit',
+    );
   }
 
   /**

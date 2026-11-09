@@ -272,6 +272,24 @@ export class ThemeService {
     this.theme = id;
     document.documentElement.setAttribute('data-theme', id);
     if (persist) localStorage.setItem(LS_THEME, id);
+    this.syncBrowserChrome(id);
+  }
+
+  /** Tints the tab favicon and the mobile address bar to the active theme. */
+  private syncBrowserChrome(id: ThemeId) {
+    const meta = THEMES.find(t => t.id === id);
+    if (!meta) return;
+    const [bg, tile, accent] = meta.swatch;
+    const ink = meta.dark ? '#f5f5f7' : '#14141f';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">`
+      + `<rect x="8" y="8" width="112" height="112" rx="24" fill="${tile}" stroke="${accent}" stroke-opacity=".35" stroke-width="2"/>`
+      + `<g fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">`
+      + `<path d="M36 36V92M74 36V92" stroke="${ink}"/>`
+      + `<path d="M62 36L36 64L62 92M100 36L74 64L100 92" stroke="${accent}"/></g></svg>`;
+    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"][type="image/svg+xml"]');
+    if (!link) { link = document.createElement('link'); link.rel = 'icon'; link.type = 'image/svg+xml'; document.head.appendChild(link); }
+    link.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bg);
   }
 
   private applyLayout(id: LayoutId, persist = false) {

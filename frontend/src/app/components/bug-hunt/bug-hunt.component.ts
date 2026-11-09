@@ -22,7 +22,7 @@ const BEST_KEY = 'kk_bughunt_best';
       <p class="bh-sub">Hit the bugs, grab the golden ones, and don't break a ✨ feature. Combos multiply your score.</p>
     </div>
 
-    <div class="bh-ide">
+    <div class="bh-ide" [class.playing]="state() === 'play'" [class.shake]="shake()">
       <div class="bh-bar">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="bh-file">production.ts</span>
@@ -43,6 +43,9 @@ const BEST_KEY = 'kk_bughunt_best';
 
         <span *ngFor="let p of pops(); trackBy: pid" class="bh-pop" [class.neg]="p.v < 0"
           [style.left.%]="p.x" [style.top.%]="p.y">{{ p.v > 0 ? '+' : '' }}{{ p.v }}</span>
+
+        <i *ngFor="let s of sparks(); trackBy: pid" class="bh-spark"
+          [style.left.%]="s.x" [style.top.%]="s.y" [style.--dx]="s.dx + 'px'" [style.--dy]="s.dy + 'px'" [style.--c]="s.c"></i>
 
         <div class="bh-overlay" *ngIf="state() !== 'play'">
           <ng-container *ngIf="state() === 'idle'">
@@ -70,6 +73,8 @@ export class BugHuntComponent implements OnDestroy {
   readonly timeLeft = signal(ROUND);
   readonly targets = signal<Target[]>([]);
   readonly pops = signal<{ id: number; x: number; y: number; v: number }[]>([]);
+  readonly sparks = signal<{ id: number; x: number; y: number; dx: number; dy: number; c: string }[]>([]);
+  readonly shake = signal(false);
   readonly best = signal(this.loadBest());
   readonly mult = computed(() => 1 + Math.floor(this.combo() / 4));
   readonly rank = computed(() => {
@@ -135,7 +140,10 @@ for (const user of visitors) greet(user.name ?? 'friend');`;
     ev.preventDefault();
     if (this.state() !== 'play') return;
     let v: number;
-    if (t.kind === 'feature') { v = -3; this.combo.set(0); }
+    if (t.kind === 'feature') {
+      v = -3; this.combo.set(0);
+      this.shake.set(true); setTimeout(() => this.shake.set(false), 300);
+    }
     else {
       this.combo.update(c => c + 1);
       v = (t.kind === 'gold' ? 5 : 1) * this.mult();
@@ -146,6 +154,20 @@ for (const user of visitors) greet(user.name ?? 'friend');`;
     const pop = { id: ++this.seq, x: t.x, y: t.y, v };
     this.pops.update(p => [...p, pop]);
     setTimeout(() => this.pops.update(p => p.filter(x => x.id !== pop.id)), 700);
+    if (t.kind !== 'feature') this.burst(t);
+  }
+
+  /** A ring of splat particles where a bug was squashed. */
+  private burst(t: Target) {
+    const c = t.kind === 'gold' ? 'var(--accent)' : 'var(--bug)';
+    const n = t.kind === 'gold' ? 12 : 8;
+    const ps = Array.from({ length: n }, (_, i) => {
+      const a = (i / n) * Math.PI * 2, r = 28 + Math.random() * 22;
+      return { id: ++this.seq, x: t.x, y: t.y, dx: Math.cos(a) * r, dy: Math.sin(a) * r, c };
+    });
+    this.sparks.update(s => [...s, ...ps]);
+    const ids = new Set(ps.map(p => p.id));
+    setTimeout(() => this.sparks.update(s => s.filter(p => !ids.has(p.id))), 560);
   }
 
   private end() {
