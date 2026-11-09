@@ -6,8 +6,8 @@
   <div class="navbar-pill">
 
     <!-- Logo -->
-    <a class="logo" href="#" (click)="scrollTo('hero', $event)">
-      KK<span class="logo-dot">.</span>
+    <a class="logo" href="#" (click)="scrollTo('hero', $event)" aria-label="Karan Kapoor, back to top">
+      <span class="logo-name">Karan Kapoor</span>
     </a>
 
     <!-- Desktop Links -->
@@ -21,8 +21,7 @@
 
     <!-- Right controls -->
     <div class="nav-controls">
-      <a class="nav-blog-link" routerLink="/resume">Resume</a>
-      <a class="nav-blog-link" routerLink="/blog">Blog</a>
+      <span class="open-pill"><span class="open-dot"></span>Open for work</span>
 
       <!-- Theme & Layout Studio Picker -->
       <div class="theme-picker">
@@ -70,8 +69,9 @@
         </div>
       </div>
 
-      <button *ngIf="!isLoggedIn()" class="nav-btn" (click)="openLogin()">Admin</button>
-      <button *ngIf="isLoggedIn()" class="nav-btn active" (click)="goAdmin()">Dashboard</button>
+      <button *ngIf="!isLoggedIn()" class="nav-btn nav-admin" (click)="openLogin()" title="Admin sign-in">Admin</button>
+      <button *ngIf="isLoggedIn()" class="nav-btn active nav-admin" (click)="goAdmin()">Dashboard</button>
+      <a class="nav-cta" href="#contact" (click)="scrollTo('contact', $event)">Start a conversation ↗</a>
     </div>
 
     <!-- Mobile hamburger -->

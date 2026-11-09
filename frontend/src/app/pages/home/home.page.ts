@@ -15,6 +15,7 @@ import { McFaqComponent } from '../../components/mc/mc-faq.component';
 import { McContactComponent } from '../../components/mc/mc-contact.component';
 import { McFooterComponent } from '../../components/mc/mc-footer.component';
 import { McSectionNavComponent } from '../../components/mc/mc-section-nav.component';
+import { McProcessComponent } from '../../components/mc/mc-process.component';
 import { McStarfieldComponent } from '../../components/mc/mc-starfield.component';
 import { installMcFx } from '../../components/mc/mc-fx';
 
@@ -24,11 +25,11 @@ import { installMcFx } from '../../components/mc/mc-fx';
   imports: [
     CommonModule, LoadingScreenComponent, NavbarComponent, BugHuntComponent, PopularityComponent,
     McHeroComponent, McArchitectureComponent, McJourneyComponent, McServicesComponent, McWorkComponent,
-    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent,
+    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent, McProcessComponent,
   ],
   /* The page follows the Figma file "Karan Kapoor — Portfolio Mission Control
      (Full Design)", in its section order: radar hero, system architecture, the
-     journey road, the six service modules, selected work, starter kits and
+     journey road, the six service modules, the sprint process, selected work, starter kits and
      engagement tiers, reviews, FAQ and the closing contact. The bug-hunt game
      and the public visitor stats are extras kept from the previous page. The
      earlier section components (projects, skills, story, pricing, …) are
@@ -43,6 +44,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
     <mc-architecture></mc-architecture>
     <mc-journey></mc-journey>
     <mc-services></mc-services>
+    <mc-process></mc-process>
     <mc-work></mc-work>
     <app-bug-hunt></app-bug-hunt>
     <mc-kits></mc-kits>
@@ -55,7 +57,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
 })
 export class HomePageComponent implements AfterViewInit, OnDestroy {
   showLoader = true;
-  readonly sections = ['hero', 'architecture', 'journey', 'services', 'projects', 'play', 'kits', 'reviews', 'faq', 'contact'];
+  readonly sections = ['hero', 'architecture', 'journey', 'services', 'process', 'projects', 'play', 'kits', 'reviews', 'faq', 'contact'];
   private revealObs!: IntersectionObserver;
   private host = inject(ElementRef<HTMLElement>);
   private removeFx?: () => void;

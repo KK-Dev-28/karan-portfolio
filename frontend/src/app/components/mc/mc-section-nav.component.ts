@@ -18,7 +18,7 @@ import { mcScrollTo } from './mc-shared';
   `,
   styles: [`
     :host{display:contents}
-    .sn{position:fixed;z-index:880;top:24px;right:max(24px,env(safe-area-inset-right));display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none}
+    .sn{position:fixed;z-index:880;top:84px;right:max(24px,env(safe-area-inset-right));display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none}
     .pills{display:flex;gap:10px}
     button{pointer-events:auto;height:31px;padding:0 16px;border-radius:99px;border:1px solid rgba(var(--accent-rgb),.5);
       background:var(--nav-bg-scrolled);backdrop-filter:blur(10px);color:var(--accent);cursor:pointer;

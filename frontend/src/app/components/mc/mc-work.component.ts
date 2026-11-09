@@ -12,7 +12,7 @@ interface Work { kind: string; name: string; blurb: string; stack: string; route
   imports: [CommonModule, RouterLink, McRevealDirective],
   template: `
   <section class="mc-sec" id="projects" aria-labelledby="work-title">
-    <p class="mc-kicker">04 · Selected work</p>
+    <p class="mc-kicker">05 · Selected work</p>
     <h2 id="work-title" class="mc-title">Things I shipped, end to end</h2>
 
     <div class="grid">

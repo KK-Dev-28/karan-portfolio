@@ -36,12 +36,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   activePickerTab: 'themes' | 'layouts' = 'themes';
 
   links = [
-    { label: 'Stack',    id: 'architecture' },
-    { label: 'Journey',  id: 'journey' },
-    { label: 'Services', id: 'services' },
-    { label: 'Work',     id: 'projects' },
-    { label: 'Kits',     id: 'kits' },
-    { label: 'Contact',  id: 'contact' },
+    { label: 'Architecture', id: 'architecture' },
+    { label: 'Journey',      id: 'journey' },
+    { label: 'Services',     id: 'services' },
+    { label: 'Process',      id: 'process' },
+    { label: 'Kits',         id: 'kits' },
+    { label: 'FAQ',          id: 'faq' },
   ];
 
   private observer!: IntersectionObserver;
@@ -96,7 +96,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   scrollTo(id: string, e: Event) {
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById(id)?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
 
   openLogin()  { this.showModal = true; this.loginError = ''; this.form.reset(); }

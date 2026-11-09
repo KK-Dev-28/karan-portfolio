@@ -495,3 +495,45 @@
   .mobile-menu { display: none !important; }
   .hamburger { display: none; }
 }
+
+
+/* ── Mission Control nav (Figma "Nav" frame) ─────────────────────────────────
+   A full-width console bar: serif wordmark, centred links, an "Open for work"
+   status pill and the gold call to action. Overrides the floating pill above. */
+.navbar {
+  top: 0; left: 0; transform: none; width: 100%; max-width: none;
+  &.scrolled { top: 0; }
+}
+.navbar-pill {
+  max-width: 1440px; margin: 0 auto; box-sizing: border-box; min-height: 64px;
+  padding: 10px clamp(16px, 5.6vw, 80px); gap: 24px;
+  border-radius: 0; border: 0; border-bottom: 1px solid transparent; box-shadow: none;
+  background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+  .navbar.scrolled & {
+    background: var(--nav-bg-scrolled); border-color: var(--border); box-shadow: 0 10px 30px -18px rgba(0,0,0,.6);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); max-width: none;
+  }
+}
+.logo { display: inline-flex; align-items: center; }
+.logo-name { font: 400 26px/1 var(--font-display); letter-spacing: -.01em; color: var(--text); white-space: nowrap; }
+.logo:hover .logo-name { color: var(--accent); }
+.nav-links a { font-family: var(--font-body); font-size: 14px; letter-spacing: 0; text-transform: none; }
+.open-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border-radius: 99px; white-space: nowrap;
+  border: 1px solid var(--border); background: var(--card); color: var(--text-muted); font: 500 11px var(--font-mono); letter-spacing: .04em;
+}
+.open-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--electric); box-shadow: 0 0 10px var(--electric); animation: navBlink 2s infinite; }
+.nav-cta {
+  display: inline-flex; align-items: center; height: 40px; padding: 0 20px; border-radius: 99px; white-space: nowrap; text-decoration: none;
+  background: #e3b341; color: #14110a; font: 500 13px var(--font-body);
+  box-shadow: 0 10px 24px -12px rgba(227,179,65,.8); transition: transform .2s, background .2s;
+  &:hover { transform: translateY(-1px); background: #f0c860; }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+}
+.theme-btn-label { display: none; }
+.nav-admin { opacity: .7; &:hover { opacity: 1; } }
+@keyframes navBlink { 50% { opacity: .35; } }
+@media (max-width: 1240px) { .open-pill { display: none; } }
+@media (max-width: 1100px) { .nav-links { display: none; } .nav-controls { margin-left: auto; } }
+@media (max-width: 768px) { .nav-cta, .nav-admin { display: none; } .logo-name { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { .open-dot { animation: none; } }

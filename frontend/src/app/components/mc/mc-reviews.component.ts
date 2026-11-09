@@ -11,7 +11,7 @@ import { McRevealDirective } from './mc-shared';
   imports: [CommonModule, FormsModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="reviews" aria-labelledby="rev-title">
-    <p class="mc-kicker">08 · Reviews</p>
+    <p class="mc-kicker">09 · Reviews</p>
     <h2 id="rev-title" class="mc-title">{{ reviews().length ? 'In their words' : 'Be the first to leave one' }}</h2>
 
     <div class="row">

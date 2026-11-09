@@ -17,7 +17,7 @@ const BEST_KEY = 'kk_bughunt_best';
   template: `
   <section class="bh" id="play" aria-labelledby="bh-title">
     <div class="bh-head">
-      <p class="bh-kicker">05 · BREAK · 20 SECONDS</p>
+      <p class="bh-kicker">06 · BREAK · 20 SECONDS</p>
       <h2 id="bh-title">Bored of reading? <em>Squash some bugs.</em></h2>
       <p class="bh-sub">Hit the bugs, grab the golden ones, and don't break a ✨ feature. Combos multiply your score.</p>
     </div>

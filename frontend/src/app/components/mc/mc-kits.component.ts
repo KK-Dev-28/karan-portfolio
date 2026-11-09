@@ -11,7 +11,7 @@ const VOTES_KEY = 'kk_kit_votes';
   imports: [CommonModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="kits" aria-labelledby="kits-title">
-    <p class="mc-kicker">06 · In the works</p>
+    <p class="mc-kicker">07 · In the works</p>
     <h2 id="kits-title" class="mc-title">Starter kits — vote what ships first</h2>
 
     <div class="shelf">
@@ -29,7 +29,7 @@ const VOTES_KEY = 'kk_kit_votes';
   </section>
 
   <section class="mc-sec tiers-sec" id="gigs" aria-labelledby="tiers-title">
-    <p class="mc-kicker">07 · Work with me</p>
+    <p class="mc-kicker">08 · Work with me</p>
     <h2 id="tiers-title" class="mc-title">Pick how we start</h2>
     <div class="tiers">
       <button *ngFor="let t of tiers; let i = index" class="mc-card tier mc-holo" mcReveal [style.transition-delay.ms]="i * 80" (click)="brief.open(t.name)">
