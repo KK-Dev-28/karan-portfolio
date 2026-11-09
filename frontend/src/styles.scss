@@ -1036,6 +1036,9 @@ textarea.mc-field { min-height: 120px; resize: vertical; }
 .mc-reveal.in { opacity: 1; translate: none; }
 @media (prefers-reduced-motion: reduce) { .mc-reveal { opacity: 1; translate: none; transition: none; } }
 
+/* Animatable radius for the boot-sequence iris (loading-screen component). */
+@property --iris { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
 /* ── Mission Control motion (installed by components/mc/mc-fx.ts) ──────────── */
 /* Titles: each word rises out of a mask with a 3D flip. */
 .mc-title { perspective: 700px; }
@@ -1079,4 +1082,23 @@ section.mc-sec.fx-in::before { animation: mcScan 1.8s cubic-bezier(.2,.9,.2,1) f
   .fx-w > span { transform: none; opacity: 1; filter: none; transition: none; }
   .mc-holo { transform: none; }
   section.mc-sec::before { display: none; }
+}
+
+/* ── Festive occasions (components/mc/mc-festive.component.ts sets data-occasion) ──
+   Each tints the signal colours for the day; layout and type stay the same. */
+html[data-occasion="diwali"], html[data-occasion="newyear"] {
+  --accent-2: #ffb347; --accent-2-rgb: 255,179,71; --electric: #ffd166; --electric-rgb: 255,209,102;
+  --accent-glow: rgba(255,179,71,.26);
+}
+html[data-occasion="holi"] {
+  --accent-2: #ff3d7f; --accent-2-rgb: 255,61,127; --electric: #3a86ff; --electric-rgb: 58,134,255; --crimson: #ffd60a;
+}
+html[data-occasion="republic"], html[data-occasion="independence"] {
+  --accent-2: #ff9933; --accent-2-rgb: 255,153,51; --electric: #2fbf4a; --electric-rgb: 47,191,74;
+}
+html[data-occasion="christmas"] {
+  --accent-2: #ff4d6d; --accent-2-rgb: 255,77,109; --electric: #34d399; --electric-rgb: 52,211,153;
+}
+html[data-occasion="gurpurab"], html[data-occasion="lohri"], html[data-occasion="baisakhi"] {
+  --accent-2: #ff9f1c; --accent-2-rgb: 255,159,28; --electric: #ffd166; --electric-rgb: 255,209,102;
 }

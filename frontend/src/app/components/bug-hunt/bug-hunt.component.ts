@@ -1,5 +1,6 @@
 import { Component, OnDestroy, signal, computed, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { mcAchieve } from '../mc/mc-mission-log.component';
 
 interface Target { id: number; x: number; y: number; kind: 'bug' | 'feature' | 'gold'; born: number; life: number }
 
@@ -172,6 +173,7 @@ for (const user of visitors) greet(user.name ?? 'friend');`;
 
   private end() {
     this.state.set('over'); this.targets.set([]);
+    mcAchieve('squasher');
     if (this.score() > this.best()) {
       this.best.set(this.score()); this.newBest = true;
       try { localStorage.setItem(BEST_KEY, String(this.score())); } catch {}

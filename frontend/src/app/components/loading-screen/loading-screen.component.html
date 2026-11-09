@@ -1,11 +1,11 @@
-<div class="loader" *ngIf="visible" [class.hiding]="hiding">
-  <div class="loader-inner">
-    <div class="loader-logo">
-      KK<span class="dot">.</span>
-    </div>
-    <div class="loader-bar">
-      <div class="loader-fill"></div>
-    </div>
-    <div class="loader-text">Loading portfolio…</div>
+<!-- Mission boot sequence: a short launch log, then an iris opens onto the page.
+     Plays once per browser session; any click or key skips it. -->
+<div class="boot" *ngIf="visible" [class.opening]="hiding" (click)="skip()" role="presentation">
+  <div class="console" aria-hidden="true">
+    <p class="brand">KK<span>.</span> <small>mission control</small></p>
+    <p *ngFor="let l of shown" class="line"><span class="p">&gt;</span> {{ l.text }}<span class="dots" *ngIf="l.status"></span><b *ngIf="l.status">{{ l.status }}</b></p>
+    <p class="line cursor"><span class="p">&gt;</span> <i></i></p>
   </div>
+  <div class="ring" aria-hidden="true"></div>
+  <p class="skip">click or press any key to skip</p>
 </div>

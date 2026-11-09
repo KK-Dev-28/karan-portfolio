@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { McBriefService, McRevealDirective, MC_LINKS } from './mc-shared';
+import { mcAchieve } from './mc-mission-log.component';
 
 const VOTES_KEY = 'kk_kit_votes';
 
@@ -109,6 +110,7 @@ export class McKitsComponent {
     const was = this.voted(id);
     this.votes.update(v => (was ? v.filter(x => x !== id) : [...v, id]));
     try { localStorage.setItem(VOTES_KEY, JSON.stringify(this.votes())); } catch {}
+    if (!was) mcAchieve('voter');
     if (!was) window.open('/api/wa?text=' + encodeURIComponent(`Hi Karan, I'd buy the ${name} when it ships. Please let me know.`), '_blank', 'noopener');
   }
 }

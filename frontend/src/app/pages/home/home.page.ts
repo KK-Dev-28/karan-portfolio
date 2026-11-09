@@ -16,6 +16,9 @@ import { McContactComponent } from '../../components/mc/mc-contact.component';
 import { McFooterComponent } from '../../components/mc/mc-footer.component';
 import { McSectionNavComponent } from '../../components/mc/mc-section-nav.component';
 import { McProcessComponent } from '../../components/mc/mc-process.component';
+import { McFestiveComponent } from '../../components/mc/mc-festive.component';
+import { McMissionLogComponent } from '../../components/mc/mc-mission-log.component';
+import { McCrewComponent } from '../../components/mc/mc-crew.component';
 import { McStarfieldComponent } from '../../components/mc/mc-starfield.component';
 import { installMcFx } from '../../components/mc/mc-fx';
 
@@ -25,7 +28,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
   imports: [
     CommonModule, LoadingScreenComponent, NavbarComponent, BugHuntComponent, PopularityComponent,
     McHeroComponent, McArchitectureComponent, McJourneyComponent, McServicesComponent, McWorkComponent,
-    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent, McProcessComponent,
+    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent, McProcessComponent, McFestiveComponent, McMissionLogComponent, McCrewComponent,
   ],
   /* The page follows the Figma file "Karan Kapoor — Portfolio Mission Control
      (Full Design)", in its section order: radar hero, system architecture, the
@@ -37,6 +40,8 @@ import { installMcFx } from '../../components/mc/mc-fx';
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
     <mc-starfield></mc-starfield>
+    <mc-festive></mc-festive>
+    <mc-mission-log [ids]="sections"></mc-mission-log>
     <app-navbar></app-navbar>
     <mc-section-nav [ids]="sections"></mc-section-nav>
 
@@ -52,12 +57,13 @@ import { installMcFx } from '../../components/mc/mc-fx';
     <mc-faq></mc-faq>
     <app-popularity></app-popularity>
     <mc-contact></mc-contact>
+    <mc-crew></mc-crew>
     <mc-footer></mc-footer>
   `,
 })
 export class HomePageComponent implements AfterViewInit, OnDestroy {
   showLoader = true;
-  readonly sections = ['hero', 'architecture', 'journey', 'services', 'process', 'projects', 'play', 'kits', 'reviews', 'faq', 'contact'];
+  readonly sections = ['hero', 'architecture', 'journey', 'services', 'process', 'projects', 'play', 'kits', 'reviews', 'faq', 'contact', 'crew'];
   private revealObs!: IntersectionObserver;
   private host = inject(ElementRef<HTMLElement>);
   private removeFx?: () => void;

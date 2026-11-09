@@ -1,8 +1,9 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcScrollTo } from './mc-shared';
 
-interface RadarNode { label: string; dx: number; dy: number; tone: 'gold' | 'teal' | 'coral' | 'dim' }
+interface RadarNode { label: string; dx: number; dy: number; tone: 'gold' | 'teal' | 'coral' | 'dim'; intel: string }
+interface Blip { id: number; x: number; y: number }
 
 const SWEEP_SECONDS = 6;
 
@@ -14,7 +15,7 @@ const SWEEP_SECONDS = 6;
   template: `
   <section class="hero" id="hero" aria-labelledby="hero-title">
     <div class="radar" aria-hidden="true">
-      <svg viewBox="-470 -470 940 940" class="radar-svg">
+      <svg viewBox="-470 -470 940 940" class="radar-svg" #svg>
         <defs>
           <radialGradient id="mcGlow"><stop offset="0" stop-color="rgb(var(--accent-2-rgb))" stop-opacity=".34"/><stop offset=".55" stop-color="rgb(var(--accent-2-rgb))" stop-opacity=".08"/><stop offset="1" stop-color="rgb(var(--accent-2-rgb))" stop-opacity="0"/></radialGradient>
           <linearGradient id="mcSweep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--electric)" stop-opacity="0"/><stop offset="1" stop-color="var(--electric)" stop-opacity=".45"/></linearGradient>
@@ -25,7 +26,9 @@ const SWEEP_SECONDS = 6;
         </g>
         <g class="cross"><path d="M0-409V-33M33 0H409M0 33V409M-409 0H-33"/></g>
         <g class="sweep" [style.animation-duration.s]="sweep"><path d="M0 0L410 0A410 410 0 0 0 360.4-195.6Z" fill="url(#mcSweep)"/><path d="M0 0H410" class="sweep-edge"/></g>
-        <g *ngFor="let n of nodes" class="node" [ngClass]="n.tone">
+        <circle r="410" class="hit" (click)="blip($event, svg)"/>
+        <circle *ngFor="let b of blips(); trackBy: bid" [attr.cx]="b.x" [attr.cy]="b.y" r="10" class="blip"/>
+        <g *ngFor="let n of nodes" class="node" [ngClass]="n.tone" [class.sel]="contact() === n" (click)="pin(n)" (mouseenter)="pin(n)">
           <path [attr.d]="'M0 0L' + n.dx + ' ' + n.dy" class="spoke"/>
           <circle [attr.cx]="n.dx" [attr.cy]="n.dy" r="16" class="ping" [style.animation-delay.s]="delay(n)" [style.animation-duration.s]="sweep"/>
           <circle [attr.cx]="n.dx" [attr.cy]="n.dy" r="7" class="pin"/>
@@ -42,7 +45,7 @@ const SWEEP_SECONDS = 6;
       <p class="mc-kicker"><span class="dot"></span>Mission control · online</p>
       <h1 id="hero-title" class="title">
         <span class="ln">I engineer</span>
-        <span class="ln mc-em">products that</span>
+        <span class="ln mc-em"><span class="rot" *ngFor="let w of [word()]">{{ w }}</span> that</span>
         <span class="ln">hold at scale.</span>
       </h1>
       <p class="lede">Full-stack engineer shipping Angular 19, NestJS, .NET and PostgreSQL products — from first sketch to production in weeks.</p>
@@ -53,7 +56,16 @@ const SWEEP_SECONDS = 6;
       <dl class="stats">
         <div class="stat" *ngFor="let s of stats"><dt>{{ s.k }}</dt><dd>{{ s.v }}</dd></div>
       </dl>
+      <p class="clock" aria-label="Local time in Mohali">
+        <span class="live"></span>IST {{ ist() }} · MOHALI 30.70°N 76.72°E<span *ngIf="yours()"> · YOUR TIME {{ yours() }}</span>
+      </p>
     </div>
+
+    <aside class="intel" *ngIf="contact() as c" aria-live="polite">
+      <p class="mc-mono"><span class="ld"></span>{{ pinned() ? 'Contact locked' : 'Contact detected' }} · bearing {{ bearing(c) }}°</p>
+      <h3>{{ c.label }}</h3>
+      <p>{{ c.intel }}</p>
+    </aside>
   </section>
   `,
   styles: [`
@@ -94,6 +106,28 @@ const SWEEP_SECONDS = 6;
     .core{fill:#e3b341;filter:drop-shadow(0 0 22px rgba(227,179,65,.7))}
     .core-txt{font:600 16px var(--font-mono);fill:#14110a;text-anchor:middle}
 
+    .hit{fill:transparent;pointer-events:all;cursor:crosshair}
+    .node{pointer-events:all;cursor:pointer}
+    .node .pin{transition:r .25s}
+    .node.sel .pin{r:10}
+    .node.sel .label rect{stroke:var(--accent-2);fill:rgba(var(--accent-2-rgb),.16)}
+    .node.sel .label text{fill:var(--text)}
+    .node.sel .spoke{stroke-opacity:1;stroke-width:2}
+    .blip{fill:none;stroke:var(--electric);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:blip 1.6s ease-out forwards}
+    .rot{display:inline-block;animation:word .55s cubic-bezier(.2,.9,.2,1) both}
+    .clock{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:22px 0 0;font:500 11px var(--font-mono);letter-spacing:.12em;color:var(--text-dim)}
+    .clock .live{width:6px;height:6px;border-radius:50%;background:var(--crimson);animation:blink 1s steps(2) infinite}
+    .intel{position:absolute;z-index:2;right:clamp(16px,4vw,64px);bottom:clamp(28px,6vh,72px);width:300px;padding:16px 18px;border-radius:16px;
+      background:color-mix(in srgb,var(--card) 88%,transparent);border:1px solid rgba(var(--accent-rgb),.45);backdrop-filter:blur(10px);
+      box-shadow:var(--shadow-card);animation:word .4s cubic-bezier(.2,.9,.2,1)}
+    .intel .mc-mono{display:flex;align-items:center;gap:8px;margin:0;font-size:10px;color:var(--accent)}
+    .intel .ld{width:6px;height:6px;border-radius:50%;background:var(--electric)}
+    .intel h3{margin:6px 0 4px;font:400 28px/1.1 var(--font-display);color:var(--text)}
+    .intel p:last-child{margin:0;font:400 13px/1.5 var(--font-body);color:var(--text-muted)}
+    @keyframes blip{0%{opacity:1;transform:scale(.3)}100%{opacity:0;transform:scale(5)}}
+    @keyframes word{from{opacity:0;transform:translateY(.35em) rotateX(-60deg);filter:blur(6px)}}
+    @keyframes blink{50%{opacity:.2}}
+    @media (max-width:1100px){.intel{display:none}}
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes ping{0%{opacity:.9;transform:scale(.5)}35%{opacity:0;transform:scale(2.2)}100%{opacity:0}}
     @keyframes rise{from{opacity:0;transform:translateY(30px)}}
@@ -124,6 +158,7 @@ export class McHeroComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit() {
+    this.startTicks();
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     this.zone.runOutsideAngular(() => {
       if (matchMedia('(pointer: fine)').matches) addEventListener('pointermove', this.onMove, { passive: true });
@@ -131,6 +166,7 @@ export class McHeroComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy() {
+    this.ticks.forEach(clearInterval);
     removeEventListener('pointermove', this.onMove);
     removeEventListener('scroll', this.onScroll);
     cancelAnimationFrame(this.raf);
@@ -138,15 +174,60 @@ export class McHeroComponent implements OnInit, OnDestroy {
 
   readonly sweep = SWEEP_SECONDS;
   readonly nodes: RadarNode[] = [
-    { label: 'Angular 19', dx: -250, dy: -190, tone: 'gold' },
-    { label: 'NestJS', dx: 230, dy: -260, tone: 'teal' },
-    { label: 'PostgreSQL', dx: 330, dy: 60, tone: 'teal' },
-    { label: '.NET 8', dx: 120, dy: 300, tone: 'teal' },
-    { label: 'Three.js', dx: -300, dy: 170, tone: 'gold' },
-    { label: 'Claude SDK', dx: -60, dy: -370, tone: 'coral' },
-    { label: 'Railway', dx: -120, dy: 340, tone: 'dim' },
+    { label: 'Angular 19', dx: -250, dy: -190, tone: 'gold', intel: 'Standalone components, signals and RxJS. The client side of everything here, LocalHaat included.' },
+    { label: 'NestJS', dx: 230, dy: -260, tone: 'teal', intel: 'The API gateway: CQRS command and query buses, guards and rate limits.' },
+    { label: 'PostgreSQL', dx: 330, dy: 60, tone: 'teal', intel: 'The data layer, with TypeORM entities and migrations.' },
+    { label: '.NET 8', dx: 120, dy: 300, tone: 'teal', intel: 'Backend for the multi-store Retail ERP, syncing store servers to head office.' },
+    { label: 'Three.js', dx: -300, dy: 170, tone: 'gold', intel: 'Interactive 3D and motion for front ends that need to feel alive.' },
+    { label: 'Claude SDK', dx: -60, dy: -370, tone: 'coral', intel: 'AI features, like the ATS résumé analyzer that scores CVs against a job.' },
+    { label: 'Railway', dx: -120, dy: 340, tone: 'dim', intel: 'Where the APIs deploy, alongside Vercel for front ends, via CI/CD.' },
   ];
   readonly stats = [{ k: 'RENDER', v: '<18ms' }, { k: 'UPTIME', v: '99.9%' }, { k: 'STACK', v: '7 live' }];
+
+  readonly words = ['products', 'platforms', 'APIs', 'dashboards', 'AI tools'];
+  readonly word = signal(this.words[0]);
+  readonly contact = signal<RadarNode | null>(null);
+  readonly pinned = signal(false);
+  readonly blips = signal<Blip[]>([]);
+  readonly ist = signal('');
+  readonly yours = signal('');
+  private ticks: ReturnType<typeof setInterval>[] = [];
+  private bseq = 0;
+  private t0 = performance.now();
+  bid = (_: number, b: Blip) => b.id;
+
+  bearing(n: RadarNode) { return Math.round(((Math.atan2(n.dy, n.dx) * 180 / Math.PI) + 450) % 360); }
+
+  pin(n: RadarNode) { this.contact.set(n); this.pinned.set(true); }
+
+  /** Drops a sonar blip where the radar was clicked, and releases a pinned contact. */
+  blip(e: MouseEvent, svg: SVGSVGElement) {
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const p = pt.matrixTransform(svg.getScreenCTM()!.inverse());
+    const b = { id: ++this.bseq, x: p.x, y: p.y };
+    this.blips.update(l => [...l, b]);
+    setTimeout(() => this.blips.update(l => l.filter(x => x.id !== b.id)), 1700);
+    this.pinned.set(false);
+  }
+
+  private startTicks() {
+    const fmt = (tz?: string) => new Date().toLocaleTimeString('en-GB', { hour12: false, timeZone: tz });
+    const myTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const clock = () => { this.ist.set(fmt('Asia/Kolkata')); this.yours.set(myTz !== 'Asia/Kolkata' && myTz !== 'Asia/Calcutta' ? fmt() : ''); };
+    clock();
+    this.ticks.push(setInterval(clock, 1000));
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let i = 0;
+    this.ticks.push(setInterval(() => this.word.set(this.words[++i % this.words.length]), 2600));
+    // Report whichever node the sweep crossed most recently, unless one is pinned.
+    this.ticks.push(setInterval(() => {
+      if (this.pinned()) return;
+      const sweepDeg = (((performance.now() - this.t0) / 1000) % this.sweep) / this.sweep * 360;
+      const behind = (n: RadarNode) => (sweepDeg - ((Math.atan2(n.dy, n.dx) * 180 / Math.PI + 360) % 360) + 360) % 360;
+      const n = [...this.nodes].sort((a, b) => behind(a) - behind(b))[0];
+      if (n !== this.contact()) this.contact.set(n);
+    }, 250));
+  }
 
   /** Starts each node's ping when the clockwise sweep reaches its bearing. */
   delay(n: RadarNode) {

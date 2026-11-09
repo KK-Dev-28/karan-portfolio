@@ -23,9 +23,11 @@ const routes: Routes = [
     component: HomePageComponent,
     data: {
       seo: {
-        title: 'Full Stack Developer',
+        // Name first: people searching "Karan Kapoor" should see it leading the result.
+        title: 'Karan Kapoor — Full Stack Developer (Angular, NestJS, .NET)',
+        rawTitle: true,
         description:
-          'Karan Kapoor — Full Stack Developer building production-grade apps with Angular, ASP.NET Web API, NestJS and PostgreSQL. Available for freelance and remote work from Ludhiana, Punjab, India.',
+          'Karan Kapoor is a full stack developer from Punjab, India, building Angular 19, NestJS, .NET and PostgreSQL products — from first sketch to production. Portfolio, projects, resume and contact.',
         path: '/',
       },
     },
