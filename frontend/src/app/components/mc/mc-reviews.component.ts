@@ -15,7 +15,7 @@ import { McRevealDirective } from './mc-shared';
     <h2 id="rev-title" class="mc-title">{{ reviews().length ? 'In their words' : 'Be the first to leave one' }}</h2>
 
     <div class="row">
-      <div class="mc-card quote" mcReveal>
+      <div class="mc-card quote mc-holo" mcReveal>
         <ng-container *ngIf="current() as r; else empty">
           <div class="who"><span class="av">{{ r.name.charAt(0) }}</span><div><b>{{ r.name }}</b><small>{{ [r.role, r.company].filter(Boolean).join(', ') }}</small></div></div>
           <p class="mc-mono">{{ r.title }}</p>

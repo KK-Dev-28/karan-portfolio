@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent }      from '../../components/navbar/navbar.component';
 import { LoadingScreenComponent } from '../../components/loading-screen/loading-screen.component';
@@ -15,6 +15,8 @@ import { McFaqComponent } from '../../components/mc/mc-faq.component';
 import { McContactComponent } from '../../components/mc/mc-contact.component';
 import { McFooterComponent } from '../../components/mc/mc-footer.component';
 import { McSectionNavComponent } from '../../components/mc/mc-section-nav.component';
+import { McStarfieldComponent } from '../../components/mc/mc-starfield.component';
+import { installMcFx } from '../../components/mc/mc-fx';
 
 @Component({
   selector: 'app-home-page',
@@ -22,7 +24,7 @@ import { McSectionNavComponent } from '../../components/mc/mc-section-nav.compon
   imports: [
     CommonModule, LoadingScreenComponent, NavbarComponent, BugHuntComponent, PopularityComponent,
     McHeroComponent, McArchitectureComponent, McJourneyComponent, McServicesComponent, McWorkComponent,
-    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent,
+    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent,
   ],
   /* The page follows the Figma file "Karan Kapoor — Portfolio Mission Control
      (Full Design)", in its section order: radar hero, system architecture, the
@@ -33,7 +35,7 @@ import { McSectionNavComponent } from '../../components/mc/mc-section-nav.compon
      untouched and can be put back by restoring an import and a tag. */
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
-    <div class="global-stars" aria-hidden="true"></div>
+    <mc-starfield></mc-starfield>
     <app-navbar></app-navbar>
     <mc-section-nav [ids]="sections"></mc-section-nav>
 
@@ -55,8 +57,11 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
   showLoader = true;
   readonly sections = ['hero', 'architecture', 'journey', 'services', 'projects', 'play', 'kits', 'reviews', 'faq', 'contact'];
   private revealObs!: IntersectionObserver;
+  private host = inject(ElementRef<HTMLElement>);
+  private removeFx?: () => void;
 
   ngAfterViewInit() {
+    this.removeFx = installMcFx(this.host.nativeElement);
     this.revealObs = new IntersectionObserver(
       entries => {
         entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); this.revealObs.unobserve(e.target); } });
@@ -68,5 +73,5 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
     [400, 1200, 2500, 4000].forEach(ms => setTimeout(scan, ms));
   }
 
-  ngOnDestroy() { this.revealObs?.disconnect(); }
+  ngOnDestroy() { this.revealObs?.disconnect(); this.removeFx?.(); }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcScrollTo } from './mc-shared';
 
@@ -72,7 +72,10 @@ const SWEEP_SECONDS = 6;
     .stat dt{font:500 11px var(--font-mono);letter-spacing:.12em;color:var(--text-dim)}
     .stat dd{margin:2px 0 0;font:400 34px/1.1 var(--font-display);color:var(--text)}
 
-    .radar{position:absolute;top:50%;left:73.6%;width:min(940px,72vw);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none}
+    .radar{position:absolute;top:50%;left:73.6%;width:min(940px,72vw);aspect-ratio:1;pointer-events:none;
+      transform:translate(-50%,-50%) perspective(1400px) rotateY(calc(var(--px,0) * 16deg)) rotateX(calc(var(--py,0) * -16deg)) scale(calc(1 + var(--sp,0) * .35));
+      opacity:calc(1 - var(--sp,0) * .7);transition:transform .6s cubic-bezier(.2,.9,.2,1)}
+    .copy{translate:calc(var(--px,0) * -12px) calc(var(--py,0) * -8px);transition:translate .6s cubic-bezier(.2,.9,.2,1)}
     .radar-svg{width:100%;height:100%;overflow:visible}
     .rings circle{fill:none;stroke:rgba(var(--accent-2-rgb),.42);stroke-width:1.2}
     .rings .dash{stroke-dasharray:4 7;stroke:rgba(var(--accent-2-rgb),.3)}
@@ -94,12 +97,45 @@ const SWEEP_SECONDS = 6;
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes ping{0%{opacity:.9;transform:scale(.5)}35%{opacity:0;transform:scale(2.2)}100%{opacity:0}}
     @keyframes rise{from{opacity:0;transform:translateY(30px)}}
-    @media (max-width:1100px){.radar{left:78%;width:110vw;opacity:.45}}
+    @media (max-width:1100px){.radar{left:78%;width:110vw;opacity:calc(.45 - var(--sp,0) * .3)}}
     @media (max-width:700px){.radar{left:70%;top:34%;width:150vw;opacity:.28}.stat{min-width:0;flex:1}}
     @media (prefers-reduced-motion:reduce){.sweep,.ping,.ln{animation:none}}
   `],
 })
-export class McHeroComponent {
+export class McHeroComponent implements OnInit, OnDestroy {
+  private host = inject(ElementRef<HTMLElement>);
+  private zone = inject(NgZone);
+  private raf = 0;
+
+  /* Pointer parallax (--px/--py, -0.5..0.5) tilts the radar in 3D; scroll
+     progress through the hero (--sp, 0..1) zooms it past the viewer. */
+  private onMove = (e: PointerEvent) => {
+    const el = this.host.nativeElement as HTMLElement;
+    const c = (v: number) => Math.min(.5, Math.max(-.5, v)).toFixed(3);
+    el.style.setProperty('--px', c(e.clientX / innerWidth - .5));
+    el.style.setProperty('--py', c(e.clientY / innerHeight - .5));
+  };
+  private onScroll = () => {
+    cancelAnimationFrame(this.raf);
+    this.raf = requestAnimationFrame(() => {
+      const el = this.host.nativeElement as HTMLElement;
+      el.style.setProperty('--sp', Math.min(1, Math.max(0, scrollY / (el.offsetHeight || 1))).toFixed(3));
+    });
+  };
+
+  ngOnInit() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this.zone.runOutsideAngular(() => {
+      if (matchMedia('(pointer: fine)').matches) addEventListener('pointermove', this.onMove, { passive: true });
+      addEventListener('scroll', this.onScroll, { passive: true });
+    });
+  }
+  ngOnDestroy() {
+    removeEventListener('pointermove', this.onMove);
+    removeEventListener('scroll', this.onScroll);
+    cancelAnimationFrame(this.raf);
+  }
+
   readonly sweep = SWEEP_SECONDS;
   readonly nodes: RadarNode[] = [
     { label: 'Angular 19', dx: -250, dy: -190, tone: 'gold' },

@@ -22,14 +22,14 @@ interface Box { id: string; layer: Layer; kicker: string; title: string; rows: s
     </div>
 
     <div class="map" mcReveal>
-      <article class="mc-card box client" [class.lit]="lit(client)" [class.dim]="dim(client)">
+      <article class="mc-card box client mc-holo" [class.lit]="lit(client)" [class.dim]="dim(client)">
         <p class="mc-mono">{{ client.kicker }}</p><h3>{{ client.title }}</h3>
         <ul><li *ngFor="let r of client.rows">{{ r }}</li></ul>
       </article>
 
       <div class="wire w1" aria-hidden="true"><i></i></div>
 
-      <article class="mc-card box gateway" [class.lit]="lit(gateway)" [class.dim]="dim(gateway)">
+      <article class="mc-card box gateway mc-holo" [class.lit]="lit(gateway)" [class.dim]="dim(gateway)">
         <p class="mc-mono live"><span class="pulse"></span>{{ gateway.kicker }}</p><h3>{{ gateway.title }}</h3>
         <ul><li *ngFor="let r of gateway.rows">{{ r }}</li></ul>
       </article>
@@ -37,7 +37,7 @@ interface Box { id: string; layer: Layer; kicker: string; title: string; rows: s
       <div class="wires-right" aria-hidden="true"><div class="wire w2"><i></i></div><div class="wire w3"><i></i></div></div>
 
       <div class="stack">
-        <article *ngFor="let b of right" class="mc-card box" [class.lit]="lit(b)" [class.dim]="dim(b)">
+        <article *ngFor="let b of right" class="mc-card box mc-holo" [class.lit]="lit(b)" [class.dim]="dim(b)">
           <p class="mc-mono">{{ b.kicker }}</p><h3>{{ b.title }}</h3>
           <ul><li *ngFor="let r of b.rows">{{ r }}</li></ul>
         </article>
@@ -77,7 +77,7 @@ interface Box { id: string; layer: Layer; kicker: string; title: string; rows: s
     .live{display:flex;align-items:center;gap:8px;color:var(--accent)}
     .pulse{width:7px;height:7px;border-radius:50%;background:var(--electric);animation:blink 1.4s infinite}
     .stack{display:grid;gap:40px}
-    .lit{border-color:rgba(var(--accent-rgb),.8)!important;transform:translateY(-4px);box-shadow:var(--shadow-glow)}
+    .lit{border-color:rgba(var(--accent-rgb),.8)!important;--lift:-6px;box-shadow:var(--shadow-glow)}
     .dim{opacity:.38}
 
     .wire{position:relative;height:1px;background:rgba(var(--accent-rgb),.45);margin:0 -1px}

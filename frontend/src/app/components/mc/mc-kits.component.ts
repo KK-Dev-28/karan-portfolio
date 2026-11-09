@@ -15,7 +15,7 @@ const VOTES_KEY = 'kk_kit_votes';
     <h2 id="kits-title" class="mc-title">Starter kits — vote what ships first</h2>
 
     <div class="shelf">
-      <article *ngFor="let k of kits; let i = index" class="mc-card kit" mcReveal [style.transition-delay.ms]="i * 80" [class.voted]="voted(k.id)">
+      <article *ngFor="let k of kits; let i = index" class="mc-card kit mc-holo" mcReveal [style.transition-delay.ms]="i * 80" [class.voted]="voted(k.id)">
         <div class="meter" aria-hidden="true"><i></i></div>
         <p class="soon mc-mono"><span class="dot"></span>Coming soon</p>
         <h3>{{ k.name }}</h3>
@@ -32,7 +32,7 @@ const VOTES_KEY = 'kk_kit_votes';
     <p class="mc-kicker">07 · Work with me</p>
     <h2 id="tiers-title" class="mc-title">Pick how we start</h2>
     <div class="tiers">
-      <button *ngFor="let t of tiers; let i = index" class="mc-card tier" mcReveal [style.transition-delay.ms]="i * 80" (click)="brief.open(t.name)">
+      <button *ngFor="let t of tiers; let i = index" class="mc-card tier mc-holo" mcReveal [style.transition-delay.ms]="i * 80" (click)="brief.open(t.name)">
         <span class="mc-mono">Tier 0{{ i + 1 }}</span>
         <span class="tname">{{ t.name }}</span>
         <span class="tdesc">{{ t.desc }}</span>
@@ -50,7 +50,7 @@ const VOTES_KEY = 'kk_kit_votes';
   styles: [`
     :host{display:block}
     .shelf,.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 40px;margin-top:62px}
-    .kit{display:flex;flex-direction:column;padding:24px 24px 28px;min-height:420px;box-sizing:border-box;transition:border-color .3s,box-shadow .3s,opacity .8s,transform .8s}
+    .kit{display:flex;flex-direction:column;padding:24px 24px 28px;min-height:420px;box-sizing:border-box;transition:border-color .3s,box-shadow .3s,opacity .8s,transform .6s cubic-bezier(.2,.9,.2,1),translate .8s cubic-bezier(.2,.9,.2,1)}
     .kit:hover{border-color:rgba(var(--accent-rgb),.5)}
     .meter{height:10px;border-radius:99px;background:var(--bg-3);overflow:hidden}
     .meter i{display:block;height:100%;width:38%;border-radius:99px;background:linear-gradient(90deg,#b8860b,#e3b341);transition:width .8s cubic-bezier(.2,.9,.2,1)}
@@ -67,8 +67,8 @@ const VOTES_KEY = 'kk_kit_votes';
     .vote:focus-visible,.tier:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     .tiers-sec{padding-top:0}
     .tier{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-height:230px;padding:24px;box-sizing:border-box;cursor:pointer;
-      font:inherit;color:inherit;transition:border-color .3s,box-shadow .3s,transform .35s cubic-bezier(.2,.9,.2,1),opacity .8s}
-    .tier:hover{border-color:rgba(var(--accent-rgb),.6);box-shadow:var(--shadow-glow);transform:translateY(-4px)}
+      font:inherit;color:inherit;transition:border-color .3s,box-shadow .3s,transform .35s cubic-bezier(.2,.9,.2,1),opacity .8s,translate .8s cubic-bezier(.2,.9,.2,1)}
+    .tier:hover{border-color:rgba(var(--accent-rgb),.6);box-shadow:var(--shadow-glow)}
     .tname{margin-top:16px;font:400 40px/1.1 var(--font-display);color:var(--text)}
     .tdesc{margin-top:14px;font:400 15px/1.5 var(--font-body);color:var(--text-muted)}
     .tier .mc-link{margin-top:auto}

@@ -1009,7 +1009,7 @@ html[data-theme="mission-light"] .mc-title em, html[data-theme="mission-light"] 
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; padding: 0 28px;
   border-radius: 99px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer;
   font: 500 13px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
-  transition: transform .25s cubic-bezier(.2,.9,.2,1), box-shadow .25s, border-color .25s, background .25s;
+  transition: transform .25s cubic-bezier(.2,.9,.2,1), translate .35s cubic-bezier(.2,.9,.2,1), box-shadow .25s, border-color .25s, background .25s;
 }
 .mc-btn:hover { transform: translateY(-2px); border-color: rgba(var(--accent-rgb), .6); }
 .mc-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -1031,6 +1031,52 @@ textarea.mc-field { min-height: 120px; resize: vertical; }
 .mc-label { display: block; margin: 0 0 8px; font: 500 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
 
 /* Reveal on scroll — set by McRevealDirective. */
-.mc-reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.2,.9,.2,1), transform .8s cubic-bezier(.2,.9,.2,1); }
-.mc-reveal.in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .mc-reveal { opacity: 1; transform: none; transition: none; } }
+/* `translate`, not `transform`, so it composes with the .mc-holo tilt. */
+.mc-reveal { opacity: 0; translate: 0 28px; transition: opacity .8s cubic-bezier(.2,.9,.2,1), translate .8s cubic-bezier(.2,.9,.2,1), transform .5s cubic-bezier(.2,.9,.2,1); }
+.mc-reveal.in { opacity: 1; translate: none; }
+@media (prefers-reduced-motion: reduce) { .mc-reveal { opacity: 1; translate: none; transition: none; } }
+
+/* ── Mission Control motion (installed by components/mc/mc-fx.ts) ──────────── */
+/* Titles: each word rises out of a mask with a 3D flip. */
+.mc-title { perspective: 700px; }
+.fx-w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .06em .1em 0; margin: 0 -.06em -.1em 0; }
+.fx-w > span {
+  display: inline-block; transform-origin: 50% 100%;
+  transform: translateY(108%) rotateX(-75deg); opacity: 0; filter: blur(8px);
+  transition: transform 1s cubic-bezier(.2,.9,.2,1), opacity .8s ease, filter .8s ease;
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.fx-in .fx-w > span { transform: none; opacity: 1; filter: none; }
+
+/* Cards: tilt toward the pointer, with a holographic glare that follows it. */
+.mc-holo {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  transform-style: preserve-3d; will-change: transform; transition: transform .5s cubic-bezier(.2,.9,.2,1);
+}
+.mc-holo:hover { --lift: -4px; }
+.mc-holo::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background:
+    radial-gradient(circle at var(--hx, 50%) var(--hy, 50%), rgba(255,255,255,.16), transparent 42%),
+    linear-gradient(115deg, transparent 25%, rgba(var(--electric-rgb), .10) 42%, rgba(var(--accent-2-rgb), .14) 55%, transparent 72%);
+  background-size: 100% 100%, 260% 260%;
+  background-position: center, var(--hx, 50%) var(--hy, 50%);
+  mix-blend-mode: screen;
+}
+.mc-holo:hover::after { opacity: 1; }
+html[data-theme="mission-light"] .mc-holo::after { mix-blend-mode: soft-light; }
+
+/* Sections: a gold scan-line sweeps across the top edge on arrival. */
+section.mc-sec::before {
+  content: ''; position: absolute; left: clamp(16px, 5.6vw, 80px); right: clamp(16px, 5.6vw, 80px); top: 0; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-2-rgb), .95) 50%, transparent);
+  transform: scaleX(0); opacity: 0;
+}
+section.mc-sec.fx-in::before { animation: mcScan 1.8s cubic-bezier(.2,.9,.2,1) forwards; }
+@keyframes mcScan { 0% { transform: scaleX(0); opacity: 1; } 55% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: .22; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-w > span { transform: none; opacity: 1; filter: none; transition: none; }
+  .mc-holo { transform: none; }
+  section.mc-sec::before { display: none; }
+}

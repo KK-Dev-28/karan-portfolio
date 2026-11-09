@@ -13,8 +13,7 @@ import { McBriefService, McRevealDirective } from './mc-shared';
     <h2 id="svc-title" class="mc-title">Six modules, one owner</h2>
 
     <div class="bay">
-      <article *ngFor="let m of modules; let i = index" class="mc-card mod" mcReveal [style.transition-delay.ms]="(i % 3) * 80"
-        (pointermove)="tilt($event)" (pointerleave)="untilt($event)">
+      <article *ngFor="let m of modules; let i = index" class="mc-card mod mc-holo" mcReveal [style.transition-delay.ms]="(i % 3) * 80">
         <header><span class="num">{{ (i + 1).toString().padStart(2, '0') }}</span><span class="code mc-mono">{{ m.code }}</span></header>
         <h3>{{ m.title }}</h3>
         <p class="desc">{{ m.desc }}</p>
@@ -29,7 +28,7 @@ import { McBriefService, McRevealDirective } from './mc-shared';
     :host{display:block}
     .bay{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 40px;margin-top:62px}
     .mod{display:flex;flex-direction:column;min-height:340px;box-sizing:border-box;padding:12px 24px 26px;overflow:hidden;
-      transform:perspective(900px) rotateX(var(--rx,0)) rotateY(var(--ry,0));transition:transform .4s cubic-bezier(.2,.9,.2,1),border-color .3s,box-shadow .3s,opacity .8s}
+      transition:transform .5s cubic-bezier(.2,.9,.2,1),border-color .3s,box-shadow .3s,opacity .8s,translate .8s cubic-bezier(.2,.9,.2,1)}
     .mod:hover{border-color:rgba(var(--accent-rgb),.6);box-shadow:var(--shadow-glow)}
     header{display:flex;justify-content:space-between;align-items:flex-start}
     .num{font:400 112px/1 var(--font-display);color:transparent;-webkit-text-stroke:1px rgba(var(--accent-rgb),.55);transition:color .4s}
@@ -43,7 +42,6 @@ import { McBriefService, McRevealDirective } from './mc-shared';
     .mod:hover .led{background:var(--electric);box-shadow:0 0 12px var(--electric)}
     @media (max-width:1100px){.bay{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}}
     @media (max-width:680px){.bay{grid-template-columns:1fr}.num{font-size:88px}}
-    @media (prefers-reduced-motion:reduce){.mod{transform:none!important}}
   `],
 })
 export class McServicesComponent {
@@ -57,15 +55,4 @@ export class McServicesComponent {
     { code: 'OPS', title: 'DevOps & Deploy', desc: 'Railway, Vercel, CI/CD, monitoring.', tags: ['Docker', 'Pipelines', 'Alerts'] },
   ];
 
-  /** A slight 3D tilt toward the pointer, like pulling a module out of a rack. */
-  tilt(e: PointerEvent) {
-    if (e.pointerType !== 'mouse') return;
-    const el = e.currentTarget as HTMLElement, r = el.getBoundingClientRect();
-    el.style.setProperty('--ry', `${((e.clientX - r.left) / r.width - .5) * 6}deg`);
-    el.style.setProperty('--rx', `${-((e.clientY - r.top) / r.height - .5) * 6}deg`);
-  }
-  untilt(e: PointerEvent) {
-    const el = e.currentTarget as HTMLElement;
-    el.style.removeProperty('--rx'); el.style.removeProperty('--ry');
-  }
 }

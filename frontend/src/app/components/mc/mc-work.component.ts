@@ -16,7 +16,7 @@ interface Work { kind: string; name: string; blurb: string; stack: string; route
     <h2 id="work-title" class="mc-title">Things I shipped, end to end</h2>
 
     <div class="grid">
-      <article *ngFor="let w of work; let i = index" class="mc-card item" mcReveal [style.transition-delay.ms]="(i % 2) * 90">
+      <article *ngFor="let w of work; let i = index" class="mc-card item mc-holo" mcReveal [style.transition-delay.ms]="(i % 2) * 90">
         <div class="screen">
           <span class="num">{{ (i + 1).toString().padStart(2, '0') }}</span>
           <p class="blurb">{{ w.blurb }}</p>
@@ -36,8 +36,8 @@ interface Work { kind: string; name: string; blurb: string; stack: string; route
   styles: [`
     :host{display:block}
     .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 40px;margin-top:88px}
-    .item{padding:24px 24px 26px;transition:border-color .3s,box-shadow .3s,transform .4s cubic-bezier(.2,.9,.2,1),opacity .8s}
-    .item:hover{border-color:rgba(var(--accent-rgb),.6);box-shadow:var(--shadow-glow);transform:translateY(-4px)}
+    .item{padding:24px 24px 26px;transition:border-color .3s,box-shadow .3s,transform .4s cubic-bezier(.2,.9,.2,1),opacity .8s,translate .8s cubic-bezier(.2,.9,.2,1)}
+    .item:hover{border-color:rgba(var(--accent-rgb),.6);box-shadow:var(--shadow-glow)}
     .screen{position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;height:150px;padding:10px 26px 22px 20px;
       box-sizing:border-box;border-radius:14px;overflow:hidden;border:1px solid var(--border);
       background:radial-gradient(ellipse at 80% 0%,rgba(var(--accent-rgb),.18),transparent 60%),var(--bg-2)}
