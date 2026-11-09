@@ -102,6 +102,11 @@ export class EmailService {
     }
   }
 
+  /** Sends a prepared HTML email. Used by the crew (subscriber) module. */
+  async sendHtml(to: string, subject: string, html: string, throwOnRateLimit = false): Promise<void> {
+    await this.send(to, subject, html, throwOnRateLimit);
+  }
+
   // ── OTP ─────────────────────────────────────────────────────────────────────
   // throwOnRateLimit=true so the user sees a helpful message instead of silently failing
 

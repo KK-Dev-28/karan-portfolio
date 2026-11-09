@@ -22,10 +22,12 @@ import {
 type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'design' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue' | 'studio' | 'credentials';
 type DateFilter = 'today' | 'week' | 'month' | 'custom' | 'all';
 
+import { CrewBroadcastComponent } from '../../components/crew-broadcast/crew-broadcast.component';
+
 @Component({
   selector: 'app-admin-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, CrewBroadcastComponent],
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
 })

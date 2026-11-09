@@ -587,6 +587,8 @@
 
       <!-- ── NEWSLETTER ─────────────────────────────── -->
       <div class="tab-panel" *ngIf="tab==='newsletter'">
+        <div class="section-lbl">Email the mission crew</div>
+        <app-crew-broadcast></app-crew-broadcast>
         <div class="section-lbl">Subscribers ({{ data.subscribers?.length || 0 }})</div>
         <div class="table-wrap">
           <ng-container *ngIf="data.subscribers?.length; else noSub">
