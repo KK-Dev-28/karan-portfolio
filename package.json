@@ -1,7 +1,7 @@
 {
   "name": "karan-portfolio-workspace",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
     "dev": "concurrently \"npm --prefix frontend start\" \"npm --prefix backend run start:dev\""
   },

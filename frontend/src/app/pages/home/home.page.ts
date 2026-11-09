@@ -16,6 +16,8 @@ import { LoadingScreenComponent } from '../../components/loading-screen/loading-
 import { DigitalProductsComponent } from '../../components/digital-products/digital-products.component';
 import { StoryComponent } from '../../components/story/story.component';
 import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.component';
+import { BugHuntComponent } from '../../components/bug-hunt/bug-hunt.component';
+import { PopularityComponent } from '../../components/popularity/popularity.component';
 
 @Component({
   selector: 'app-home-page',
@@ -24,6 +26,8 @@ import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.co
     CommonModule,
     LoadingScreenComponent,
     SidebarNavComponent,
+    BugHuntComponent,
+    PopularityComponent,
     NavbarComponent,
     HeroComponent,
     ServicesComponent,
@@ -69,6 +73,7 @@ import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.co
     <!-- Who I am: career and education, then the story behind it. -->
     <app-experience></app-experience>
     <app-story></app-story>
+    <app-bug-hunt></app-bug-hunt>
 
     <!-- What I can be hired for, and on what terms. -->
     <app-services></app-services>
@@ -79,6 +84,7 @@ import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.co
     <app-testimonials></app-testimonials>
     <app-reviews></app-reviews>
 
+    <app-popularity></app-popularity>
     <app-faq></app-faq>
     <app-contact></app-contact>
     <app-footer></app-footer>

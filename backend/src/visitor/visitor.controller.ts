@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Req, UseGuards, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
@@ -35,6 +35,19 @@ export class VisitorController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Full analytics — admin only' })
   analytics() { return this.svc.analytics(); }
+
+  @Get('history')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'All visitors ever logged, paginated — admin only' })
+  history(@Query('page') page?: string, @Query('size') size?: string, @Query('q') q?: string) {
+    return this.svc.history(Number(page) || 1, Number(size) || 50, (q || '').slice(0, 60));
+  }
+
+  @Get('public-stats')
+  @Throttle({ default: { ttl: 60_000, limit: 30 } })
+  @ApiOperation({ summary: 'Aggregate popularity stats (public, no personal data)' })
+  publicStats() { return this.svc.publicStats(); }
 
   @Get('premium-analytics')
   @UseGuards(InsightsAccessGuard)

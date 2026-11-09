@@ -4,16 +4,18 @@ import { filter } from 'rxjs/operators';
 import { VisitorService } from './services/visitor.service';
 import { ThemeService } from './services/theme.service';
 import { SeoService, SeoTags } from './services/seo.service';
+import { WelcomeCardComponent } from './components/welcome-card/welcome-card.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, WelcomeCardComponent],
   // The outlet renders inside <main>, so every route gets a main landmark and
   // a working skip-link target without each page having to declare one.
   template: `
     <a class="skip-link" href="#main-content">Skip to content</a>
     <main id="main-content" tabindex="-1"><router-outlet></router-outlet></main>
+    <app-welcome-card />
   `,
 })
 export class AppComponent implements OnInit {

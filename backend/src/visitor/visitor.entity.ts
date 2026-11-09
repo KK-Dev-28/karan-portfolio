@@ -16,5 +16,12 @@ export class Visitor {
   @Column({ default: false })           isReturning: boolean;
   @Column({ nullable: true, length: 500 }) userAgent: string;
   @Column({ nullable: true })           sessionId: string;
+  // v2.0 — consent-based, optional fields (only stored after the visitor opts in)
+  @Column({ nullable: true })           ipHash: string;
+  @Column({ nullable: true })           visitorName: string;
+  @Column({ nullable: true })           timezone: string;
+  @Column({ nullable: true })           language: string;
+  @Column({ nullable: true })           screen: string;
+  @Column({ default: false })           consent: boolean;
   @CreateDateColumn()                   visitedAt: Date;
 }

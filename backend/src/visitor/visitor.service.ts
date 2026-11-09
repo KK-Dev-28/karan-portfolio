@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan } from 'typeorm';
 import { Visitor } from './visitor.entity';
 import { LogVisitDto } from './dto/log-visit.dto';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class VisitorService {
@@ -10,11 +11,14 @@ export class VisitorService {
 
   /* ── Log a visit ──────────────────────────────────────── */
   async log(dto: LogVisitDto, ip: string): Promise<{ ok: boolean }> {
-    const isReturning = !!(await this.repo.findOne({ where: { ip } }));
+    // v2.0: no visit is stored without explicit opt-in from the visitor.
+    if (dto.consent !== true) return { ok: false };
+    const ipHash = createHash('sha256').update(ip + (process.env.IP_HASH_SALT || 'kk')).digest('hex').slice(0, 32);
+    const isReturning = !!(await this.repo.findOne({ where: { ipHash } }));
     const { device, browser, os } = this.parseUA(dto.userAgent || '');
     await this.repo.save(
       this.repo.create({
-        ip, isReturning, device, browser, os,
+        ip: this.anonymizeIp(ip), ipHash, isReturning, device, browser, os,
         referrer:  this.parseRef(dto.referrer || ''),
         page:      dto.page      || '/',
         country:   dto.country   || 'Unknown',
@@ -23,6 +27,9 @@ export class VisitorService {
         flag:      dto.flag      || '🌍',
         userAgent: dto.userAgent || '',
         sessionId: dto.sessionId || '',
+        visitorName: (dto.visitorName || '').trim().slice(0, 60) || null,
+        timezone: dto.timezone || null, language: dto.language || null, screen: dto.screen || null,
+        consent: true,
       }),
     );
     return { ok: true };
@@ -55,7 +62,7 @@ export class VisitorService {
         total:    all.length,
         today:    todayRows.length,
         week:     weekRows.length,
-        unique:   new Set(all.map(v=>v.ip)).size,
+        unique:   new Set(all.map(v=>v.ipHash || v.ip)).size,
         returning:all.filter(v=>v.isReturning).length,
         newVisitors: all.filter(v=>!v.isReturning).length,
       },
@@ -65,12 +72,57 @@ export class VisitorService {
       referrers:  count(all, 'referrer'),
       countries:  count(all, 'country'),
       dailyChart: this.buildChart(weekRows),
-      recent: todayRows.slice(0, 30).map(v => ({
-        id: v.id, ip: v.ip, country: v.country, city: v.city,
+      // All visitors ever (newest first) so the admin date filters — incl. All Time — see old data too.
+      recent: all.slice(0, 5000).map(v => ({
+        id: v.id, ip: v.ip, visitorName: v.visitorName, timezone: v.timezone, language: v.language, country: v.country, city: v.city,
         flag: v.flag, device: v.device, browser: v.browser,
         os: v.os, referrer: v.referrer, page: v.page,
-        isReturning: v.isReturning, visitedAt: v.visitedAt,
+        isReturning: v.isReturning, visitedAt: v.visitedAt, screen: v.screen,
       })),
+    };
+  }
+
+  /** Stores only a coarse network (IPv4 /24, IPv6 /48) — never the full address. */
+  private anonymizeIp(ip: string): string {
+    if (ip.includes(':')) return ip.split(':').slice(0, 3).join(':') + '::';
+    const p = ip.split('.');
+    return p.length === 4 ? `${p[0]}.${p[1]}.${p[2]}.0` : ip;
+  }
+
+  /** Full visitor history, newest first. Never deletes anything. */
+  async history(page = 1, size = 50, q = '') {
+    size = Math.min(Math.max(size, 1), 200);
+    page = Math.max(page, 1);
+    const qb = this.repo.createQueryBuilder('v').orderBy('v.visitedAt', 'DESC');
+    if (q) qb.where('(v.city ILIKE :q OR v.country ILIKE :q OR v.visitorName ILIKE :q OR v.page ILIKE :q OR v.browser ILIKE :q)', { q: `%${q}%` });
+    const [rows, total] = await qb.skip((page - 1) * size).take(size).getManyAndCount();
+    return { total, page, size, pages: Math.ceil(total / size), rows };
+  }
+
+  /** Aggregate-only stats that are safe to show publicly. No IPs, names or cities. */
+  async publicStats() {
+    const all = await this.repo.find({ select: ['country', 'flag', 'device', 'page', 'visitedAt', 'ipHash', 'ip'] });
+    const week = new Date(Date.now() - 7 * 86_400_000);
+    const byCountry: Record<string, { n: number; flag: string }> = {};
+    const byDevice: Record<string, number> = {};
+    const byPage: Record<string, number> = {};
+    for (const v of all) {
+      const c = v.country || 'Unknown';
+      byCountry[c] = byCountry[c] || { n: 0, flag: v.flag || '🌍' }; byCountry[c].n++;
+      byDevice[v.device || 'Other'] = (byDevice[v.device || 'Other'] || 0) + 1;
+      byPage[v.page || '/'] = (byPage[v.page || '/'] || 0) + 1;
+    }
+    const top = (o: Record<string, number>, n: number) => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, n).map(([k, v]) => ({ key: k, count: v }));
+    return {
+      totalVisits: all.length,
+      uniqueVisitors: new Set(all.map(v => v.ipHash || v.ip)).size,
+      countries: Object.keys(byCountry).filter(c => c !== 'Unknown').length,
+      thisWeek: all.filter(v => v.visitedAt > week).length,
+      topCountries: Object.entries(byCountry).filter(([c]) => c !== 'Unknown').sort((a, b) => b[1].n - a[1].n).slice(0, 6)
+        .map(([country, x]) => ({ country, flag: x.flag, count: x.n })),
+      devices: top(byDevice, 3),
+      topPages: top(byPage, 5),
+      daily: this.buildChart(all.filter(v => v.visitedAt > week)),
     };
   }
 

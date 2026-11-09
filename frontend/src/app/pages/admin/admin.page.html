@@ -302,14 +302,14 @@
 
       <!-- ── VISITORS ───────────────────────────────── -->
       <div class="tab-panel" *ngIf="tab==='visitors'">
-        <div class="section-lbl">Recent Visitors</div>
+        <div class="section-lbl">Visitors · {{ filteredVisitorsSearch.length }} shown of {{ data?.analytics?.stats?.total ?? 0 }} all-time</div>
         <div class="table-wrap">
           <div class="vt-head visitor-head"><span>Visitor</span><span>Device</span><span>Source</span><span>Page</span><span>When</span></div>
           <ng-container *ngIf="filteredVisitorsSearch.length; else noVisitors">
             <div class="vt-row visitor-row" *ngFor="let v of filteredVisitorsSearch">
               <div class="vt-vis">
                 <span class="vt-flag">{{ v.flag }}</span>
-                <div><div class="vt-loc">{{ v.city }}, {{ v.country }}</div><div class="vt-ip">{{ v.ip }}</div></div>
+                <div><div class="vt-loc">{{ v.visitorName ? v.visitorName + " · " : "" }}{{ v.city }}, {{ v.country }}</div><div class="vt-ip">{{ v.ip }}</div></div>
                 <span [class]="v.isReturning ? 'badge-r' : 'badge-n'">{{ v.isReturning ? 'RETURN' : 'NEW' }}</span>
               </div>
               <div><div class="vt-dev">{{ v.device }} · {{ v.browser }}</div><div class="vt-os">{{ v.os }}</div></div>
@@ -318,7 +318,7 @@
               <div class="vt-time">{{ timeAgo(v.visitedAt) }}</div>
             </div>
           </ng-container>
-          <ng-template #noVisitors><div class="empty">No visitors today yet.</div></ng-template>
+          <ng-template #noVisitors><div class="empty">No visitors in this range. Try “All Time”.</div></ng-template>
         </div>
       </div>
 
