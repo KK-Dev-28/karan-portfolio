@@ -36,12 +36,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   activePickerTab: 'themes' | 'layouts' = 'themes';
 
   links = [
-    { label: 'About',      id: 'story' },
-    { label: 'Work',       id: 'projects' },
-    { label: 'Skills',     id: 'skills' },
-    { label: 'Experience', id: 'experience' },
-    { label: 'Gigs',       id: 'gigs' },
-    { label: 'Contact',    id: 'contact' },
+    { label: 'Stack',    id: 'architecture' },
+    { label: 'Journey',  id: 'journey' },
+    { label: 'Services', id: 'services' },
+    { label: 'Work',     id: 'projects' },
+    { label: 'Kits',     id: 'kits' },
+    { label: 'Contact',  id: 'contact' },
   ];
 
   private observer!: IntersectionObserver;

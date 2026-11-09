@@ -51,6 +51,7 @@ html { scroll-behavior: smooth; font-size: 16px; }
   --ambient-3: var(--electric-rgb);
 
   --font-head: 'Space Grotesk', sans-serif;
+  --font-display: var(--font-head);
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
@@ -85,6 +86,92 @@ html { scroll-behavior: smooth; font-size: 16px; }
   --grid-cols-3: 3;
   --grid-cols-4: 4;
   --grid-tile-min: 280px; /* base tile width for repeat(auto-fill/auto-fit, minmax(--grid-tile-min, 1fr)) grids */
+}
+
+/* ── Mission Control — the Figma "Portfolio Mission Control" design: charcoal
+   console, warm cream ink, gold signal, teal + coral status lights. ── */
+html[data-theme="mission-control"] {
+  --bg:        #0a0b0c;
+  --bg-2:      #0e0f11;
+  --bg-3:      #131417;
+  --card:      #17181c;
+  --border:    #2a2c33;
+  --accent:      #e3b341;
+  --accent-rgb:  227,179,65;
+  --accent-2:    #f0c860;
+  --accent-2-rgb: 240,200,96;
+  --accent-glow: rgba(227,179,65,.2);
+
+  --text:      #f1ede3;
+  --text-muted:#a19d90;
+  --text-dim:  #77746b;
+
+  --violet:      #b8860b;
+  --violet-rgb:  184,134,11;
+  --violet-glow: rgba(184,134,11,.18);
+  --electric:      #5eead4;
+  --electric-rgb:  94,234,212;
+  --electric-glow: rgba(94,234,212,.16);
+  --emerald:   #5eead4;
+  --crimson:   #ff7a5c;
+
+  --ambient-1: var(--accent-rgb);
+  --ambient-2: var(--violet-rgb);
+  --ambient-3: var(--electric-rgb);
+
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --gradient-accent: linear-gradient(135deg, #e3b341 0%, #f0c860 100%);
+  --shadow-card: 0 24px 48px -18px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.05) inset;
+  --shadow-glow: 0 0 0 1px rgba(227,179,65,.35), 0 18px 40px -12px rgba(0,0,0,.6);
+  --glass-bg:     rgba(255,255,255,.025);
+  --glass-border: rgba(255,255,255,.07);
+  --nav-bg:          rgba(14,15,17,.72);
+  --nav-bg-scrolled: rgba(14,15,17,.92);
+  --star-opacity:    .08;
+  --ambient-opacity: .22;
+}
+
+/* ── Mission Control Light — the same design on warm paper. ── */
+html[data-theme="mission-light"] {
+  --bg:        #f4f0e6;
+  --bg-2:      #ede7d9;
+  --bg-3:      #e4ddcc;
+  --card:      #fbf9f3;
+  --border:    #d9d1be;
+  --accent:      #a8760a;
+  --accent-rgb:  168,118,10;
+  --accent-2:    #e3b341;
+  --accent-2-rgb: 227,179,65;
+  --accent-glow: rgba(227,179,65,.22);
+
+  --text:      #17181c;
+  --text-muted:#5b584f;
+  --text-dim:  #878275;
+
+  --violet:      #8a6408;
+  --violet-rgb:  138,100,8;
+  --violet-glow: rgba(138,100,8,.12);
+  --electric:      #0f9488;
+  --electric-rgb:  15,148,136;
+  --electric-glow: rgba(15,148,136,.12);
+  --emerald:   #0f9488;
+  --crimson:   #d9533a;
+
+  --ambient-1: var(--accent-2-rgb);
+  --ambient-2: var(--violet-rgb);
+  --ambient-3: var(--electric-rgb);
+
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --gradient-accent: linear-gradient(135deg, #e3b341 0%, #f0c860 100%);
+  --shadow-card: 0 18px 36px -20px rgba(60,48,20,.25), 0 1px 0 rgba(255,255,255,.9) inset;
+  --shadow-glow: 0 0 0 1px rgba(168,118,10,.35), 0 14px 32px -14px rgba(60,48,20,.3);
+  --glass-bg:     rgba(23,24,28,.03);
+  --glass-border: rgba(23,24,28,.08);
+  --noise-opacity:   .05;
+  --ambient-opacity: .14;
+  --star-opacity:    .04;
+  --nav-bg:          rgba(251,249,243,.8);
+  --nav-bg-scrolled: rgba(251,249,243,.95);
 }
 
 /* ── Blueprint — schematic navy canvas, cyan ink ── */
@@ -727,7 +814,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
 
 /* Consistent vertical rhythm, driven by the active layout's --section-py.
    Component styles win on specificity, hence the !important. */
-section[class*="-sec"]  { padding: var(--section-py) 0 !important; }
+/* Mission Control sections (.mc-sec) set their own padding to match the Figma frames. */
+section[class*="-sec"]:not(.mc-sec)  { padding: var(--section-py) 0 !important; }
 section.story-sec       { padding: calc(var(--section-py) * 1.27) 0 calc(var(--section-py) * 1.45) !important; }
 
 /* Dossier gets a hairline rule between sections — the one structural
@@ -740,7 +828,9 @@ html[data-layout="dossier"] section[class*="-sec"]:first-of-type {
 }
 
 /* Skip rendering off-screen sections entirely — massive scroll/initial-paint win */
-section[class*="-sec"] {
+/* Not the Mission Control sections: their section nav and anchor links need
+   real heights, which content-visibility only estimates. */
+section[class*="-sec"]:not(.mc-sec) {
   content-visibility: auto;
   contain-intrinsic-size: auto 720px;
 }
@@ -877,3 +967,70 @@ html[data-motion="reduced"] *::after {
   animation-iteration-count: 1 !important;
   transition-duration: .01ms !important;
 }
+
+/* ═════════════════════════════════════════════════════════════════════════
+   Mission Control sections (components/mc/*) — shared section chrome from the
+   Figma "Portfolio Mission Control" design: mono kicker, serif display title,
+   console cards, pill chips and the gold / ghost button pair.
+   ═════════════════════════════════════════════════════════════════════════ */
+.mc-sec {
+  position: relative; max-width: 1440px; margin: 0 auto;
+  padding: clamp(72px, 9vw, 120px) clamp(16px, 5.6vw, 80px);
+  scroll-margin-top: 72px; box-sizing: border-box;
+}
+.mc-kicker {
+  display: flex; align-items: center; gap: 8px; margin: 0;
+  font: 500 12px/1.2 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+}
+.mc-kicker .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--electric); box-shadow: 0 0 10px var(--electric); }
+.mc-title {
+  margin: 14px 0 0; text-wrap: balance;
+  font: 400 clamp(40px, 5.4vw, 72px)/1.04 var(--font-display); letter-spacing: -.015em; color: var(--text);
+}
+.mc-title em, .mc-em { font-style: italic; color: var(--accent-2); }
+html[data-theme="mission-light"] .mc-title em, html[data-theme="mission-light"] .mc-em { color: var(--accent); }
+.mc-card {
+  position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+  box-shadow: var(--shadow-card);
+}
+.mc-chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 99px;
+  border: 1px solid var(--border); background: var(--bg-2); color: var(--text-muted);
+  font: 500 12px var(--font-mono); letter-spacing: .02em; white-space: nowrap;
+}
+.mc-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.mc-tag {
+  display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 8px;
+  background: var(--bg-3); border: 1px solid var(--border); color: var(--text-muted);
+  font: 500 11px var(--font-mono);
+}
+.mc-mono { font: 500 12px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); }
+.mc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; padding: 0 28px;
+  border-radius: 99px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer;
+  font: 500 13px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
+  transition: transform .25s cubic-bezier(.2,.9,.2,1), box-shadow .25s, border-color .25s, background .25s;
+}
+.mc-btn:hover { transform: translateY(-2px); border-color: rgba(var(--accent-rgb), .6); }
+.mc-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.mc-btn--gold { background: #e3b341; border-color: #e3b341; color: #14110a; box-shadow: 0 16px 36px -14px rgba(227,179,65,.7); }
+.mc-btn--gold:hover { background: #f0c860; border-color: #f0c860; }
+.mc-link {
+  font: 500 12px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent);
+  text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer;
+}
+.mc-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.mc-field {
+  width: 100%; box-sizing: border-box; min-height: 48px; padding: 13px 16px; border-radius: 12px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text); font: 400 15px var(--font-body);
+  transition: border-color .2s, box-shadow .2s;
+}
+.mc-field::placeholder { color: var(--text-dim); }
+.mc-field:focus { outline: none; border-color: rgba(var(--accent-rgb), .7); box-shadow: 0 0 0 3px var(--accent-glow); }
+textarea.mc-field { min-height: 120px; resize: vertical; }
+.mc-label { display: block; margin: 0 0 8px; font: 500 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+
+/* Reveal on scroll — set by McRevealDirective. */
+.mc-reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.2,.9,.2,1), transform .8s cubic-bezier(.2,.9,.2,1); }
+.mc-reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .mc-reveal { opacity: 1; transform: none; transition: none; } }

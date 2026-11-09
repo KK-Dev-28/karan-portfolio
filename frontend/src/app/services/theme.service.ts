@@ -7,6 +7,8 @@ import { SiteContentService } from './site-content.service';
 import { LayoutsService } from './layouts.service';
 
 export type ThemeId =
+  | 'mission-control'
+  | 'mission-light'
   | 'midnight-gold'
   | 'blueprint'
   | 'terminal'
@@ -33,6 +35,20 @@ export interface ThemeMeta {
 export type LayoutMeta = LayoutDef;
 
 export const THEMES: ThemeMeta[] = [
+  {
+    id: 'mission-control',
+    label: 'Mission Control',
+    blurb: 'The Figma design: charcoal console, cream ink, gold signal, teal status lights.',
+    swatch: ['#0a0b0c', '#17181c', '#e3b341'],
+    dark: true,
+  },
+  {
+    id: 'mission-light',
+    label: 'Mission Control Light',
+    blurb: 'The same Mission Control design on warm paper.',
+    swatch: ['#f4f0e6', '#fbf9f3', '#e3b341'],
+    dark: false,
+  },
   {
     id: 'midnight-gold',
     label: 'Midnight Gold',
@@ -169,12 +185,17 @@ const LS_THEME    = 'kk_theme_id';
 const LS_LAYOUT   = 'kk_layout_id';
 const LS_DESIGN   = 'kk_design';
 const LS_OVERRIDE = 'kk_appearance_override';
+/* Bumped with the Mission Control redesign. A site-default theme saved by an
+   older admin build is ignored so the new design shows; saving a theme from
+   Admin again records this version and takes effect as before. */
+const DESIGN_VERSION = 3;
+const DEFAULT_THEME: ThemeId = 'mission-control';
 const LEGACY_MODE  = 'kk_theme_mode';
 const LAYOUT_CSS_EL_ID = 'kk-layout-css';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private theme: ThemeId   = 'midnight-gold';
+  private theme: ThemeId   = DEFAULT_THEME;
   private layout: LayoutId = 'standard';
   private design: DesignConfig = defaultDesign();
 
@@ -202,7 +223,8 @@ export class ThemeService {
     /* Must run before any layout is applied, or the first paint would have no
        structural tokens and the page would visibly resettle. */
     this.syncLayoutStylesheet();
-    this.applyTheme(this.readLocal(LS_THEME, THEMES, 'midnight-gold'));
+    const chosen = localStorage.getItem(LS_OVERRIDE) === '1';
+    this.applyTheme(chosen ? this.readLocal(LS_THEME, THEMES, DEFAULT_THEME) : DEFAULT_THEME);
     this.applyLayout(this.readLocal(LS_LAYOUT, this.layouts(), DEFAULT_LAYOUT_ID));
     this.applyDesign(this.readLocalDesign(), false);
     this.loadGeneratedLayouts();
@@ -212,7 +234,7 @@ export class ThemeService {
       next: (data) => {
         if (!data) return;
         if (!hasOverride) {
-          if (isThemeId(data.theme))   this.applyTheme(data.theme, true);
+          if (isThemeId(data.theme) && (data.designVersion ?? 0) >= DESIGN_VERSION) this.applyTheme(data.theme, true);
           if (isLayoutId(data.layout)) this.applyLayout(data.layout, true);
           this.applyDesign(normalizeDesign(data), true);
         }
@@ -261,6 +283,7 @@ export class ThemeService {
   private persistSiteDefault() {
     return this.siteContent.updateSection('appearance', {
       theme:     this.theme,
+      designVersion: DESIGN_VERSION,
       layout:    this.layout,
       tokens:    this.design.tokens,
       motion:    this.design.motion,

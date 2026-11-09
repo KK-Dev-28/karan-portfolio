@@ -37,8 +37,8 @@ import { VisitorService } from '../../services/visitor.service';
       background:radial-gradient(circle,var(--accent-glow),transparent 65%);pointer-events:none}
     .wc-kicker{position:relative;font:500 11px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
     .wc-wave{display:inline-block;transform-origin:70% 70%;animation:wave 1.8s 0.6s ease-in-out 2}
-    h2{position:relative;font:700 26px/1.1 var(--font-head);letter-spacing:-.02em;margin:0 0 10px}
-    h2 em{font-style:normal;background:var(--gradient-accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+    h2{position:relative;font:400 32px/1.05 var(--font-display);letter-spacing:-.01em;margin:0 0 10px}
+    h2 em{font-style:italic;color:var(--accent-2)}
     .wc-copy{position:relative;font-size:13px;line-height:1.55;color:var(--text-muted);margin:0 0 14px}
     .wc-in{position:relative;width:100%;box-sizing:border-box;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--border);
       background:var(--bg);color:var(--text);font:inherit;margin-bottom:12px}

@@ -1,97 +1,59 @@
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent }      from '../../components/navbar/navbar.component';
-import { HeroComponent }        from '../../components/hero/hero.component';
-import { ServicesComponent }    from '../../components/services/services.component';
-import { SkillsComponent }      from '../../components/skills/skills.component';
-import { ProjectsComponent }    from '../../components/projects/projects.component';
-import { ExperienceComponent }  from '../../components/experience/experience.component';
-import { HirePricingComponent } from '../../components/hire-pricing/hire-pricing.component';
-import { TestimonialsComponent } from '../../components/testimonials/testimonials.component';
-import { ReviewsComponent }     from '../../components/reviews/reviews.component';
-import { FaqComponent }         from '../../components/faq/faq.component';
-import { ContactComponent }     from '../../components/contact/contact.component';
-import { FooterComponent }      from '../../components/footer/footer.component';
 import { LoadingScreenComponent } from '../../components/loading-screen/loading-screen.component';
-import { DigitalProductsComponent } from '../../components/digital-products/digital-products.component';
-import { StoryComponent } from '../../components/story/story.component';
-import { SidebarNavComponent } from '../../components/sidebar-nav/sidebar-nav.component';
 import { BugHuntComponent } from '../../components/bug-hunt/bug-hunt.component';
 import { PopularityComponent } from '../../components/popularity/popularity.component';
+import { McHeroComponent } from '../../components/mc/mc-hero.component';
+import { McArchitectureComponent } from '../../components/mc/mc-architecture.component';
+import { McJourneyComponent } from '../../components/mc/mc-journey.component';
+import { McServicesComponent } from '../../components/mc/mc-services.component';
+import { McWorkComponent } from '../../components/mc/mc-work.component';
+import { McKitsComponent } from '../../components/mc/mc-kits.component';
+import { McReviewsComponent } from '../../components/mc/mc-reviews.component';
+import { McFaqComponent } from '../../components/mc/mc-faq.component';
+import { McContactComponent } from '../../components/mc/mc-contact.component';
+import { McFooterComponent } from '../../components/mc/mc-footer.component';
+import { McSectionNavComponent } from '../../components/mc/mc-section-nav.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
   imports: [
-    CommonModule,
-    LoadingScreenComponent,
-    SidebarNavComponent,
-    BugHuntComponent,
-    PopularityComponent,
-    NavbarComponent,
-    HeroComponent,
-    ServicesComponent,
-    SkillsComponent,
-    ProjectsComponent,
-    ExperienceComponent,
-    HirePricingComponent,
-    TestimonialsComponent,
-    ReviewsComponent,
-    FaqComponent,
-    ContactComponent,
-    FooterComponent,
-    StoryComponent,
-    DigitalProductsComponent,
+    CommonModule, LoadingScreenComponent, NavbarComponent, BugHuntComponent, PopularityComponent,
+    McHeroComponent, McArchitectureComponent, McJourneyComponent, McServicesComponent, McWorkComponent,
+    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent,
   ],
-  /* Nine sections were taken off this page: GitHub activity, demos, the survey
-     banner, the journal feed, gigs, booking, the estimator, source offering and
-     the newsletter strip. Twenty-two sections meant the work itself sat sixth,
-     below services and skills, and anything past about the tenth was reached by
-     almost nobody — so the weakest material was crowding out the strongest. The
-     components are untouched and a removed section is one import and one tag
-     from coming back, or from getting a route of its own.
-
-     The 3D cursor, the scrolling marquee and the command palette were removed
-     from the page. They competed with the content for a visitor's attention and
-     the cursor in particular overrode normal pointer behaviour, which reads as
-     a demo rather than as a developer who ships. The components still exist and
-     can be put back by restoring their import and tag. Theme and layout
-     switching, which the palette also hosted, lives in the navbar and the
-     sidebar. */
+  /* The page follows the Figma file "Karan Kapoor — Portfolio Mission Control
+     (Full Design)", in its section order: radar hero, system architecture, the
+     journey road, the six service modules, selected work, starter kits and
+     engagement tiers, reviews, FAQ and the closing contact. The bug-hunt game
+     and the public visitor stats are extras kept from the previous page. The
+     earlier section components (projects, skills, story, pricing, …) are
+     untouched and can be put back by restoring an import and a tag. */
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
-    <app-sidebar-nav></app-sidebar-nav>
     <div class="global-stars" aria-hidden="true"></div>
     <app-navbar></app-navbar>
+    <mc-section-nav [ids]="sections"></mc-section-nav>
 
-    <!-- Proof first. Work is the thing a visitor is deciding on, and it used to
-         sit behind services and skills where many never reached it. -->
-    <app-hero></app-hero>
-    <app-projects></app-projects>
-    <app-skills></app-skills>
-
-    <!-- Who I am: career and education, then the story behind it. -->
-    <app-experience></app-experience>
-    <app-story></app-story>
+    <mc-hero></mc-hero>
+    <mc-architecture></mc-architecture>
+    <mc-journey></mc-journey>
+    <mc-services></mc-services>
+    <mc-work></mc-work>
     <app-bug-hunt></app-bug-hunt>
-
-    <!-- What I can be hired for, and on what terms. -->
-    <app-services></app-services>
-    <app-hire-pricing></app-hire-pricing>
-    <app-digital-products></app-digital-products>
-
-    <!-- Other people vouching, and the form that collects it. -->
-    <app-testimonials></app-testimonials>
-    <app-reviews></app-reviews>
-
+    <mc-kits></mc-kits>
+    <mc-reviews></mc-reviews>
+    <mc-faq></mc-faq>
     <app-popularity></app-popularity>
-    <app-faq></app-faq>
-    <app-contact></app-contact>
-    <app-footer></app-footer>
+    <mc-contact></mc-contact>
+    <mc-footer></mc-footer>
   `,
 })
 export class HomePageComponent implements AfterViewInit, OnDestroy {
   showLoader = true;
+  readonly sections = ['hero', 'architecture', 'journey', 'services', 'projects', 'play', 'kits', 'reviews', 'faq', 'contact'];
   private revealObs!: IntersectionObserver;
 
   ngAfterViewInit() {
