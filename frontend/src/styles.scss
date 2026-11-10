@@ -1117,3 +1117,6 @@ section.fx-off, section.fx-off *, section.fx-off *::before, section.fx-off *::af
 
 /* Space held for a home-page section until its @defer block renders. */
 .mc-ph { min-height: 70vh; }
+
+/* Boot sequence already played this session (set by the inline script in index.html). */
+html.kk-booted app-loading-screen { display: none; }

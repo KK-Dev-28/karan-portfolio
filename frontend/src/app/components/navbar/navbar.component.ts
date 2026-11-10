@@ -46,7 +46,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { label: 'FAQ',          id: 'faq' },
   ];
 
-  private observer!: IntersectionObserver;
 
   constructor(
     private fb: FormBuilder,
@@ -60,32 +59,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.layouts = this.themeSvc.layouts();
     this.currentTheme = this.themeSvc.getTheme();
     this.currentLayout = this.themeSvc.getLayout();
-    this.initSectionObserver();
   }
 
-  ngOnDestroy() {
-    this.observer?.disconnect();
-  }
-
-  private initSectionObserver() {
-    const sectionIds = ['hero', ...this.links.map(l => l.id)];
-    this.observer = new IntersectionObserver(
-      entries => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            this.activeSection = entry.target.id;
-          }
-        }
-      },
-      { rootMargin: '-40% 0px -55% 0px' },
-    );
-    setTimeout(() => {
-      sectionIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) this.observer.observe(el);
-      });
-    }, 300);
-  }
+  ngOnDestroy() {}
 
   @HostListener('window:scroll')
   onScroll() {
@@ -93,6 +69,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const docHeight = document.body.scrollHeight - window.innerHeight;
     this.scrollPct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
     this.scrolled = scrollTop > 60;
+    // Active link: the last section whose top has passed 40% of the viewport.
+    // Checked on scroll rather than observed once, because the home page's
+    // sections render after load (@defer) and the page is prerendered.
+    const line = window.innerHeight * .4;
+    let active = 'hero';
+    for (const id of this.links.map(l => l.id)) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= line) active = id;
+    }
+    this.activeSection = active;
     if (this.menuOpen && scrollTop > 80) this.menuOpen = false;
   }
 

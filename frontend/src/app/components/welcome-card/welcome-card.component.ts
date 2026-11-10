@@ -66,5 +66,5 @@ export class WelcomeCardComponent implements OnInit {
   readonly ready = signal(false);
   readonly partOfDay = (h => h < 5 ? 'Up late' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening')(new Date().getHours());
 
-  ngOnInit() { setTimeout(() => this.ready.set(true), 2500); }
+  ngOnInit() { if (typeof window !== 'undefined') setTimeout(() => this.ready.set(true), 2500); }
 }

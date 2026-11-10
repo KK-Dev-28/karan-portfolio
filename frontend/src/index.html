@@ -10,8 +10,10 @@
     (function () {
       try {
         var root = document.documentElement;
-        root.setAttribute('data-theme',  localStorage.getItem('kk_theme_id')  || 'midnight-gold');
+        root.setAttribute('data-theme',  localStorage.getItem('kk_theme_id')  || 'mission-control');
         root.setAttribute('data-layout', localStorage.getItem('kk_layout_id') || 'standard');
+        // The prerendered page includes the boot sequence; hide it at once if it already played this session.
+        if (sessionStorage.getItem('kk_booted') === '1') root.classList.add('kk-booted');
 
         var RGB_TWIN = { '--accent': '--accent-rgb', '--accent-2': '--accent-2-rgb', '--violet': '--violet-rgb', '--electric': '--electric-rgb' };
         function hexToRgb(h) {

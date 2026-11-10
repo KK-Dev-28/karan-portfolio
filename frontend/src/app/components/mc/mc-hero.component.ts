@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, afterNextRender, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcScrollTo } from './mc-shared';
 
@@ -139,7 +139,7 @@ import { UiSoundService } from '../../services/ui-sound.service';
     @media (prefers-reduced-motion:reduce){.sweep,.ping,.title{animation:none}}
   `],
 })
-export class McHeroComponent implements OnInit, OnDestroy {
+export class McHeroComponent implements OnDestroy {
   private host = inject(ElementRef<HTMLElement>);
   private zone = inject(NgZone);
   private raf = 0;
@@ -160,7 +160,14 @@ export class McHeroComponent implements OnInit, OnDestroy {
     });
   };
 
-  ngOnInit() {
+  /* Started after the first browser render: the page is prerendered, and the
+     clock / pointer / scroll state would otherwise differ from the static HTML
+     during hydration. Never runs at build time. */
+  constructor() {
+    afterNextRender(() => this.start());
+  }
+
+  private start() {
     this.zone.runOutsideAngular(() => this.startTicks());
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     this.zone.runOutsideAngular(() => {
@@ -169,6 +176,7 @@ export class McHeroComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy() {
+    if (typeof window === 'undefined') return;
     this.ticks.forEach(clearInterval);
     removeEventListener('pointermove', this.onMove);
     removeEventListener('scroll', this.onScroll);

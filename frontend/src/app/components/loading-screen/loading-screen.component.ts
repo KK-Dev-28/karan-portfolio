@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, PLATFORM_ID, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 interface Line { text: string; status?: string }
 
@@ -31,8 +31,11 @@ export class LoadingScreenComponent implements OnInit, OnDestroy {
   hiding = false;
   shown: Line[] = [];
   private timers: ReturnType<typeof setTimeout>[] = [];
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
+    // Prerendered with the page so it covers it from the first paint; the log and iris run in the browser.
+    if (!isPlatformBrowser(this.platformId)) return;
     let seen = false;
     try { seen = sessionStorage.getItem(SEEN_KEY) === '1'; sessionStorage.setItem(SEEN_KEY, '1'); } catch {}
     if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) { this.finish(); return; }
@@ -41,7 +44,7 @@ export class LoadingScreenComponent implements OnInit, OnDestroy {
     addEventListener('keydown', this.skip);
   }
 
-  ngOnDestroy() { this.timers.forEach(clearTimeout); removeEventListener('keydown', this.skip); }
+  ngOnDestroy() { this.timers.forEach(clearTimeout); if (isPlatformBrowser(this.platformId)) removeEventListener('keydown', this.skip); }
 
   skip = () => { if (!this.hiding) { this.timers.forEach(clearTimeout); this.shown = LOG; this.open(); } };
 

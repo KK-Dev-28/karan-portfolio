@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID, Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { VisitorService } from './services/visitor.service';
@@ -15,7 +16,7 @@ import { WelcomeCardComponent } from './components/welcome-card/welcome-card.com
   template: `
     <a class="skip-link" href="#main-content">Skip to content</a>
     <main id="main-content" tabindex="-1"><router-outlet></router-outlet></main>
-    <app-welcome-card />
+    <app-welcome-card ngSkipHydration />
   `,
 })
 export class AppComponent implements OnInit {
@@ -25,11 +26,16 @@ export class AppComponent implements OnInit {
     private visitor: VisitorService,
     private themeSvc: ThemeService,
     private seo: SeoService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   ngOnInit() {
-    this.themeSvc.init();
-    this.greetDevtools();
+    // Theme storage and the console greeting are browser-only; the home page is
+    // also rendered at build time (prerender), where neither exists.
+    if (isPlatformBrowser(this.platformId)) {
+      this.themeSvc.init();
+      this.greetDevtools();
+    }
     this.router.events.pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: any) => {
         this.visitor.log(e.urlAfterRedirects);

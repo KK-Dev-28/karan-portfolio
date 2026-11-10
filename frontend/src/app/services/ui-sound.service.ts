@@ -15,6 +15,7 @@ export class UiSoundService {
   private master?: GainNode;
 
   constructor() {
+    if (typeof window === 'undefined') return;
     // A light tick for the site's main controls, delegated once.
     addEventListener('click', e => {
       const t = (e.target as Element | null)?.closest?.('.mc-btn, .chip, .vote, .filter, .tier, .mc-link, .nav-cta');

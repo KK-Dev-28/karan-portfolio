@@ -1,6 +1,7 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withInMemoryScrolling, Routes } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AuthGuard } from './guards/auth.guard';
@@ -64,7 +65,7 @@ const routes: Routes = [
     loadComponent: () => import('./pages/resume/resume.page').then(m => m.ResumePageComponent),
     data: {
       seo: {
-        title: 'Resume — Karan Kapoor',
+        title: 'Resume',
         description: 'Full Stack Developer — Angular and ASP.NET Web API. Experience, skills, education and awards.',
         path: '/resume',
       },
@@ -163,7 +164,9 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),
     provideAnimations(),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
+    // The home page is prerendered; hydration adopts that HTML instead of re-rendering it.
+    provideClientHydration(withEventReplay()),
     AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],

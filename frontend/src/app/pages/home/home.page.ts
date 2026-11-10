@@ -1,5 +1,5 @@
-import { Component, AfterViewInit, ElementRef, OnDestroy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, AfterViewInit, ElementRef, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NavbarComponent }      from '../../components/navbar/navbar.component';
 import { LoadingScreenComponent } from '../../components/loading-screen/loading-screen.component';
 import { BugHuntComponent } from '../../components/bug-hunt/bug-hunt.component';
@@ -45,7 +45,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
      main-thread block on mid-range phones and held back the first paint. */
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
-    <app-navbar></app-navbar>
+    <app-navbar ngSkipHydration></app-navbar>
     <mc-hero></mc-hero>
 
     @defer (on idle) {
@@ -77,8 +77,10 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
   private revealObs!: IntersectionObserver;
   private host = inject(ElementRef<HTMLElement>);
   private removeFx?: () => void;
+  private platformId = inject(PLATFORM_ID);
 
   ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return; // prerender: no DOM APIs
     this.removeFx = installMcFx(this.host.nativeElement);
     this.revealObs = new IntersectionObserver(
       entries => {

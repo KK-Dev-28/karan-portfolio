@@ -20,7 +20,8 @@ function isTokenValid(token: string | null): boolean {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private loggedIn$ = new BehaviorSubject<boolean>(isTokenValid(localStorage.getItem(TOKEN_KEY)));
+  // localStorage is absent while the home page is prerendered at build time.
+  private loggedIn$ = new BehaviorSubject<boolean>(isTokenValid(typeof localStorage === 'undefined' ? null : localStorage.getItem(TOKEN_KEY)));
   isLoggedIn$ = this.loggedIn$.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -41,6 +42,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
+    if (typeof localStorage === 'undefined') return null;
     const token = localStorage.getItem(TOKEN_KEY);
     if (!isTokenValid(token)) {
       localStorage.removeItem(TOKEN_KEY);
