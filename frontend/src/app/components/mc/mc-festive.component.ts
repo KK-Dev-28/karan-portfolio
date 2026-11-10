@@ -65,7 +65,7 @@ const PALETTES: Record<Fx, string[]> = {
     <canvas #cv class="fx" aria-hidden="true" *ngIf="occ"></canvas>
     <div class="greet" *ngIf="occ && show()" [class.away]="!atTop()" role="status">
       <span class="ic" aria-hidden="true">{{ occ.icon }}</span>
-      <span class="tx"><b>{{ occ.greet }}</b> — {{ occ.sub }}<small *ngIf="occ.hint"> · {{ occ.hint }}</small></span>
+      <span class="tx"><b>{{ occ.greet }}</b><span class="sub"> — {{ occ.sub }}</span><small *ngIf="occ.hint"> · {{ occ.hint }}</small></span>
       <button (click)="hide()" aria-label="Dismiss greeting">×</button>
     </div>
   `,
@@ -84,7 +84,9 @@ const PALETTES: Record<Fx, string[]> = {
     button{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer}
     @keyframes drop{from{opacity:0;transform:translate(-50%,-16px)}}
     @keyframes sway{50%{transform:rotate(-10deg) scale(1.1)}}
-    @media (max-width:700px){.tx small{display:none}.greet{top:70px}}
+    /* Phones: full-width single line, subtitle dropped, clear of the headline. */
+    @media (max-width:700px){.greet{left:12px;right:12px;transform:none;top:70px;padding:7px 8px 7px 12px;animation:none}
+      .tx{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.tx b{font-size:16px}.tx small,.sub{display:none}}
     @media (prefers-reduced-motion:reduce){.greet,.ic{animation:none}}
   `],
 })
