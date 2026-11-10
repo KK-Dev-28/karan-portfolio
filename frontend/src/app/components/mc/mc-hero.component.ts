@@ -186,10 +186,10 @@ export class McHeroComponent implements OnDestroy {
   private sound = inject(UiSoundService);
   readonly sweep = SWEEP_SECONDS;
   readonly nodes: RadarNode[] = [
-    { label: 'Angular 19', dx: -250, dy: -190, tone: 'gold', intel: 'Standalone components, signals and RxJS. The client side of everything here, LocalHaat included.' },
+    { label: 'Angular 19', dx: -250, dy: -190, tone: 'gold', intel: 'Standalone components, signals and RxJS. The client side of Swiftec and four concurrent client projects.' },
     { label: 'NestJS', dx: 230, dy: -260, tone: 'teal', intel: 'The API gateway: CQRS command and query buses, guards and rate limits.' },
     { label: 'PostgreSQL', dx: 330, dy: 60, tone: 'teal', intel: 'The data layer, with TypeORM entities and migrations.' },
-    { label: '.NET 8', dx: 120, dy: 300, tone: 'teal', intel: 'Backend for the multi-store Retail ERP, syncing store servers to head office.' },
+    { label: 'ASP.NET', dx: 120, dy: 300, tone: 'teal', intel: 'Web API services behind Swiftec and the multi-branch inventory platform, on SQL Server.' },
     { label: 'Three.js', dx: -300, dy: 170, tone: 'gold', intel: 'Interactive 3D and motion for front ends that need to feel alive.' },
     { label: 'Claude SDK', dx: -60, dy: -370, tone: 'coral', intel: 'AI features, like the ATS résumé analyzer that scores CVs against a job.' },
     { label: 'Railway', dx: -120, dy: 340, tone: 'dim', intel: 'Where the APIs deploy, alongside Vercel for front ends, via CI/CD.' },

@@ -9,7 +9,7 @@ interface Opt { id: string; label: string; fit: number; stack?: string; note?: s
 const KINDS: Opt[] = [
   { id: 'webapp', label: 'Web app', fit: 1, stack: 'Angular 19 · NestJS · PostgreSQL' },
   { id: 'saas', label: 'SaaS product', fit: 1, stack: 'Angular 19 · NestJS · PostgreSQL' },
-  { id: 'api', label: 'API / backend', fit: 1, stack: 'NestJS or .NET 8 · PostgreSQL' },
+  { id: 'api', label: 'API / backend', fit: 1, stack: 'NestJS or ASP.NET Web API · PostgreSQL or SQL Server' },
   { id: 'ai', label: 'AI feature', fit: .95, stack: 'Claude SDK · FastAPI · NestJS' },
   { id: 'site', label: 'Marketing site', fit: .9, stack: 'Angular 19 · Vercel' },
   { id: 'rescue', label: 'Fix an existing app', fit: .9, stack: 'Your stack, audited first' },

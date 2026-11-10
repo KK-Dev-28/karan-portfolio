@@ -38,7 +38,7 @@ export class ResumePageComponent implements OnInit {
 
   ngOnInit() {
     this.cms.getSection('resume').subscribe({
-      next: (data: any) => { this.cv = data ?? null; this.loading = false; },
+      next: (data: any) => { this.cv = data ? repairText(data) : null; this.loading = false; },
       error: () => { this.loading = false; },
     });
   }
@@ -56,4 +56,21 @@ export class ResumePageComponent implements OnInit {
 
   /** Tel/mailto need the raw value; the page shows the formatted one. */
   telHref(phone: string) { return 'tel:' + (phone || '').replace(/[^\d+]/g, ''); }
+}
+
+/* Some resume text was saved after a UTF-8 → Windows-1252 round trip, so
+   "—" arrives as "â€”" and "·" as "Â·". Repaired on display, recursively. */
+const MOJIBAKE: [RegExp, string][] = [
+  [/\u00e2\u20ac\u201d/g, '\u2014'], // em dash
+  [/\u00e2\u20ac\u201c/g, '\u2013'], // en dash
+  [/\u00e2\u20ac\u02dc/g, '\u2018'], [/\u00e2\u20ac\u2122/g, '\u2019'], // single quotes
+  [/\u00e2\u20ac\u0153/g, '\u201c'], [/\u00e2\u20ac\u2026/g, '\u2026'], // open quote, ellipsis
+  [/\u00e2\u20ac[\u009d\u00ad]?/g, '\u201d'], // close quote (last: the shortest pattern)
+  [/\u00c2\u00b7/g, '\u00b7'], [/\u00c2\u00a0/g, ' '], [/\u00c2(?=[\u0080-\uffff])/g, ''],
+];
+function repairText<T>(v: T): T {
+  if (typeof v === 'string') return MOJIBAKE.reduce((s, [re, to]) => s.replace(re, to), v as string) as T;
+  if (Array.isArray(v)) return v.map(repairText) as T;
+  if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, repairText(x)])) as T;
+  return v;
 }

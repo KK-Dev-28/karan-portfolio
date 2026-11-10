@@ -90,12 +90,12 @@ export class McJourneyComponent implements OnInit, OnDestroy {
 
   readonly stops: Stop[] = [
     { year: '2017', title: 'School, and a First Look', text: 'Matriculation, V.D.M. High School · 70%', x: 100, y: 246, up: true },
-    { year: '2019', title: 'Senior Secondary', text: 'Computers become a direction', x: 260, y: 185, up: false },
-    { year: '2020', title: 'BCA begins', text: 'Fundamentals + first projects', x: 430, y: 250, up: true },
-    { year: '2023', title: 'BCA complete', text: '93% overall · 2nd in Panjab University', x: 600, y: 372, up: false },
-    { year: '2023', title: 'First role', text: 'Angular + .NET · CS Soft Solutions', x: 790, y: 376, up: true },
-    { year: '2024', title: 'MCA + LocalHaat', text: 'Postgraduate study, hyperlocal product', x: 990, y: 229, up: false },
-    { year: 'Now', title: 'Shipping at scale', text: 'Software Developer · full-stack ERP', x: 1190, y: 202, up: true },
+    { year: '2019', title: 'Diploma in Computer Applications', text: 'Ideal Computer Center', x: 260, y: 185, up: false },
+    { year: '2020', title: 'Senior Secondary', text: 'P.S.K.N. Sr. Sec. School · 85%', x: 430, y: 250, up: true },
+    { year: '2023', title: 'BCA complete', text: 'Anglo Sanskrit College, Khanna · 93%', x: 600, y: 372, up: false },
+    { year: '2024', title: 'Intern → Junior Developer', text: 'CS Soft Solutions, Mohali · Angular + ASP.NET', x: 790, y: 376, up: true },
+    { year: '2025', title: 'Software Developer', text: 'Leading Swiftec, a head-office + store retail platform', x: 990, y: 229, up: false },
+    { year: 'Now', title: 'MCA + LocalHaat', text: 'MCA at LPU alongside full-time work', x: 1190, y: 202, up: true },
   ];
   /** A smooth road through every stop (Catmull-Rom → cubic Bézier). */
   readonly d = road([{ x: 40, y: 230 }, ...this.stops, { x: 1320, y: 260 }]);

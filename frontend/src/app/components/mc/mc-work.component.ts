@@ -58,9 +58,9 @@ interface Work { kind: string; name: string; blurb: string; stack: string; route
 })
 export class McWorkComponent {
   readonly work: Work[] = [
-    { kind: 'Hyperlocal marketplace', name: 'LocalHaat', blurb: 'Orders, vendors, live delivery tracking', stack: 'Angular · NestJS · PostgreSQL', route: '/case-study/local-shopping-survey' },
+    { kind: 'Hyperlocal marketplace · MCA capstone', name: 'LocalHaat', blurb: 'Connects shoppers with nearby street vendors', stack: 'React · Vite · Firebase · Supabase · PWA', route: '/case-study/local-shopping-survey' },
     { kind: 'AI scoring engine', name: 'ATS Résumé Analyzer', blurb: 'Scores résumés against a job description', stack: 'FastAPI · NLP · Claude SDK', route: '/resume-review' },
-    { kind: 'Multi-store head office', name: 'Retail ERP', blurb: 'Head office portal syncing store servers', stack: 'Angular · .NET 8 · SQL Server', href: MC_LINKS.github },
+    { kind: 'Head office + store retail platform', name: 'Swiftec', blurb: 'Master data, store POS transactions and reporting', stack: 'Angular · ASP.NET Web API · SQL Server', href: MC_LINKS.github },
     { kind: 'Interactive 3D site', name: 'This Portfolio', blurb: 'Radar hero, live telemetry, voting kits', stack: 'Angular 19 · NestJS', href: 'https://github.com/KK-Dev-28/karan-portfolio' },
   ];
 }

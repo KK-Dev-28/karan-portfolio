@@ -815,7 +815,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); }
 /* Consistent vertical rhythm, driven by the active layout's --section-py.
    Component styles win on specificity, hence the !important. */
 /* Mission Control sections (.mc-sec) set their own padding to match the Figma frames. */
-section[class*="-sec"]:not(.mc-sec)  { padding: var(--section-py) 0 !important; }
+/* Not .mc-sec (sets its own) or .rz-sec (the resume is an A4 document). */
+section[class*="-sec"]:not(.mc-sec):not(.rz-sec)  { padding: var(--section-py) 0 !important; }
 section.story-sec       { padding: calc(var(--section-py) * 1.27) 0 calc(var(--section-py) * 1.45) !important; }
 
 /* Dossier gets a hairline rule between sections — the one structural
@@ -830,7 +831,7 @@ html[data-layout="dossier"] section[class*="-sec"]:first-of-type {
 /* Skip rendering off-screen sections entirely — massive scroll/initial-paint win */
 /* Not the Mission Control sections: their section nav and anchor links need
    real heights, which content-visibility only estimates. */
-section[class*="-sec"]:not(.mc-sec) {
+section[class*="-sec"]:not(.mc-sec):not(.rz-sec) {
   content-visibility: auto;
   contain-intrinsic-size: auto 720px;
 }

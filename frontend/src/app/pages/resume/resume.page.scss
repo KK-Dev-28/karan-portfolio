@@ -12,7 +12,7 @@ $strong:  #0b0d10;   // headings and names
 $muted:   #5a6372;   // dates, organisations, secondary text
 $faint:   #8b93a1;   // separators in the contact line
 $rule:    #dfe3e9;   // hairlines
-$accent:  #0d5546;   // single accent
+$accent:  #8a6408;   // single accent: Mission Control gold, darkened to read on paper
 
 .rz-wrap {
   background: #eceef1;
@@ -70,8 +70,9 @@ $accent:  #0d5546;   // single accent
 }
 .rz-name {
   margin: 0;
-  font-size: 22pt; font-weight: 800;
-  letter-spacing: -.021em; line-height: 1; color: $strong;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 30pt; font-weight: 400;
+  letter-spacing: -.01em; line-height: 1; color: $strong;
 }
 .rz-title {
   margin: 5px 0 0;
@@ -244,4 +245,15 @@ $accent:  #0d5546;   // single accent
   .rz-skill-row { flex-direction: column; gap: 1px; padding: 4px 0; }
   .rz-skill-label { flex: none; }
   .rz-role-head, .rz-edu-head, .rz-proj-head { flex-direction: column; gap: 2px; }
+}
+
+/* ── Mission Control screen chrome ───────────────────────────────────────────
+   On screen the paper sits on the site's charcoal console; print stays white. */
+@media screen {
+  .rz-wrap { background: radial-gradient(ellipse at 50% 0%, rgba(227,179,65,.12), transparent 60%), #0a0b0c; }
+  .rz-back { color: #f1ede3; }
+  .rz-hint { color: #a19d90; }
+  .rz-dl { background: #e3b341; color: #14110a; border-radius: 99px; padding: .7rem 1.4rem; }
+  .rz-loading { color: #a19d90; }
+  .rz-doc { box-shadow: 0 0 0 1px rgba(227,179,65,.35), 0 30px 80px -20px rgba(0,0,0,.8); }
 }
