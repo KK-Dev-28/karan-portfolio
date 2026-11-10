@@ -14,7 +14,7 @@ import { McBriefService, McRevealDirective, MC_LINKS } from './mc-shared';
     <div class="glow" aria-hidden="true"></div>
     <div class="grid">
       <div class="left">
-        <p class="mc-kicker">11 · Ready when you are</p>
+        <p class="mc-kicker">12 · Ready when you are</p>
         <h2 id="cta-title" class="cta">Let’s build something <span class="mc-em">that scales.</span></h2>
         <nav class="rows" aria-label="Contact channels">
           <a *ngFor="let l of channels" class="mc-card ch" [href]="l.href" [attr.target]="l.ext ? '_blank' : null" rel="noopener">

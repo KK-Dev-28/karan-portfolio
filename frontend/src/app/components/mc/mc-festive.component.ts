@@ -63,7 +63,7 @@ const PALETTES: Record<Fx, string[]> = {
   imports: [CommonModule],
   template: `
     <canvas #cv class="fx" aria-hidden="true" *ngIf="occ"></canvas>
-    <div class="greet" *ngIf="occ && show()" role="status">
+    <div class="greet" *ngIf="occ && show()" [class.away]="!atTop()" role="status">
       <span class="ic" aria-hidden="true">{{ occ.icon }}</span>
       <span class="tx"><b>{{ occ.greet }}</b> — {{ occ.sub }}<small *ngIf="occ.hint"> · {{ occ.hint }}</small></span>
       <button (click)="hide()" aria-label="Dismiss greeting">×</button>
@@ -76,6 +76,8 @@ const PALETTES: Record<Fx, string[]> = {
       max-width:calc(100vw - 32px);box-sizing:border-box;padding:9px 10px 9px 16px;border-radius:99px;
       background:var(--nav-bg-scrolled);border:1px solid rgba(var(--accent-rgb),.55);backdrop-filter:blur(12px);
       box-shadow:0 14px 34px -14px rgba(0,0,0,.7),0 0 28px rgba(var(--accent-rgb),.25);animation:drop .7s cubic-bezier(.2,.9,.2,1) both}
+    .greet{transition:opacity .35s,translate .35s}
+    .greet.away{opacity:0;translate:0 -12px;pointer-events:none}
     .ic{font-size:20px;animation:sway 2.4s ease-in-out infinite}
     .tx{font:400 14px var(--font-body);color:var(--text-muted)} .tx b{font:400 18px var(--font-display);color:var(--text)}
     .tx small{font:500 11px var(--font-mono);color:var(--accent);letter-spacing:.04em}
@@ -90,6 +92,9 @@ export class McFestiveComponent implements OnInit, OnDestroy {
   @ViewChild('cv') cv?: ElementRef<HTMLCanvasElement>;
   readonly occ = currentOccasion();
   readonly show = signal(false);
+  /** The greeting only shows near the top, so it never covers section headings. */
+  readonly atTop = signal(true);
+  private onScroll = () => { const t = scrollY < 320; if (t !== this.atTop()) this.zone.run(() => this.atTop.set(t)); };
   private zone = inject(NgZone);
   private ctx?: CanvasRenderingContext2D;
   private ps: P[] = [];
@@ -100,6 +105,7 @@ export class McFestiveComponent implements OnInit, OnDestroy {
     if (!this.occ) return;
     document.documentElement.setAttribute('data-occasion', this.occ.id);
     try { this.show.set(sessionStorage.getItem('kk_greet_' + this.occ.id) !== '0'); } catch { this.show.set(true); }
+    this.zone.runOutsideAngular(() => addEventListener('scroll', this.onScroll, { passive: true }));
     if (this.reduced) return;
     setTimeout(() => this.zone.runOutsideAngular(() => this.start()));
   }
@@ -108,6 +114,7 @@ export class McFestiveComponent implements OnInit, OnDestroy {
     cancelAnimationFrame(this.raf);
     removeEventListener('resize', this.resize);
     removeEventListener('click', this.onClick);
+    removeEventListener('scroll', this.onScroll);
     document.documentElement.removeAttribute('data-occasion');
   }
 

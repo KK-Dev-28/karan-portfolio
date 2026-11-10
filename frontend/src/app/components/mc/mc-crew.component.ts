@@ -18,7 +18,7 @@ const TOPICS = [
   imports: [CommonModule, FormsModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="crew" aria-labelledby="crew-title">
-    <p class="mc-kicker">12 · Mission crew</p>
+    <p class="mc-kicker">13 · Mission crew</p>
     <h2 id="crew-title" class="mc-title">Get the next launch <em>in your inbox</em></h2>
 
     <div class="mc-card panel mc-holo" mcReveal>

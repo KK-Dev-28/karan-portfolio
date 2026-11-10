@@ -19,7 +19,7 @@ const FALLBACK: Faq[] = [
   imports: [CommonModule],
   template: `
   <section class="mc-sec" id="faq" aria-labelledby="faq-title">
-    <p class="mc-kicker">10 · FAQ</p>
+    <p class="mc-kicker">11 · FAQ</p>
     <h2 id="faq-title" class="mc-title">Questions, answered</h2>
     <div class="list">
       <div *ngFor="let f of faqs(); let i = index" class="mc-card row" [class.open]="open() === i">

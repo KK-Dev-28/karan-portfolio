@@ -19,6 +19,7 @@ import { McProcessComponent } from '../../components/mc/mc-process.component';
 import { McFestiveComponent } from '../../components/mc/mc-festive.component';
 import { McMissionLogComponent } from '../../components/mc/mc-mission-log.component';
 import { McCrewComponent } from '../../components/mc/mc-crew.component';
+import { McScopeComponent } from '../../components/mc/mc-scope.component';
 import { McStarfieldComponent } from '../../components/mc/mc-starfield.component';
 import { installMcFx } from '../../components/mc/mc-fx';
 
@@ -28,7 +29,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
   imports: [
     CommonModule, LoadingScreenComponent, NavbarComponent, BugHuntComponent, PopularityComponent,
     McHeroComponent, McArchitectureComponent, McJourneyComponent, McServicesComponent, McWorkComponent,
-    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent, McProcessComponent, McFestiveComponent, McMissionLogComponent, McCrewComponent,
+    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent, McProcessComponent, McFestiveComponent, McMissionLogComponent, McCrewComponent, McScopeComponent,
   ],
   /* The page follows the Figma file "Karan Kapoor — Portfolio Mission Control
      (Full Design)", in its section order: radar hero, system architecture, the
@@ -53,6 +54,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
     <mc-work></mc-work>
     <app-bug-hunt></app-bug-hunt>
     <mc-kits></mc-kits>
+    <mc-scope></mc-scope>
     <mc-reviews></mc-reviews>
     <mc-faq></mc-faq>
     <app-popularity></app-popularity>
@@ -63,7 +65,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
 })
 export class HomePageComponent implements AfterViewInit, OnDestroy {
   showLoader = true;
-  readonly sections = ['hero', 'architecture', 'journey', 'services', 'process', 'projects', 'play', 'kits', 'reviews', 'faq', 'contact', 'crew'];
+  readonly sections = ['hero', 'architecture', 'journey', 'services', 'process', 'projects', 'play', 'kits', 'scope', 'reviews', 'faq', 'contact', 'crew'];
   private revealObs!: IntersectionObserver;
   private host = inject(ElementRef<HTMLElement>);
   private removeFx?: () => void;

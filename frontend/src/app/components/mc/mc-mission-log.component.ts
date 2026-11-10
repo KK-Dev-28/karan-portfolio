@@ -123,7 +123,7 @@ export class McMissionLogComponent implements OnInit, OnDestroy {
 
   private static readonly LABELS: Record<string, string> = {
     hero: 'Mission control', architecture: 'Architecture', journey: 'Journey', services: 'Services', process: 'Process',
-    projects: 'Selected work', play: 'Bug hunt', kits: 'Starter kits', reviews: 'Reviews', faq: 'FAQ', contact: 'Contact', crew: 'Mission crew',
+    projects: 'Selected work', play: 'Bug hunt', kits: 'Starter kits', scope: 'Scope it', reviews: 'Reviews', faq: 'FAQ', contact: 'Contact', crew: 'Mission crew',
   };
   label(id: string) { return McMissionLogComponent.LABELS[id] ?? id; }
 
