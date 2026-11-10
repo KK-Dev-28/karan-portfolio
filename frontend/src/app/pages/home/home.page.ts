@@ -20,6 +20,7 @@ import { McFestiveComponent } from '../../components/mc/mc-festive.component';
 import { McMissionLogComponent } from '../../components/mc/mc-mission-log.component';
 import { McCrewComponent } from '../../components/mc/mc-crew.component';
 import { McScopeComponent } from '../../components/mc/mc-scope.component';
+import { McCopilotComponent } from '../../components/mc/mc-copilot.component';
 import { McStarfieldComponent } from '../../components/mc/mc-starfield.component';
 import { installMcFx } from '../../components/mc/mc-fx';
 
@@ -29,7 +30,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
   imports: [
     CommonModule, LoadingScreenComponent, NavbarComponent, BugHuntComponent, PopularityComponent,
     McHeroComponent, McArchitectureComponent, McJourneyComponent, McServicesComponent, McWorkComponent,
-    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent, McProcessComponent, McFestiveComponent, McMissionLogComponent, McCrewComponent, McScopeComponent,
+    McKitsComponent, McReviewsComponent, McFaqComponent, McContactComponent, McFooterComponent, McSectionNavComponent, McStarfieldComponent, McProcessComponent, McFestiveComponent, McMissionLogComponent, McCrewComponent, McScopeComponent, McCopilotComponent,
   ],
   /* The page follows the Figma file "Karan Kapoor — Portfolio Mission Control
      (Full Design)", in its section order: radar hero, system architecture, the
@@ -52,6 +53,7 @@ import { installMcFx } from '../../components/mc/mc-fx';
       <mc-festive></mc-festive>
       <mc-mission-log [ids]="sections"></mc-mission-log>
       <mc-section-nav [ids]="sections"></mc-section-nav>
+      <mc-copilot></mc-copilot>
     }
     @defer (on idle) { <mc-architecture></mc-architecture> } @placeholder { <div class="mc-ph"></div> }
     @defer (on idle) { <mc-journey></mc-journey> } @placeholder { <div class="mc-ph"></div> }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, signal, computed, NgZone } from '@angular/core';
+import { inject, ChangeDetectionStrategy, Component, OnDestroy, signal, computed, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcAchieve } from '../mc/mc-mission-log.component';
 
@@ -11,6 +11,7 @@ const BEST_KEY = 'kk_bughunt_best';
  * "Squash the Bugs" — a 20-second reflex game in a code-editor arena.
  * Bugs +1 (combo multiplies), golden bugs +5, never squash a ✨ feature (−3).
  */
+import { UiSoundService } from '../../services/ui-sound.service';
 @Component({
   selector: 'app-bug-hunt',
   standalone: true,
@@ -69,6 +70,7 @@ const BEST_KEY = 'kk_bughunt_best';
   styleUrls: ['./bug-hunt.component.scss'],
 })
 export class BugHuntComponent implements OnDestroy {
+  private sound = inject(UiSoundService);
   readonly state = signal<'idle' | 'play' | 'over'>('idle');
   readonly score = signal(0);
   readonly combo = signal(0);
@@ -156,7 +158,7 @@ for (const user of visitors) greet(user.name ?? 'friend');`;
     const pop = { id: ++this.seq, x: t.x, y: t.y, v };
     this.pops.update(p => [...p, pop]);
     setTimeout(() => this.pops.update(p => p.filter(x => x.id !== pop.id)), 700);
-    if (t.kind !== 'feature') this.burst(t);
+    if (t.kind !== 'feature') { this.burst(t); this.sound.pop(); } else this.sound.blip(180);
   }
 
   /** A ring of splat particles where a bug was squashed. */

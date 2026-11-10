@@ -8,6 +8,7 @@ interface Blip { id: number; x: number; y: number }
 const SWEEP_SECONDS = 6;
 
 /** Figma "Creative · 01 Hero — Radar Mission Control". */
+import { UiSoundService } from '../../services/ui-sound.service';
 @Component({
   selector: 'mc-hero',
   standalone: true,
@@ -174,6 +175,7 @@ export class McHeroComponent implements OnInit, OnDestroy {
     cancelAnimationFrame(this.raf);
   }
 
+  private sound = inject(UiSoundService);
   readonly sweep = SWEEP_SECONDS;
   readonly nodes: RadarNode[] = [
     { label: 'Angular 19', dx: -250, dy: -190, tone: 'gold', intel: 'Standalone components, signals and RxJS. The client side of everything here, LocalHaat included.' },
@@ -227,7 +229,7 @@ export class McHeroComponent implements OnInit, OnDestroy {
       const sweepDeg = (((performance.now() - this.t0) / 1000) % this.sweep) / this.sweep * 360;
       const behind = (n: RadarNode) => (sweepDeg - ((Math.atan2(n.dy, n.dx) * 180 / Math.PI + 360) % 360) + 360) % 360;
       const n = [...this.nodes].sort((a, b) => behind(a) - behind(b))[0];
-      if (n !== this.contact()) this.contact.set(n);
+      if (n !== this.contact()) { this.contact.set(n); if (scrollY < innerHeight) this.sound.blip(660 + this.nodes.indexOf(n) * 70); }
     }, 250));
   }
 

@@ -22,6 +22,7 @@ const KEY = 'kk_mission_log';
  * achievements they've unlocked, nudging them through the whole page.
  * Progress is kept in localStorage only.
  */
+import { UiSoundService } from '../../services/ui-sound.service';
 @Component({
   selector: 'mc-mission-log',
   standalone: true,
@@ -107,6 +108,7 @@ const KEY = 'kk_mission_log';
 })
 export class McMissionLogComponent implements OnInit, OnDestroy {
   @Input({ required: true }) ids: string[] = [];
+  private sound = inject(UiSoundService);
   readonly badges = BADGES;
   readonly open = signal(false);
   readonly seen = signal<string[]>([]);
@@ -170,6 +172,7 @@ export class McMissionLogComponent implements OnInit, OnDestroy {
     this.got.update(g => [...g, id]);
     this.save();
     this.toast.set(b);
+    this.sound.chime();
     clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => this.toast.set(null), 3300);
   }

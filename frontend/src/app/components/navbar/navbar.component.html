@@ -24,6 +24,7 @@
       <span class="open-pill"><span class="open-dot"></span>Open for work</span>
 
       <!-- Theme & Layout Studio Picker -->
+      <button class="nav-sound" (click)="sound.toggle()" [attr.aria-pressed]="sound.on()" [attr.aria-label]="sound.on() ? 'Turn sound off' : 'Turn sound on'" [title]="sound.on() ? 'Sound on' : 'Sound off'">{{ sound.on() ? '🔊' : '🔈' }}</button>
       <div class="theme-picker">
         <button class="theme-toggle" (click)="toggleThemeMenu()" title="Customize Themes & Layouts" aria-haspopup="true" [attr.aria-expanded]="themeMenuOpen">
           <span class="theme-dot" [style.background]="currentSwatch()"></span>

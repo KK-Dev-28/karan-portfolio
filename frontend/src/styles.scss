@@ -1108,6 +1108,9 @@ html[data-occasion="gurpurab"], html[data-occasion="lohri"], html[data-occasion=
 @media (max-width: 700px) {
   body:has(app-welcome-card .wc) mc-mission-log .ml { opacity: 0; pointer-events: none; }
 }
+/* The copilot shares the bottom-right corner with the welcome card. */
+body:has(app-welcome-card .wc) mc-copilot .fab,
+body:has(app-welcome-card .wc) mc-copilot .panel { opacity: 0; pointer-events: none; }
 
 /* Off-screen sections don't animate (toggled by mc-fx.ts). */
 section.fx-off, section.fx-off *, section.fx-off *::before, section.fx-off *::after { animation-play-state: paused !important; }

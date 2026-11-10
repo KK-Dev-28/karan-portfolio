@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { inject, Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,7 @@ import { ThemeService, THEMES, LayoutMeta, ThemeId, LayoutId } from '../../servi
 import { LayoutPreviewComponent } from '../layout-preview/layout-preview.component';
 import { environment } from '../../../environments/environment';
 
+import { UiSoundService } from '../../services/ui-sound.service';
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -35,6 +36,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   themeMenuOpen  = false;
   activePickerTab: 'themes' | 'layouts' = 'themes';
 
+  readonly sound = inject(UiSoundService);
   links = [
     { label: 'Architecture', id: 'architecture' },
     { label: 'Journey',      id: 'journey' },

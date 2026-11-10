@@ -58,6 +58,7 @@ const PALETTES: Record<Fx, string[]> = {
  * shows a dismissible greeting and runs a matching particle effect —
  * fireworks, thrown colour, snow, tricolour petals, embers or lamp light.
  */
+import { UiSoundService } from '../../services/ui-sound.service';
 @Component({
   selector: 'mc-festive',
   standalone: true,
@@ -94,6 +95,7 @@ const PALETTES: Record<Fx, string[]> = {
 })
 export class McFestiveComponent implements OnInit, OnDestroy {
   @ViewChild('cv') cv?: ElementRef<HTMLCanvasElement>;
+  private sound = inject(UiSoundService);
   readonly occ = currentOccasion();
   readonly show = signal(false);
   /** The greeting only shows near the top, so it never covers section headings. */
@@ -144,7 +146,7 @@ export class McFestiveComponent implements OnInit, OnDestroy {
   private onClick = (e: MouseEvent) => {
     if ((e.target as Element).closest('a,button,input,textarea,select,label,[role=button]')) return;
     if (this.occ!.fx === 'colour') this.splash(e.clientX, e.clientY, 70);
-    else this.burst(e.clientX, e.clientY, 90);
+    else { this.burst(e.clientX, e.clientY, 90); this.sound.thump(); }
   };
 
   private pick(fx: Fx) { const p = PALETTES[fx]; return p[(Math.random() * p.length) | 0]; }

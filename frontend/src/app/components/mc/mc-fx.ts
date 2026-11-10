@@ -39,7 +39,7 @@ export function installMcFx(root: HTMLElement): () => void {
     /* Infinite decorative animations (pulses, pings, travelling dots) cost style
        and paint work every frame, even when nobody can see them. Sections only
        animate while on-screen; the rest are paused via .fx-off in styles.scss. */
-    all('section').forEach(el => { if (!live || el.classList.contains('fx-seen')) return; el.classList.add('fx-seen', 'fx-off'); live.observe(el); });
+    all('section').forEach(el => { if (!live || el.classList.contains('fx-seen')) return; el.classList.add('fx-seen'); live.observe(el); });
     all('.mc-title, .mc-kicker, section.mc-sec').forEach(el => {
       if (el.classList.contains('fx-watch')) return;
       el.classList.add('fx-watch');
