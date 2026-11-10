@@ -6,6 +6,7 @@
 //  · .mc-holo        cards tilt toward the pointer with a holographic glare
 //  · .mc-btn         buttons lean magnetically toward the pointer
 //  · section.mc-sec  a gold scan-line crosses each section as it arrives
+//  · every section    its CSS animations pause while it is off-screen
 
 const GLYPHS = '!<>-_\\/[]{}=+*^?#01ABCDEFKX';
 
@@ -15,6 +16,16 @@ export function installMcFx(root: HTMLElement): () => void {
   const cleanups: (() => void)[] = [];
 
   root.querySelectorAll<HTMLElement>('.mc-title').forEach(splitWords);
+
+  /* Infinite decorative animations (pulses, pings, travelling dots) cost style
+     and paint work every frame, even when nobody can see them. Sections only
+     animate while on-screen; the rest are paused via .fx-off in styles.scss. */
+  if ('IntersectionObserver' in window) {
+    const live = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('fx-off', !e.isIntersecting)),
+      { rootMargin: '120px 0px' });
+    root.querySelectorAll('main section, mc-hero section').forEach(el => { el.classList.add('fx-off'); live.observe(el); });
+    cleanups.push(() => live.disconnect());
+  }
 
   if (!reduced && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(entries => {

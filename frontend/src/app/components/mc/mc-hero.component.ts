@@ -46,8 +46,8 @@ const SWEEP_SECONDS = 6;
     <div class="copy">
       <p class="mc-kicker"><span class="dot"></span>Mission control · online</p>
       <h1 id="hero-title" class="title">
-        <span class="ln">I engineer</span>
-        <span class="ln mc-em"><span class="rot" *ngFor="let w of [word()]">{{ w }}</span> that</span>
+        <span class="ln">I engineer</span><br>
+        <span class="ln mc-em"><span class="rot" *ngFor="let w of [word()]">{{ w }}</span> that</span><br>
         <span class="ln">hold at scale.</span>
       </h1>
       <p class="lede">Full-stack engineer shipping Angular 19, NestJS, .NET and PostgreSQL products — from first sketch to production in weeks.</p>
@@ -74,10 +74,9 @@ const SWEEP_SECONDS = 6;
     :host{display:block}
     .hero{position:relative;min-height:min(960px,100svh);display:flex;align-items:center;overflow:hidden;
       padding:clamp(120px,14vh,170px) clamp(16px,5.6vw,80px) clamp(64px,8vh,96px);max-width:1440px;margin:0 auto;box-sizing:border-box}
-    .copy{position:relative;z-index:1;max-width:760px}
-    .title{margin:28px 0 0;font:400 clamp(58px,8.9vw,128px)/1 var(--font-display);letter-spacing:-.02em;color:var(--text)}
-    .ln{display:block;animation:rise .9s cubic-bezier(.2,.9,.2,1) both}
-    .ln:nth-child(2){animation-delay:.08s}.ln:nth-child(3){animation-delay:.16s}
+    .copy{position:relative;z-index:1;max-width:820px}
+    .title{margin:28px 0 0;font:400 clamp(44px,8.2vw,118px)/1 var(--font-display);letter-spacing:-.02em;color:var(--text);white-space:nowrap;animation:rise .9s cubic-bezier(.2,.9,.2,1) both}
+    .ln{display:inline}
     .lede{max-width:560px;margin:32px 0 0;font:400 clamp(16px,1.35vw,19px)/1.6 var(--font-body);color:var(--text-muted)}
     .ctas{display:flex;flex-wrap:wrap;gap:16px;margin-top:36px}
     .ctas .mc-btn--gold{min-width:260px}.ctas .mc-btn:not(.mc-btn--gold){min-width:220px}
@@ -136,7 +135,7 @@ const SWEEP_SECONDS = 6;
     @keyframes rise{from{transform:translateY(30px)}}
     @media (max-width:1100px){.radar{left:78%;width:110vw;opacity:calc(.45 - var(--sp,0) * .3)}}
     @media (max-width:700px){.radar{left:70%;top:34svh;width:150vw;opacity:.28}.stat{min-width:0;flex:1}}
-    @media (prefers-reduced-motion:reduce){.sweep,.ping,.ln{animation:none}}
+    @media (prefers-reduced-motion:reduce){.sweep,.ping,.title{animation:none}}
   `],
 })
 export class McHeroComponent implements OnInit, OnDestroy {
