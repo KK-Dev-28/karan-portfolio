@@ -340,7 +340,7 @@ const DEFAULTS: Record<string, any> = {
     "experience": [
       {
         "role": "Software Developer",
-        "period": "July 2025 - Present",
+        "period": "July 2026 - Present",
         "bullets": [
           "Lead full-stack development of Swiftec, a head-office and store retail platform covering item, supplier, manufacturer and brand master data, currency exchange, role-based permissions, store transactions and reporting - owning the Angular client and the ASP.NET Web API services behind it.",
           "Deliver the Enterprise Inventory Management System, a multi-branch platform spanning head office, back office and HHT/POS Android devices, covering stock control, order requests, inter-store transfers and supplier price lists.",
@@ -353,7 +353,7 @@ const DEFAULTS: Record<string, any> = {
       },
       {
         "role": "Junior Software Developer",
-        "period": "July 2024 - July 2025",
+        "period": "July 2024 - July 2026",
         "bullets": [
           "Owned Angular front-end delivery across four concurrent client projects, defining API contracts in direct collaboration with the back-end team.",
           "Built Talent Arbor, an applicant tracking system covering job publication, candidate pipelines with status workflows, CV management and recruiter administration.",

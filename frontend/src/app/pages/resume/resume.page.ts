@@ -138,6 +138,9 @@ function currentFacts(cv: Resume): Resume {
   out.education = (out.education ?? []).map(e => /^MCA/i.test(e.degree) && /pursuing/i.test(e.period)
     ? { ...e, period: 'Completed', score: e.score || 'CGPA ~6.8–7.0 (expected)', note: [e.note, 'final result awaited'].filter(Boolean).join(' · ') }
     : e);
+  // Promotion to Software Developer was July 2026; older records say July 2025.
+  out.experience = (out.experience ?? []).map(r => /software developer/i.test(r.role) && !/intern/i.test(r.role)
+    ? { ...r, period: r.period.replace(/July 2025/g, 'July 2026') } : r);
   out.summary = (out.summary ?? '').replace(/Currently completing an MCA at ([^.]+?) alongside/i, 'Completed an MCA at $1 alongside');
   return out;
 }

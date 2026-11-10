@@ -102,7 +102,7 @@ export class ChatService {
       '',
       'Karan is a Full Stack Developer with ~2.6 years of experience, based in Ludhiana,',
       'Punjab, India. He is a Software Developer at CS Soft Solutions in Mohali (intern from',
-      'January 2024, Junior Software Developer from July 2024, Software Developer since July 2025).',
+      'January 2024, Junior Software Developer from July 2024, Software Developer since July 2026).',
       'He has completed an MCA at Lovely Professional University (final result awaited; expected',
       'CGPA about 6.8 to 7.0). His main email is kk0888176@gmail.com. His stack is Angular on the front end with .NET,',
       'NestJS and PostgreSQL behind it. He is available for freelance, remote and part-time work.',

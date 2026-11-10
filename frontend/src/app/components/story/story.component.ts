@@ -84,8 +84,8 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
     },
     {
       year: '2026',
-      title: 'MCA, and Research of My Own',
-      body: 'Pursuing an MCA at Lovely Professional University alongside full-time work. The capstone studies how people shop locally and what street vendors are up against — a live survey, and LocalHaat, the marketplace built from what it found.',
+      title: 'Promotion, MCA, and Research of My Own',
+      body: 'Promoted to Software Developer at CS Soft Solutions in July, and completed an MCA at Lovely Professional University alongside full-time work. The capstone studies how people shop locally and what street vendors are up against — a live survey, and LocalHaat, the marketplace built from what it found.',
       tags: ['MCA', 'LocalHaat', 'Research'],
       icon: '✦',
       accent: '#fbbf24'
