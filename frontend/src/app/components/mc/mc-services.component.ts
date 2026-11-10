@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { McBriefService, McRevealDirective } from './mc-shared';
 
@@ -6,6 +6,7 @@ import { McBriefService, McRevealDirective } from './mc-shared';
 @Component({
   selector: 'mc-services',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="services" aria-labelledby="svc-title">

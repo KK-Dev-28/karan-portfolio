@@ -1,6 +1,7 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcAchieve } from './mc-mission-log.component';
+import { MC_LITE, mcAfterLoad } from './mc-shared';
 
 interface Star { x: number; y: number; z: number; pz: number; tone: 0 | 1 | 2 }
 interface Drop { x: number; y: number; v: number; chars: string[] }
@@ -29,6 +30,7 @@ const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'Ar
 @Component({
   selector: 'mc-starfield',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
     <canvas #cv class="sf" aria-hidden="true"></canvas>
@@ -75,7 +77,8 @@ export class McStarfieldComponent implements OnInit, OnDestroy {
       addEventListener('keydown', this.onKey);
       document.addEventListener('visibilitychange', this.onVis);
       this.lastY = scrollY;
-      if (this.reduced) this.draw(true); else this.raf = requestAnimationFrame(this.frame);
+      if (this.reduced) this.draw(true);
+      else { this.draw(true); mcAfterLoad(() => { if (!document.hidden) this.raf = requestAnimationFrame(this.frame); }); }
     });
   }
 
@@ -117,7 +120,7 @@ export class McStarfieldComponent implements OnInit, OnDestroy {
 
   private seed() {
     const { w, h } = this;
-    this.stars = this.mode === 'stars' ? Array.from({ length: Math.min(900, Math.round(w * h / 1700)) }, () => this.spawn(Math.random())) : [];
+    this.stars = this.mode === 'stars' ? Array.from({ length: Math.min(MC_LITE ? 260 : 900, Math.round(w * h / 1700)) }, () => this.spawn(Math.random())) : [];
     this.drops = this.mode === 'rain' ? Array.from({ length: Math.ceil(w / 20) }, (_, i) => this.drop(i * 20, Math.random() * h)) : [];
     this.nodes = this.mode === 'network' ? Array.from({ length: Math.min(110, Math.round(w * h / 14000)) }, () => ({
       x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35 })) : [];
@@ -146,7 +149,9 @@ export class McStarfieldComponent implements OnInit, OnDestroy {
     }
   };
 
+  private fc = 0;
   private frame = () => {
+    if (MC_LITE && (++this.fc & 1)) { this.raf = requestAnimationFrame(this.frame); return; }
     // Scroll velocity becomes warp; it eases back to a slow cruise.
     const dy = Math.abs(scrollY - this.lastY); this.lastY = scrollY;
     this.warp += (Math.min(dy / 40, 1.6) - this.warp) * .08;

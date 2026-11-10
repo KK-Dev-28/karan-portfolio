@@ -1,5 +1,6 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MC_LITE, mcAfterLoad } from './mc-shared';
 
 type Fx = 'fireworks' | 'diyas' | 'colour' | 'snow' | 'tricolour' | 'embers' | 'lights';
 interface Occasion { id: string; icon: string; greet: string; sub: string; fx: Fx; hint?: string }
@@ -60,6 +61,7 @@ const PALETTES: Record<Fx, string[]> = {
 @Component({
   selector: 'mc-festive',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
     <canvas #cv class="fx" aria-hidden="true" *ngIf="occ"></canvas>
@@ -109,7 +111,7 @@ export class McFestiveComponent implements OnInit, OnDestroy {
     try { this.show.set(sessionStorage.getItem('kk_greet_' + this.occ.id) !== '0'); } catch { this.show.set(true); }
     this.zone.runOutsideAngular(() => addEventListener('scroll', this.onScroll, { passive: true }));
     if (this.reduced) return;
-    setTimeout(() => this.zone.runOutsideAngular(() => this.start()));
+    this.zone.runOutsideAngular(() => mcAfterLoad(() => this.start()));
   }
 
   ngOnDestroy() {
@@ -176,7 +178,9 @@ export class McFestiveComponent implements OnInit, OnDestroy {
     if (fx === 'colour' && t % 120 === 0) this.splash(this.w * Math.random(), this.h * (.2 + Math.random() * .6), 40);
   }
 
+  private fc = 0;
   private frame = () => {
+    if (MC_LITE && (++this.fc & 1)) { this.raf = requestAnimationFrame(this.frame); return; }
     const ctx = this.ctx!; this.t++;
     if (!document.hidden) this.ambient();
     ctx.clearRect(0, 0, this.w, this.h);

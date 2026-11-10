@@ -1,10 +1,11 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /** Figma "Process" frame — four sprint steps on a rail that fills as you scroll. */
 @Component({
   selector: 'mc-process',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
   <section class="mc-sec" id="process" aria-labelledby="proc-title">

@@ -75,7 +75,7 @@
     </div>
 
     <!-- Mobile hamburger -->
-    <button class="hamburger" (click)="menuOpen = !menuOpen" [class.open]="menuOpen">
+    <button class="hamburger" (click)="menuOpen = !menuOpen" [class.open]="menuOpen" [attr.aria-label]="menuOpen ? 'Close menu' : 'Open menu'" [attr.aria-expanded]="menuOpen">
       <span></span><span></span><span></span>
     </button>
   </div>

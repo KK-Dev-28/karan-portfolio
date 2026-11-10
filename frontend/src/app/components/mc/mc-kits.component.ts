@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { McBriefService, McRevealDirective, MC_LINKS } from './mc-shared';
 import { mcAchieve } from './mc-mission-log.component';
@@ -9,6 +9,7 @@ const VOTES_KEY = 'kk_kit_votes';
 @Component({
   selector: 'mc-kits',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="kits" aria-labelledby="kits-title">

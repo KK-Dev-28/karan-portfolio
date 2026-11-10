@@ -1054,7 +1054,7 @@ textarea.mc-field { min-height: 120px; resize: vertical; }
 /* Cards: tilt toward the pointer, with a holographic glare that follows it. */
 .mc-holo {
   transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
-  transform-style: preserve-3d; will-change: transform; transition: transform .5s cubic-bezier(.2,.9,.2,1);
+  transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.9,.2,1);
 }
 .mc-holo:hover { --lift: -4px; }
 .mc-holo::after {

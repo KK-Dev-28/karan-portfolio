@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CrewService } from '../../services/crew.service';
@@ -15,6 +15,7 @@ const TOPICS = [
 @Component({
   selector: 'mc-crew',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="crew" aria-labelledby="crew-title">

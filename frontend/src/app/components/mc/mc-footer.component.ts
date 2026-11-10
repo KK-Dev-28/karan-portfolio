@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MC_LINKS } from './mc-shared';
 
@@ -6,6 +6,7 @@ import { MC_LINKS } from './mc-shared';
 @Component({
   selector: 'mc-footer',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   template: `
   <footer class="foot">

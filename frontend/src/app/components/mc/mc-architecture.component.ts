@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { McRevealDirective } from './mc-shared';
 
@@ -10,6 +10,7 @@ interface Box { id: string; layer: Layer; kicker: string; title: string; rows: s
 @Component({
   selector: 'mc-architecture',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="architecture" aria-labelledby="arch-title">
@@ -117,6 +118,7 @@ export class McArchitectureComponent implements OnInit, OnDestroy {
   readonly layers: Layer[] = ['Frontend', 'Backend', 'Database', 'DevOps'];
   readonly layer = signal<Layer | null>(null);
   readonly step = signal(0);
+  private zone = inject(NgZone);
   private timer?: ReturnType<typeof setInterval>;
 
   readonly client: Box = { id: 'client', layer: 'Frontend', kicker: 'Client', title: 'Angular 19 SPA',
@@ -133,7 +135,9 @@ export class McArchitectureComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Walks the pipeline like a running deploy.
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { this.step.set(this.steps.length - 1); return; }
-    this.timer = setInterval(() => this.step.update(s => (s + 1) % (this.steps.length + 1)), 1100);
+    this.zone.runOutsideAngular(() => {
+      this.timer = setInterval(() => this.step.update(s => (s + 1) % (this.steps.length + 1)), 1100);
+    });
   }
   ngOnDestroy() { clearInterval(this.timer); }
 

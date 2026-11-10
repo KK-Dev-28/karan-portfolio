@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SiteContentService } from '../../services/site-content.service';
 
@@ -16,6 +16,7 @@ const FALLBACK: Faq[] = [
 @Component({
   selector: 'mc-faq',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
   <section class="mc-sec" id="faq" aria-labelledby="faq-title">

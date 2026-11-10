@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal, computed, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, signal, computed, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcAchieve } from '../mc/mc-mission-log.component';
 
@@ -14,6 +14,7 @@ const BEST_KEY = 'kk_bughunt_best';
 @Component({
   selector: 'app-bug-hunt',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
   <section class="bh" id="play" aria-labelledby="bh-title">

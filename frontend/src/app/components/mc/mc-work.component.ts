@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { McRevealDirective, MC_LINKS } from './mc-shared';
@@ -9,6 +9,7 @@ interface Work { kind: string; name: string; blurb: string; stack: string; route
 @Component({
   selector: 'mc-work',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, RouterLink, McRevealDirective],
   template: `
   <section class="mc-sec" id="projects" aria-labelledby="work-title">

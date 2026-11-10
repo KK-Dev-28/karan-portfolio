@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcScrollTo } from './mc-shared';
 
@@ -11,6 +11,7 @@ const SWEEP_SECONDS = 6;
 @Component({
   selector: 'mc-hero',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
   <section class="hero" id="hero" aria-labelledby="hero-title">
@@ -18,14 +19,12 @@ const SWEEP_SECONDS = 6;
       <svg viewBox="-470 -470 940 940" class="radar-svg" #svg>
         <defs>
           <radialGradient id="mcGlow"><stop offset="0" stop-color="rgb(var(--accent-2-rgb))" stop-opacity=".34"/><stop offset=".55" stop-color="rgb(var(--accent-2-rgb))" stop-opacity=".08"/><stop offset="1" stop-color="rgb(var(--accent-2-rgb))" stop-opacity="0"/></radialGradient>
-          <linearGradient id="mcSweep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--electric)" stop-opacity="0"/><stop offset="1" stop-color="var(--electric)" stop-opacity=".45"/></linearGradient>
         </defs>
         <circle r="450" fill="url(#mcGlow)"/>
         <g class="rings">
           <circle r="90"/><circle r="170" class="dash"/><circle r="250"/><circle r="330" class="dash"/><circle r="410"/>
         </g>
         <g class="cross"><path d="M0-409V-33M33 0H409M0 33V409M-409 0H-33"/></g>
-        <g class="sweep" [style.animation-duration.s]="sweep"><path d="M0 0L410 0A410 410 0 0 0 360.4-195.6Z" fill="url(#mcSweep)"/><path d="M0 0H410" class="sweep-edge"/></g>
         <circle r="410" class="hit" (click)="blip($event, svg)"/>
         <circle *ngFor="let b of blips(); trackBy: bid" [attr.cx]="b.x" [attr.cy]="b.y" r="10" class="blip"/>
         <g *ngFor="let n of nodes" class="node" [ngClass]="n.tone" [class.sel]="contact() === n" (click)="pin(n)" (mouseenter)="pin(n)">
@@ -39,6 +38,9 @@ const SWEEP_SECONDS = 6;
         </g>
         <circle r="34" class="core"/><text class="core-txt" y="6">KK</text>
       </svg>
+      <!-- An HTML layer, not SVG: rotating it is GPU-composited, where an SVG
+           transform animation repaints the whole radar every frame. -->
+      <div class="sweep" [style.animation-duration.s]="sweep"></div>
     </div>
 
     <div class="copy">
@@ -84,7 +86,7 @@ const SWEEP_SECONDS = 6;
     .stat dt{font:500 11px var(--font-mono);letter-spacing:.12em;color:var(--text-dim)}
     .stat dd{margin:2px 0 0;font:400 34px/1.1 var(--font-display);color:var(--text)}
 
-    .radar{position:absolute;top:50%;left:73.6%;width:min(940px,72vw);aspect-ratio:1;pointer-events:none;
+    .radar{position:absolute;top:min(480px,50svh);left:73.6%;width:min(940px,72vw);aspect-ratio:1;pointer-events:none;
       transform:translate(-50%,-50%) perspective(1400px) rotateY(calc(var(--px,0) * 16deg)) rotateX(calc(var(--py,0) * -16deg)) scale(calc(1 + var(--sp,0) * .35));
       opacity:calc(1 - var(--sp,0) * .7);transition:transform .6s cubic-bezier(.2,.9,.2,1)}
     .copy{translate:calc(var(--px,0) * -12px) calc(var(--py,0) * -8px);transition:translate .6s cubic-bezier(.2,.9,.2,1)}
@@ -92,8 +94,9 @@ const SWEEP_SECONDS = 6;
     .rings circle{fill:none;stroke:rgba(var(--accent-2-rgb),.42);stroke-width:1.2}
     .rings .dash{stroke-dasharray:4 7;stroke:rgba(var(--accent-2-rgb),.3)}
     .cross path{stroke:rgba(var(--accent-2-rgb),.22);stroke-width:1;fill:none}
-    .sweep{transform-origin:0 0;animation:spin linear infinite}
-    .sweep-edge{stroke:var(--electric);stroke-opacity:.7;stroke-width:1.5}
+    .sweep{position:absolute;left:50%;top:50%;width:87.23%;height:87.23%;translate:-50% -50%;border-radius:50%;will-change:rotate;
+      background:conic-gradient(from 62deg,transparent 0deg,rgba(var(--electric-rgb),.42) 27.4deg,rgba(var(--electric-rgb),.95) 28deg,transparent 28.4deg);
+      animation:spin linear infinite}
     .spoke{stroke-width:1.2;fill:none;stroke-opacity:.55}
     .pin{stroke:var(--bg);stroke-width:3}
     .ping{fill:none;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center;animation:ping ease-out infinite}
@@ -128,11 +131,11 @@ const SWEEP_SECONDS = 6;
     @keyframes word{from{opacity:0;transform:translateY(.35em) rotateX(-60deg);filter:blur(6px)}}
     @keyframes blink{50%{opacity:.2}}
     @media (max-width:1100px){.intel{display:none}}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes spin{to{rotate:360deg}}
     @keyframes ping{0%{opacity:.9;transform:scale(.5)}35%{opacity:0;transform:scale(2.2)}100%{opacity:0}}
-    @keyframes rise{from{opacity:0;transform:translateY(30px)}}
+    @keyframes rise{from{transform:translateY(30px)}}
     @media (max-width:1100px){.radar{left:78%;width:110vw;opacity:calc(.45 - var(--sp,0) * .3)}}
-    @media (max-width:700px){.radar{left:70%;top:34%;width:150vw;opacity:.28}.stat{min-width:0;flex:1}}
+    @media (max-width:700px){.radar{left:70%;top:34svh;width:150vw;opacity:.28}.stat{min-width:0;flex:1}}
     @media (prefers-reduced-motion:reduce){.sweep,.ping,.ln{animation:none}}
   `],
 })
@@ -158,7 +161,7 @@ export class McHeroComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit() {
-    this.startTicks();
+    this.zone.runOutsideAngular(() => this.startTicks());
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     this.zone.runOutsideAngular(() => {
       if (matchMedia('(pointer: fine)').matches) addEventListener('pointermove', this.onMove, { passive: true });

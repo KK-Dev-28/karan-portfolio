@@ -50,3 +50,20 @@ export class McRevealDirective implements OnInit, OnDestroy {
 
   ngOnDestroy() { this.io?.disconnect(); }
 }
+
+/**
+ * Runs `fn` once the page has loaded and the browser is idle, so decorative
+ * canvases never compete with the first render (it was costing seconds of
+ * blocking time on mid-range phones).
+ */
+export function mcAfterLoad(fn: () => void) {
+  const idle = () => ('requestIdleCallback' in window
+    ? (window as any).requestIdleCallback(fn, { timeout: 2500 })
+    : setTimeout(fn, 1200));
+  if (document.readyState === 'complete') idle();
+  else addEventListener('load', idle, { once: true });
+}
+
+/** Phones and low-core devices draw decorative canvases at half rate. */
+export const MC_LITE = typeof window !== 'undefined'
+  && (matchMedia('(max-width: 800px)').matches || (navigator.hardwareConcurrency ?? 8) <= 4);

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VisitorService } from '../../services/visitor.service';
@@ -6,9 +6,10 @@ import { VisitorService } from '../../services/visitor.service';
 @Component({
   selector: 'app-welcome-card',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule],
   template: `
-  <aside class="wc" *ngIf="v.consent() === 'unknown' && ready()" role="dialog" aria-label="Welcome and privacy choice">
+  <div class="wc" *ngIf="v.consent() === 'unknown' && ready()" role="dialog" aria-label="Welcome and privacy choice">
     <div class="wc-glow"></div>
     <p class="wc-kicker"><span class="wc-wave" aria-hidden="true">👋</span> {{ partOfDay }}</p>
     <h2>Hi, I'm Karan. <em>Who's visiting?</em></h2>
@@ -21,7 +22,7 @@ import { VisitorService } from '../../services/visitor.service';
       <button class="wc-btn wc-yes" (click)="v.accept(name)">Say hello ↗</button>
       <button class="wc-btn" (click)="v.decline()">No thanks</button>
     </div>
-  </aside>
+  </div>
   <button class="wc-hello" *ngIf="v.consent() === 'granted'" (click)="v.reset()" title="Click to change your privacy choice">
     {{ v.name() ? partOfDay + ', ' + v.name() + ' 👋' : 'Analytics on' }} <span class="wc-x">· change</span>
   </button>

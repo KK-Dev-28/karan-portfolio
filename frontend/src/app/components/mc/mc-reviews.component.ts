@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Review, ReviewsService } from '../../services/reviews.service';
@@ -8,6 +8,7 @@ import { McRevealDirective } from './mc-shared';
 @Component({
   selector: 'mc-reviews',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="reviews" aria-labelledby="rev-title">

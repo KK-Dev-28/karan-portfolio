@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { McBriefService, McRevealDirective } from './mc-shared';
 
@@ -38,6 +38,7 @@ const PACES: Opt[] = [
 @Component({
   selector: 'mc-scope',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, McRevealDirective],
   template: `
   <section class="mc-sec" id="scope" aria-labelledby="scope-title">

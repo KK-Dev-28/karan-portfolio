@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface Stop { year: string; title: string; text: string; x: number; y: number; up: boolean }
@@ -11,6 +11,7 @@ const W = 1320, H = 600;
 @Component({
   selector: 'mc-journey',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
   <section class="mc-sec" id="journey" aria-labelledby="journey-title">

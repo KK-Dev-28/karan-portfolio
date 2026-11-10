@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, NgZone, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcScrollTo } from './mc-shared';
 
@@ -6,6 +6,7 @@ import { mcScrollTo } from './mc-shared';
 @Component({
   selector: 'mc-section-nav',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
   <nav class="sn" aria-label="Section navigation">

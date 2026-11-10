@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, NgZone, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { mcScrollTo } from './mc-shared';
 
@@ -25,6 +25,7 @@ const KEY = 'kk_mission_log';
 @Component({
   selector: 'mc-mission-log',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
   <div class="ml" [class.open]="open()">
