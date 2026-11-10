@@ -12,7 +12,7 @@ interface Cert      { title: string; issuer: string; date: string; note: string 
 
 interface Resume {
   name: string; title: string; tagline: string; location: string;
-  email: string; phone: string; availability: string;
+  email: string; altEmail?: string; phone: string; availability: string;
   links: Link[]; summary: string;
   experience: Role[]; education: Education[];
   skills: Record<string, string[]>;
@@ -38,7 +38,7 @@ export class ResumePageComponent implements OnInit {
 
   ngOnInit() {
     this.cms.getSection('resume').subscribe({
-      next: (data: any) => { this.cv = data ? repairText(data) : null; this.loading = false; },
+      next: (data: any) => { this.cv = data ? currentFacts(repairText(data)) : null; this.loading = false; },
       error: () => { this.loading = false; },
     });
   }
@@ -73,4 +73,26 @@ function repairText<T>(v: T): T {
   if (Array.isArray(v)) return v.map(repairText) as T;
   if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, repairText(x)])) as T;
   return v;
+}
+
+const MAIN_EMAIL = 'kk0888176@gmail.com';
+const GITHUBS = [
+  { label: 'GitHub (KK-Dev-28)', url: 'https://github.com/KK-Dev-28' },
+  { label: 'GitHub (Karan28012002)', url: 'https://github.com/Karan28012002' },
+];
+
+/* Facts newer than the saved resume record (Nov 2026): the main email, both
+   GitHub accounts, and the completed MCA. Each rule only fires on the old
+   value, so once the record is updated in Admin -> Content these are no-ops. */
+function currentFacts(cv: Resume): Resume {
+  const out: Resume = { ...cv };
+  if (out.email && out.email !== MAIN_EMAIL) out.altEmail = out.altEmail ?? out.email;
+  out.email = MAIN_EMAIL;
+  const links = (out.links ?? []).filter(l => !/github\.com/i.test(l.url));
+  out.links = [...links, ...GITHUBS];
+  out.education = (out.education ?? []).map(e => /^MCA/i.test(e.degree) && /pursuing/i.test(e.period)
+    ? { ...e, period: 'Completed', score: e.score || 'CGPA ~6.8–7.0 (expected)', note: [e.note, 'final result awaited'].filter(Boolean).join(' · ') }
+    : e);
+  out.summary = (out.summary ?? '').replace(/Currently completing an MCA at ([^.]+?) alongside/i, 'Completed an MCA at $1 alongside');
+  return out;
 }

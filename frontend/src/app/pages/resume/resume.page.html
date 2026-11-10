@@ -21,6 +21,7 @@
       </div>
       <ul class="rz-contact">
         <li *ngIf="c.email"><a [href]="'mailto:' + c.email">{{ c.email }}</a></li>
+        <li *ngIf="c.altEmail"><a [href]="'mailto:' + c.altEmail">{{ c.altEmail }}</a></li>
         <li *ngIf="c.phone"><a [href]="telHref(c.phone)">{{ c.phone }}</a></li>
         <li *ngIf="c.location">{{ c.location }}</li>
         <li *ngFor="let l of c.links">

@@ -117,11 +117,11 @@ export class ServicesComponent {
       note: 'Fastest response',
     },
     {
-      label: 'Outlook Email',
-      value: 'Karankapoor281@outlook.com',
+      label: 'Email',
+      value: 'kk0888176@gmail.com',
       icon: '📧',
       color: 'outlook',
-      href: 'mailto:Karankapoor281@outlook.com',
+      href: 'mailto:kk0888176@gmail.com',
       note: 'Professional enquiries',
     },
     {

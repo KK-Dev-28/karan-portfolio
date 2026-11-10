@@ -62,7 +62,7 @@ const DEFAULTS: Record<string, any> = {
       badge: '',
     },
     {
-      date: 'Pursuing',
+      date: 'Completed',
       role: 'MCA — Master of Computer Applications',
       company: 'Lovely Professional University',
       location: 'Online',
@@ -139,7 +139,8 @@ const DEFAULTS: Record<string, any> = {
     { icon: '🐛', name: 'Bug Fixes & Refactoring', desc: 'Got a broken Angular or .NET app? I dig in, find the root cause, fix bugs and improve performance.', time: '⚡ Quick turnaround', wa: 'Hi Karan, I have a bug that needs fixing. My stack and issue: ', serviceType: 'bugfix', featured: false },
   ],
   'contact-info': {
-    email: 'kkcode28012002@gmail.com',
+    email: 'kk0888176@gmail.com',
+    altEmail: 'kkcode28012002@gmail.com',
     outlookEmail: 'Karankapoor281@outlook.com',
     phone: '+91 83604 26467',
     whatsapp1: '916239589464',
@@ -172,7 +173,7 @@ const DEFAULTS: Record<string, any> = {
       { target: 'skills',     title: 'The stack',    body: 'Angular on the front end, .NET and NestJS with PostgreSQL behind it. Production tooling, not tutorials.' },
       { target: 'projects',   title: 'The proof',    body: 'Real shipped systems — inventory platforms, an applicant tracking system, internal tooling. Each has a full case study.' },
       { target: 'story',      title: 'The journey',  body: 'How I got from a diploma in computer applications to building enterprise systems.' },
-      { target: 'experience', title: 'Experience',   body: 'Currently a Junior Software Developer at CS Soft Solutions, alongside an MCA at Lovely Professional University.' },
+      { target: 'experience', title: 'Experience',   body: 'Software Developer at CS Soft Solutions; MCA completed at Lovely Professional University.' },
       { target: 'gigs',       title: 'Work with me', body: 'Fixed-scope packages and monthly retainers, with clear deliverables and timelines.' },
       { target: 'contact',    title: "Let's talk",   body: 'That’s the tour. If something here fits what you need, send a message — I reply quickly.' },
     ],
@@ -182,7 +183,7 @@ const DEFAULTS: Record<string, any> = {
      a resume dates faster than anything else on the site. */
   resume: {
     "name": "Karan Kapoor",
-    "email": "kkcode28012002@gmail.com",
+    "email": "kk0888176@gmail.com",
     "links": [
       {
         "url": "https://karan-portfolio-six-sigma.vercel.app",
@@ -193,8 +194,12 @@ const DEFAULTS: Record<string, any> = {
         "label": "LinkedIn"
       },
       {
+        "url": "https://github.com/KK-Dev-28",
+        "label": "GitHub (KK-Dev-28)"
+      },
+      {
         "url": "https://github.com/Karan28012002",
-        "label": "GitHub"
+        "label": "GitHub (Karan28012002)"
       }
     ],
     "phone": "+91-6239589464",
@@ -255,7 +260,7 @@ const DEFAULTS: Record<string, any> = {
         "Postman"
       ]
     },
-    "summary": "Full Stack Developer with over two years delivering enterprise web applications for client organisations at CS Soft Solutions, working across Angular front ends and ASP.NET Web API services on SQL Server. Advanced from intern to lead developer on a client platform within two years. Delivery experience covers multi-branch retail systems synchronised across head office, back office and handheld POS devices; applicant tracking and property management portals; and the modernisation of a legacy data access layer onto Entity Framework. Currently completing an MCA at Lovely Professional University alongside full-time employment.",
+    "summary": "Full Stack Developer with over two years delivering enterprise web applications for client organisations at CS Soft Solutions, working across Angular front ends and ASP.NET Web API services on SQL Server. Advanced from intern to lead developer on a client platform within two years. Delivery experience covers multi-branch retail systems synchronised across head office, back office and handheld POS devices; applicant tracking and property management portals; and the modernisation of a legacy data access layer onto Entity Framework. Completed an MCA at Lovely Professional University alongside full-time employment.",
     "tagline": "Angular - ASP.NET Web API - SQL Server - distributed data",
     "location": "Ludhiana, Punjab, India",
     "projects": [
@@ -292,10 +297,10 @@ const DEFAULTS: Record<string, any> = {
     ],
     "education": [
       {
-        "note": "Online, alongside full-time work",
-        "score": "",
+        "note": "Online, alongside full-time work · final result awaited",
+        "score": "CGPA ~6.8–7.0 (expected)",
         "degree": "MCA — Master of Computer Applications",
-        "period": "Pursuing",
+        "period": "Completed",
         "institution": "Lovely Professional University"
       },
       {
