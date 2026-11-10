@@ -33,21 +33,59 @@ interface Resume {
 export class ResumePageComponent implements OnInit {
   cv: Resume | null = null;
   loading = true;
+  /** Portfolio QR code as a module grid (drawn as SVG on screen, as rects in the PDF). */
+  qr: boolean[][] | null = null;
+  busy = false;
 
   constructor(private cms: SiteContentService) {}
 
   ngOnInit() {
     this.cms.getSection('resume').subscribe({
-      next: (data: any) => { this.cv = data ? currentFacts(repairText(data)) : null; this.loading = false; },
+      next: (data: any) => { this.cv = data ? currentFacts(repairText(data)) : null; this.loading = false; void this.makeQr(); },
       error: () => { this.loading = false; },
     });
   }
 
-  /* The browser's own print dialog is the download: it produces a correctly
-     paginated PDF with selectable text, which a client-side image or canvas
-     export would not. It also needs no file storage, which this backend has
-     none of. */
-  download() { window.print(); }
+  /** One-click download: a typeset text PDF (selectable, ATS-readable) built in
+      the browser by jsPDF, loaded only when asked for. */
+  async download() {
+    if (!this.cv || this.busy) return;
+    this.busy = true;
+    try {
+      const { buildResumePdf } = await import('./resume-pdf');
+      const doc = buildResumePdf({ ...this.cv, companies: this.companies(), skills: this.skillGroups() }, this.qr);
+      doc.save(`${this.cv.name.replace(/\s+/g, '-')}-Resume.pdf`);
+    } finally { this.busy = false; }
+  }
+
+  /** The browser's print dialog, for paper or a print-styled PDF. */
+  print() { window.print(); }
+
+  /** Consecutive roles at one employer, shown as a single company with a promotion path. */
+  companies(): { company: string; location: string; span: string; roles: Role[] }[] {
+    const out: { company: string; location: string; span: string; roles: Role[] }[] = [];
+    for (const r of this.cv?.experience ?? []) {
+      const last = out[out.length - 1];
+      if (last && last.company === r.company) last.roles.push(r);
+      else out.push({ company: r.company, location: r.location, span: '', roles: [r] });
+    }
+    for (const c of out) {
+      const newest = c.roles[0].period.split(/\s+[-–—]\s+/)[1] ?? c.roles[0].period;
+      const oldest = c.roles[c.roles.length - 1].period.split(/\s+[-–—]\s+/)[0];
+      c.span = c.roles.length > 1 ? `${oldest} – ${newest}` : c.roles[0].period;
+    }
+    return out;
+  }
+
+  private async makeQr() {
+    const url = this.cv?.links?.find(l => /portfolio/i.test(l.label))?.url;
+    if (!url) return;
+    const mod: any = await import('qrcode-generator');
+    const qrcode = mod.default ?? mod;
+    const q = qrcode(0, 'M'); q.addData(url); q.make();
+    const n = q.getModuleCount();
+    this.qr = Array.from({ length: n }, (_, r) => Array.from({ length: n }, (_, c) => q.isDark(r, c)));
+  }
 
   skillGroups(): { name: string; items: string[] }[] {
     const s = this.cv?.skills ?? {};

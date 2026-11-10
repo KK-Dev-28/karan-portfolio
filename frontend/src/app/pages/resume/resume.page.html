@@ -4,8 +4,8 @@
   <div class="rz-bar no-print">
     <a routerLink="/" class="rz-back">← Portfolio</a>
     <div class="rz-bar-actions">
-      <span class="rz-hint">Saves as PDF · 2 pages</span>
-      <button class="rz-dl" (click)="download()">Download PDF</button>
+      <button class="rz-print" (click)="print()">Print</button>
+      <button class="rz-dl" (click)="download()" [disabled]="!cv || busy">{{ busy ? 'Preparing…' : 'Download PDF ↓' }}</button>
     </div>
   </div>
 
@@ -19,6 +19,14 @@
         <p class="rz-title">{{ c.title }}</p>
         <p class="rz-tagline" *ngIf="c.tagline">{{ c.tagline }}</p>
       </div>
+      <a class="rz-qr" *ngIf="qr" [href]="c.links[0]?.url" target="_blank" rel="noopener" aria-label="Portfolio QR code">
+        <svg [attr.viewBox]="'0 0 ' + qr.length + ' ' + qr.length" shape-rendering="crispEdges" aria-hidden="true">
+          <ng-container *ngFor="let row of qr; let r = index"><ng-container *ngFor="let on of row; let col = index">
+            <rect *ngIf="on" [attr.x]="col" [attr.y]="r" width="1" height="1"/>
+          </ng-container></ng-container>
+        </svg>
+        <span>Portfolio</span>
+      </a>
       <ul class="rz-contact">
         <li *ngIf="c.email"><a [href]="'mailto:' + c.email">{{ c.email }}</a></li>
         <li *ngIf="c.altEmail"><a [href]="'mailto:' + c.altEmail">{{ c.altEmail }}</a></li>
@@ -43,17 +51,23 @@
 
     <section class="rz-sec">
       <h2 class="rz-h2">Experience</h2>
-      <div class="rz-role" *ngFor="let r of c.experience">
-        <div class="rz-role-head">
+      <div class="rz-co" *ngFor="let co of companies()">
+        <div class="rz-co-head">
           <div>
-            <h3 class="rz-role-title">{{ r.role }}</h3>
-            <p class="rz-role-org">{{ r.company }}<span *ngIf="r.location"> · {{ r.location }}</span></p>
+            <h3 class="rz-co-name">{{ co.company }}</h3>
+            <p class="rz-role-org" *ngIf="co.location">{{ co.location }}<span *ngIf="co.roles.length > 1"> · {{ co.roles.length }} roles, promoted from within</span></p>
           </div>
-          <span class="rz-period">{{ r.period }}</span>
+          <span class="rz-period">{{ co.span }}</span>
         </div>
-        <ul class="rz-bullets">
-          <li *ngFor="let b of r.bullets">{{ b }}</li>
-        </ul>
+        <div class="rz-role" *ngFor="let r of co.roles">
+          <div class="rz-role-head">
+            <h4 class="rz-role-title">{{ r.role }}</h4>
+            <span class="rz-period">{{ r.period }}</span>
+          </div>
+          <ul class="rz-bullets">
+            <li *ngFor="let b of r.bullets">{{ b }}</li>
+          </ul>
+        </div>
       </div>
     </section>
 
