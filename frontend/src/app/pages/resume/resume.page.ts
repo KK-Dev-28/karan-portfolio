@@ -127,21 +127,32 @@ const GITHUBS = [
 ];
 
 /* Facts newer than the saved resume record (Nov 2026): the main email, both
-   GitHub accounts, and the completed MCA. Each rule only fires on the old
-   value, so once the record is updated in Admin -> Content these are no-ops. */
+   GitHub accounts, the July 2026 promotion, the MCA still awaiting results,
+   and the headline, summary and availability written for full-time remote
+   applications. Each rule only fires on the old value, so once the record is
+   updated in Admin -> Content these are no-ops. */
+const TAGLINE = 'Angular · .NET Core / ASP.NET Web API · SQL Server';
+const SUMMARY = "2+ years building enterprise Angular and ASP.NET Web API applications on SQL Server for client organisations. I delivered multi-branch retail and inventory platforms with Kafka and SymmetricDS replication. I also migrated a legacy data layer to Entity Framework and LINQ. I'm used to remote, Agile delivery with Azure DevOps and Git.";
+const AVAILABILITY = 'Open to full-time remote roles';
+
 function currentFacts(cv: Resume): Resume {
   const out: Resume = { ...cv };
   if (out.email && out.email !== MAIN_EMAIL) out.altEmail = out.altEmail ?? out.email;
   out.email = MAIN_EMAIL;
   const links = (out.links ?? []).filter(l => !/github\.com/i.test(l.url));
   out.links = [...links, ...GITHUBS];
-  out.education = (out.education ?? []).map(e => /^MCA/i.test(e.degree) && /pursuing/i.test(e.period)
-    ? { ...e, period: 'Completed', score: e.score || 'CGPA ~6.8–7.0 (expected)', note: [e.note, 'final result awaited'].filter(Boolean).join(' · ') }
+  // Two MCA papers are still pending, so no completion claim and no CGPA until results are out.
+  out.education = (out.education ?? []).map(e => /^MCA/i.test(e.degree) && /pursuing|completed/i.test(e.period)
+    ? { ...e, period: 'Expected 2026', score: '', note: (e.note || '').replace(/\s*·\s*final result awaited/i, '') }
     : e);
   // Promotion to Software Developer was July 2026; older records say July 2025.
   out.experience = (out.experience ?? []).map(r => /software developer/i.test(r.role) && !/intern/i.test(r.role)
     ? { ...r, period: r.period.replace(/July 2025/g, 'July 2026') } : r);
-  out.summary = (out.summary ?? '').replace(/Currently completing an MCA at ([^.]+?) alongside/i, 'Completed an MCA at $1 alongside');
+  if (/intern to lead developer|Currently completing an MCA|Completed an MCA/i.test(out.summary ?? '')) out.summary = SUMMARY;
+  if (/distributed data|^Angular - ASP/i.test(out.tagline ?? '')) out.tagline = TAGLINE;
+  out.highlights = (out.highlights ?? []).map(h => /intern to lead developer/i.test(h)
+    ? 'Led development of Swiftec, a head-office and store retail platform' : h);
+  if (/freelance/i.test(out.availability ?? '')) out.availability = AVAILABILITY;
   return out;
 }
 

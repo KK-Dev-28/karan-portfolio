@@ -95,7 +95,7 @@ export class McJourneyComponent implements OnInit, OnDestroy {
     { year: '2023', title: 'BCA complete', text: 'Anglo Sanskrit College, Khanna · 93%', x: 600, y: 372, up: false },
     { year: '2024', title: 'Intern → Junior Developer', text: 'CS Soft Solutions, Mohali · Angular + ASP.NET', x: 790, y: 376, up: true },
     { year: '2025', title: 'Leading Swiftec', text: 'Head-office + store retail platform, end to end', x: 990, y: 229, up: false },
-    { year: '2026', title: 'Software Developer', text: 'Promoted July 2026 · MCA completed at LPU', x: 1190, y: 202, up: true },
+    { year: '2026', title: 'Software Developer', text: 'Promoted July 2026 · MCA at LPU, results due 2026', x: 1190, y: 202, up: true },
   ];
   /** A smooth road through every stop (Catmull-Rom → cubic Bézier). */
   readonly d = road([{ x: 40, y: 230 }, ...this.stops, { x: 1320, y: 260 }]);

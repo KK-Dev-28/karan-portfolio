@@ -173,7 +173,7 @@ const DEFAULTS: Record<string, any> = {
       { target: 'skills',     title: 'The stack',    body: 'Angular on the front end, .NET and NestJS with PostgreSQL behind it. Production tooling, not tutorials.' },
       { target: 'projects',   title: 'The proof',    body: 'Real shipped systems — inventory platforms, an applicant tracking system, internal tooling. Each has a full case study.' },
       { target: 'story',      title: 'The journey',  body: 'How I got from a diploma in computer applications to building enterprise systems.' },
-      { target: 'experience', title: 'Experience',   body: 'Software Developer at CS Soft Solutions; MCA completed at Lovely Professional University.' },
+      { target: 'experience', title: 'Experience',   body: 'Software Developer at CS Soft Solutions; MCA at Lovely Professional University, results due 2026.' },
       { target: 'gigs',       title: 'Work with me', body: 'Fixed-scope packages and monthly retainers, with clear deliverables and timelines.' },
       { target: 'contact',    title: "Let's talk",   body: 'That’s the tour. If something here fits what you need, send a message — I reply quickly.' },
     ],
@@ -260,8 +260,8 @@ const DEFAULTS: Record<string, any> = {
         "Postman"
       ]
     },
-    "summary": "Full Stack Developer with over two years delivering enterprise web applications for client organisations at CS Soft Solutions, working across Angular front ends and ASP.NET Web API services on SQL Server. Advanced from intern to lead developer on a client platform within two years. Delivery experience covers multi-branch retail systems synchronised across head office, back office and handheld POS devices; applicant tracking and property management portals; and the modernisation of a legacy data access layer onto Entity Framework. Completed an MCA at Lovely Professional University alongside full-time employment.",
-    "tagline": "Angular - ASP.NET Web API - SQL Server - distributed data",
+    "summary": "2+ years building enterprise Angular and ASP.NET Web API applications on SQL Server for client organisations. I delivered multi-branch retail and inventory platforms with Kafka and SymmetricDS replication. I also migrated a legacy data layer to Entity Framework and LINQ. I'm used to remote, Agile delivery with Azure DevOps and Git.",
+    "tagline": "Angular · .NET Core / ASP.NET Web API · SQL Server",
     "location": "Ludhiana, Punjab, India",
     "projects": [
       {
@@ -297,10 +297,10 @@ const DEFAULTS: Record<string, any> = {
     ],
     "education": [
       {
-        "note": "Online, alongside full-time work · final result awaited",
-        "score": "CGPA ~6.8–7.0 (expected)",
+        "note": "Online, alongside full-time work",
+        "score": "",
         "degree": "MCA — Master of Computer Applications",
-        "period": "Completed",
+        "period": "Expected 2026",
         "institution": "Lovely Professional University"
       },
       {
@@ -381,11 +381,11 @@ const DEFAULTS: Record<string, any> = {
     ],
     "highlights": [
       "2+ years delivering enterprise applications for client organisations",
-      "Intern to lead developer within two years",
+      "Led development of Swiftec, a head-office and store retail platform",
       "Multi-branch distributed systems - Kafka, SymmetricDS, POS devices",
       "Legacy modernisation - ADO-era data access to Entity Framework and LINQ"
     ],
-    "availability": "Open to freelance, remote and part-time engagements - Saturdays & Sundays · Weeknights from 10 PM IST",
+    "availability": "Open to full-time remote roles",
     "certifications": [
       {
         "date": "Jul - Dec 2023",
