@@ -15,33 +15,41 @@ export function installMcFx(root: HTMLElement): () => void {
   const fine = matchMedia('(pointer: fine)').matches;
   const cleanups: (() => void)[] = [];
 
-  root.querySelectorAll<HTMLElement>('.mc-title').forEach(splitWords);
+  const live = 'IntersectionObserver' in window
+    ? new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('fx-off', !e.isIntersecting)), { rootMargin: '120px 0px' })
+    : null;
+  const io = !reduced && 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          el.classList.add('fx-in');
+          if (el.classList.contains('mc-kicker')) scramble(el);
+          io!.unobserve(el);
+        }
+      }, { rootMargin: '0px 0px -12% 0px' })
+    : null;
 
-  /* Infinite decorative animations (pulses, pings, travelling dots) cost style
-     and paint work every frame, even when nobody can see them. Sections only
-     animate while on-screen; the rest are paused via .fx-off in styles.scss. */
-  if ('IntersectionObserver' in window) {
-    const live = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('fx-off', !e.isIntersecting)),
-      { rootMargin: '120px 0px' });
-    root.querySelectorAll('main section, mc-hero section').forEach(el => { el.classList.add('fx-off'); live.observe(el); });
-    cleanups.push(() => live.disconnect());
-  }
-
-  if (!reduced && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(entries => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        const el = e.target as HTMLElement;
-        el.classList.add('fx-in');
-        if (el.classList.contains('mc-kicker')) scramble(el);
-        io.unobserve(el);
-      }
-    }, { rootMargin: '0px 0px -12% 0px' });
-    root.querySelectorAll('.mc-title, .mc-kicker, section.mc-sec').forEach(el => io.observe(el));
-    cleanups.push(() => io.disconnect());
-  } else {
-    root.querySelectorAll('.mc-title, .mc-kicker, section.mc-sec').forEach(el => el.classList.add('fx-in'));
-  }
+  /* Sets up everything inside `scope`. Sections render late (@defer), so this
+     runs again for whatever a MutationObserver sees being added. */
+  const setup = (scope: Element) => {
+    const all = <T extends Element>(sel: string) =>
+      [...(scope.matches?.(sel) ? [scope as T] : []), ...Array.from(scope.querySelectorAll<T>(sel))];
+    all<HTMLElement>('.mc-title').forEach(splitWords);
+    /* Infinite decorative animations (pulses, pings, travelling dots) cost style
+       and paint work every frame, even when nobody can see them. Sections only
+       animate while on-screen; the rest are paused via .fx-off in styles.scss. */
+    all('section').forEach(el => { if (!live || el.classList.contains('fx-seen')) return; el.classList.add('fx-seen', 'fx-off'); live.observe(el); });
+    all('.mc-title, .mc-kicker, section.mc-sec').forEach(el => {
+      if (el.classList.contains('fx-watch')) return;
+      el.classList.add('fx-watch');
+      if (io) io.observe(el); else el.classList.add('fx-in');
+    });
+  };
+  setup(root);
+  const mo = new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n instanceof Element) setup(n); })));
+  mo.observe(root, { childList: true, subtree: true });
+  cleanups.push(() => { mo.disconnect(); live?.disconnect(); io?.disconnect(); });
 
   if (!reduced && fine) {
     const move = (e: PointerEvent) => {

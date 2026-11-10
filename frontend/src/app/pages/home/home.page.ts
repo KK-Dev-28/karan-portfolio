@@ -38,29 +38,35 @@ import { installMcFx } from '../../components/mc/mc-fx';
      and the public visitor stats are extras kept from the previous page. The
      earlier section components (projects, skills, story, pricing, …) are
      untouched and can be put back by restoring an import and a tag. */
+  /* Only the navbar and hero render with the page; everything else renders
+     in idle time right after (each @defer block is its own lazy chunk and
+     its own task). Rendering all fifteen sections up front was a 2.5s
+     main-thread block on mid-range phones and held back the first paint. */
   template: `
     <app-loading-screen *ngIf="showLoader" (done)="showLoader = false"></app-loading-screen>
-    <mc-starfield></mc-starfield>
-    <mc-festive></mc-festive>
-    <mc-mission-log [ids]="sections"></mc-mission-log>
     <app-navbar></app-navbar>
-    <mc-section-nav [ids]="sections"></mc-section-nav>
-
     <mc-hero></mc-hero>
-    <mc-architecture></mc-architecture>
-    <mc-journey></mc-journey>
-    <mc-services></mc-services>
-    <mc-process></mc-process>
-    <mc-work></mc-work>
-    <app-bug-hunt></app-bug-hunt>
-    <mc-kits></mc-kits>
-    <mc-scope></mc-scope>
-    <mc-reviews></mc-reviews>
-    <mc-faq></mc-faq>
-    <app-popularity></app-popularity>
-    <mc-contact></mc-contact>
-    <mc-crew></mc-crew>
-    <mc-footer></mc-footer>
+
+    @defer (on idle) {
+      <mc-starfield></mc-starfield>
+      <mc-festive></mc-festive>
+      <mc-mission-log [ids]="sections"></mc-mission-log>
+      <mc-section-nav [ids]="sections"></mc-section-nav>
+    }
+    @defer (on idle) { <mc-architecture></mc-architecture> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-journey></mc-journey> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-services></mc-services> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-process></mc-process> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-work></mc-work> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <app-bug-hunt></app-bug-hunt> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-kits></mc-kits> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-scope></mc-scope> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-reviews></mc-reviews> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-faq></mc-faq> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <app-popularity></app-popularity> }
+    @defer (on idle) { <mc-contact></mc-contact> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-crew></mc-crew> } @placeholder { <div class="mc-ph"></div> }
+    @defer (on idle) { <mc-footer></mc-footer> }
   `,
 })
 export class HomePageComponent implements AfterViewInit, OnDestroy {

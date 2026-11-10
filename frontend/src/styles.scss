@@ -1111,3 +1111,6 @@ html[data-occasion="gurpurab"], html[data-occasion="lohri"], html[data-occasion=
 
 /* Off-screen sections don't animate (toggled by mc-fx.ts). */
 section.fx-off, section.fx-off *, section.fx-off *::before, section.fx-off *::after { animation-play-state: paused !important; }
+
+/* Space held for a home-page section until its @defer block renders. */
+.mc-ph { min-height: 70vh; }

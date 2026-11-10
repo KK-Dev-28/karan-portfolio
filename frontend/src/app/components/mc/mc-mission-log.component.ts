@@ -120,6 +120,7 @@ export class McMissionLogComponent implements OnInit, OnDestroy {
   }));
   private zone = inject(NgZone);
   private io?: IntersectionObserver;
+  private mo?: MutationObserver;
   private toastTimer?: ReturnType<typeof setTimeout>;
 
   private static readonly LABELS: Record<string, string> = {
@@ -136,11 +137,16 @@ export class McMissionLogComponent implements OnInit, OnDestroy {
       this.io = new IntersectionObserver(es => {
         for (const e of es) if (e.isIntersecting) this.zone.run(() => this.mark((e.target as HTMLElement).id));
       }, { threshold: .35 });
-      this.ids.forEach(id => { const el = document.getElementById(id); if (el) this.io!.observe(el); });
+      // Sections render late (@defer), so keep looking until each one exists.
+      const pending = new Set(this.ids);
+      const scan = () => pending.forEach(id => { const el = document.getElementById(id); if (el) { this.io!.observe(el); pending.delete(id); } });
+      scan();
+      this.mo = new MutationObserver(() => { scan(); if (!pending.size) this.mo?.disconnect(); });
+      this.mo.observe(document.body, { childList: true, subtree: true });
     }), 600);
   }
 
-  ngOnDestroy() { this.io?.disconnect(); removeEventListener('mc:achieve', this.onAchieve as EventListener); clearTimeout(this.toastTimer); }
+  ngOnDestroy() { this.io?.disconnect(); this.mo?.disconnect(); removeEventListener('mc:achieve', this.onAchieve as EventListener); clearTimeout(this.toastTimer); }
 
   jump(id: string) { this.open.set(false); mcScrollTo(id); }
 
