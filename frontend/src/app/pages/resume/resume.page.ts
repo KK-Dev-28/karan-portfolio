@@ -40,8 +40,15 @@ export class ResumePageComponent implements OnInit {
   constructor(private cms: SiteContentService) {}
 
   ngOnInit() {
+    // Show the last copy straight away; the API (which can take a while to wake) replaces it.
+    const cached = readCache();
+    if (cached) { this.cv = currentFacts(repairText(cached)); this.loading = false; void this.makeQr(); }
     this.cms.getSection('resume').subscribe({
-      next: (data: any) => { this.cv = data ? currentFacts(repairText(data)) : null; this.loading = false; void this.makeQr(); },
+      next: (data: any) => {
+        if (data) writeCache(data);
+        this.cv = data ? currentFacts(repairText(data)) : this.cv;
+        this.loading = false; void this.makeQr();
+      },
       error: () => { this.loading = false; },
     });
   }
@@ -133,4 +140,12 @@ function currentFacts(cv: Resume): Resume {
     : e);
   out.summary = (out.summary ?? '').replace(/Currently completing an MCA at ([^.]+?) alongside/i, 'Completed an MCA at $1 alongside');
   return out;
+}
+
+const CACHE_KEY = 'kk_resume_v1';
+function readCache(): any {
+  try { return typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem(CACHE_KEY) ?? 'null'); } catch { return null; }
+}
+function writeCache(data: any) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch { /* storage unavailable */ }
 }

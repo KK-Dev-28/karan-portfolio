@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { VisitorService } from '../../services/visitor.service';
 
 @Component({
@@ -9,7 +11,7 @@ import { VisitorService } from '../../services/visitor.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule],
   template: `
-  <div class="wc" *ngIf="v.consent() === 'unknown' && ready()" role="dialog" aria-label="Welcome and privacy choice">
+  <div class="wc" *ngIf="v.consent() === 'unknown' && ready() && !quiet()" role="dialog" aria-label="Welcome and privacy choice">
     <div class="wc-glow"></div>
     <p class="wc-kicker"><span class="wc-wave" aria-hidden="true">👋</span> {{ partOfDay }}</p>
     <h2>Hi, I'm Karan. <em>Who's visiting?</em></h2>
@@ -57,6 +59,7 @@ import { VisitorService } from '../../services/visitor.service';
     @keyframes wcIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
     @keyframes wave{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-8deg)}}
     @media (prefers-reduced-motion:reduce){.wc,.wc-hello,.wc-wave{animation:none}}
+    @media print{.wc{display:none}}
   `],
 })
 export class WelcomeCardComponent implements OnInit {
@@ -66,5 +69,15 @@ export class WelcomeCardComponent implements OnInit {
   readonly ready = signal(false);
   readonly partOfDay = (h => h < 5 ? 'Up late' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening')(new Date().getHours());
 
-  ngOnInit() { if (typeof window !== 'undefined') setTimeout(() => this.ready.set(true), 2500); }
+  /** Pages a recruiter reads or prints (the resume) stay free of the card. */
+  readonly quiet = signal(false);
+  private router = inject(Router);
+
+  ngOnInit() {
+    if (typeof window !== 'undefined') setTimeout(() => this.ready.set(true), 2500);
+    const check = (url: string) => this.quiet.set(/^\/resume(?:[/?#]|$)/.test(url));
+    check(this.router.url);
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe(e => check((e as NavigationEnd).urlAfterRedirects));
+  }
 }
