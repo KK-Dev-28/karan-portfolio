@@ -37,8 +37,14 @@
 /* ── Request card ── */
 .ab-card {
   background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
-  transition: border-color var(--t-fast);
-  &.open { border-color: rgba(var(--accent-rgb), .35); }
+  transition: border-color var(--t-fast), box-shadow var(--t-mid), transform var(--t-mid);
+  position: relative;
+  &::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity var(--t-mid);
+    background: var(--gradient-accent);
+  }
+  &:hover:not(.open) { transform: translateY(-1px); box-shadow: var(--shadow-card); }
+  &.open { border-color: rgba(var(--accent-rgb), .35); box-shadow: var(--shadow-glow); &::before { opacity: 1; } }
 }
 .ab-head {
   display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
@@ -53,7 +59,11 @@
 .ab-pill {
   padding: .22rem .65rem; border-radius: 100px; font-family: var(--font-mono); font-size: .6rem;
   letter-spacing: .06em; text-transform: uppercase; background: var(--bg-2); color: var(--text-muted); border: 1px solid var(--border);
-  &[data-s='submitted'] { background: rgba(var(--electric-rgb), .12); color: var(--electric); border-color: rgba(var(--electric-rgb), .3); }
+  &[data-s='submitted'] {
+    background: rgba(var(--electric-rgb), .12); color: var(--electric); border-color: rgba(var(--electric-rgb), .3);
+    &::before { content: ''; display: inline-block; width: 5px; height: 5px; margin-right: .35rem; border-radius: 50%;
+      background: var(--electric); box-shadow: 0 0 0 0 rgba(var(--electric-rgb), .6); animation: abPing 1.8s infinite; vertical-align: middle; }
+  }
   &[data-s='approved'], &[data-s='quoted'] { background: rgba(var(--accent-rgb), .12); color: var(--accent); border-color: rgba(var(--accent-rgb), .3); }
   &[data-s='paid'], &[data-s='live'], &[data-f='approved'], &[data-f='done'] { background: rgba(16, 185, 129, .12); color: var(--emerald); border-color: rgba(16, 185, 129, .3); }
   &[data-s='rejected'], &[data-s='cancelled'], &[data-f='rejected'] { background: rgba(239, 68, 68, .1); color: #f87171; border-color: rgba(239, 68, 68, .28); }
@@ -167,4 +177,9 @@ textarea { resize: vertical; line-height: 1.5; }
     li { flex-direction: row; text-align: left; font-size: .72rem; &::before { display: none; } } }
   .ab-audit li { grid-template-columns: 1fr 1fr; gap: .3rem .75rem; }
   .a-detail { grid-column: span 2; white-space: normal; }
+}
+
+@keyframes abPing { 70% { box-shadow: 0 0 0 5px rgba(var(--electric-rgb), 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .ab-pill[data-s='submitted']::before { animation: none; }
 }

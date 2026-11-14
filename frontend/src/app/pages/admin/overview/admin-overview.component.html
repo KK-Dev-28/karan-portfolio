@@ -1,16 +1,31 @@
 <div class="ov">
 
+  <!-- ── Auto-insight hero ──────────────────────────── -->
+  <section class="ov-hero" [attr.data-tone]="insightLine().tone">
+    <div class="ov-hero-icon">
+      <svg *ngIf="insightLine().tone === 'live'" viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+      <svg *ngIf="insightLine().tone === 'warn'" viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.72-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM10 7a1 1 0 00-1 1v2a1 1 0 002 0V8a1 1 0 00-1-1zm0 6a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"/></svg>
+      <svg *ngIf="insightLine().tone === 'up'" viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L10 9.586 13.586 6H12z" clip-rule="evenodd"/></svg>
+      <svg *ngIf="insightLine().tone === 'down'" viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L10 10.414 13.586 14H12z" clip-rule="evenodd"/></svg>
+      <svg *ngIf="insightLine().tone === 'flat'" viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+    </div>
+    <p class="ov-hero-text">{{ insightLine().text }}</p>
+    <div class="ov-hero-chips">
+      <span *ngFor="let c of chips()"><strong [appCountUp]="c.value" [countUpSuffix]="c.suffix || ''"></strong>{{ c.label }}</span>
+    </div>
+  </section>
+
   <!-- ── Headline numbers ───────────────────────────── -->
   <div class="ov-row">
     <div class="ov-stat live">
       <span class="ov-stat-lbl"><i class="dot"></i>Reading now</span>
-      <strong>{{ insights()?.live?.count || 0 }}</strong>
+      <strong [appCountUp]="insights()?.live?.count || 0" [countUpMs]="500"></strong>
       <small *ngIf="insights()?.live?.pages?.length as n">on {{ n }} page{{ n === 1 ? '' : 's' }}</small>
       <small *ngIf="!insights()?.live?.pages?.length">quiet right now</small>
     </div>
     <div class="ov-stat">
       <span class="ov-stat-lbl">This week</span>
-      <strong>{{ insights()?.thisWeek || 0 }}</strong>
+      <strong [appCountUp]="insights()?.thisWeek || 0"></strong>
       <small class="trend" [class]="growthClass()">
         {{ (insights()?.growthPct || 0) > 0 ? '▲' : (insights()?.growthPct || 0) < 0 ? '▼' : '—' }}
         {{ insights()?.growthPct || 0 }}% vs last week
@@ -18,17 +33,17 @@
     </div>
     <div class="ov-stat">
       <span class="ov-stat-lbl">Sessions</span>
-      <strong>{{ insights()?.sessions || 0 }}</strong>
+      <strong [appCountUp]="insights()?.sessions || 0"></strong>
       <small>{{ insights()?.pagesPerSession || 0 }} pages each</small>
     </div>
     <div class="ov-stat">
       <span class="ov-stat-lbl">Bounce rate</span>
-      <strong>{{ insights()?.bounceRate || 0 }}%</strong>
+      <strong [appCountUp]="insights()?.bounceRate || 0" countUpSuffix="%"></strong>
       <small>one-page visits</small>
     </div>
     <div class="ov-stat money">
       <span class="ov-stat-lbl">Booked</span>
-      <strong>{{ inr(builderStats()?.bookedInr) }}</strong>
+      <strong [appCountUp]="builderStats()?.bookedInr || 0" countUpPrefix="₹"></strong>
       <small>{{ inr(builderStats()?.pipelineInr) }} in pipeline</small>
     </div>
   </div>

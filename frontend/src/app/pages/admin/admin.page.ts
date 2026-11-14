@@ -26,11 +26,12 @@ import { CrewBroadcastComponent } from '../../components/crew-broadcast/crew-bro
 import { AdminOverviewComponent } from './overview/admin-overview.component';
 import { AdminBuilderComponent } from './builder/admin-builder.component';
 import { BuilderService, BuilderStats } from '../../services/builder.service';
+import { CountUpDirective } from '../../directives/count-up.directive';
 
 @Component({
   selector: 'app-admin-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, CrewBroadcastComponent, AdminOverviewComponent, AdminBuilderComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, CrewBroadcastComponent, AdminOverviewComponent, AdminBuilderComponent, CountUpDirective],
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
 })
@@ -40,6 +41,9 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   tab: TabType    = 'overview';
   /** Portfolio-builder totals for the Overview cards. */
   builderStats: BuilderStats | null = null;
+  /** Live clock shown in the header; ticks once a minute, not once a second. */
+  now = new Date();
+  private clockSub: Subscription | null = null;
 
   // ── Date filter state ─────────────────────────────────
   dateFilter: DateFilter = 'all';
@@ -160,6 +164,20 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private themeSvc:     ThemeService,
     private builderSvc:   BuilderService,
   ) {}
+
+  /** Time-of-day greeting for the header. */
+  get greeting(): string {
+    const h = this.now.getHours();
+    return h < 5 ? 'Still up' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Working late';
+  }
+
+  get todayLabel(): string {
+    return this.now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
+
+  get clockLabel(): string {
+    return this.now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
 
   private loadBuilderStats() {
     this.builderSvc.adminStats().subscribe({ next: s => (this.builderStats = s), error: () => (this.builderStats = null) });
@@ -306,6 +324,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     this.load();
     this.loadCms();
     this.loadBuilderStats();
+    this.clockSub = interval(30_000).subscribe(() => (this.now = new Date()));
     this.sub = interval(30_000)
       .pipe(switchMap(() => this.analytics.getDashboard()))
       .subscribe(d => (this.data = d));
@@ -731,5 +750,5 @@ export class AdminPageComponent implements OnInit, OnDestroy {
   }
 
   logout() { this.auth.logout(); }
-  ngOnDestroy() { this.sub?.unsubscribe(); }
+  ngOnDestroy() { this.sub?.unsubscribe(); this.clockSub?.unsubscribe(); }
 }

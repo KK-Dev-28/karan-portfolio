@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BuilderStats } from '../../../services/builder.service';
+import { CountUpDirective } from '../../../directives/count-up.directive';
 
 interface DayPoint { date: string; views: number; visitors: number; }
 
@@ -13,7 +14,7 @@ interface DayPoint { date: string; views: number; visitors: number; }
   selector: 'app-admin-overview',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [CommonModule, CountUpDirective],
   templateUrl: './admin-overview.component.html',
   styleUrls: ['./admin-overview.component.scss'],
 })
@@ -129,5 +130,37 @@ export class AdminOverviewComponent {
   readonly growthClass = computed(() => {
     const g = this.insights()?.growthPct ?? 0;
     return g > 0 ? 'up' : g < 0 ? 'down' : 'flat';
+  });
+
+  /**
+   * A short, human line auto-written from whatever stands out most right
+   * now — traffic, a waiting approval, pipeline money — so the dashboard
+   * opens with a sentence, not just numbers.
+   */
+  readonly insightLine = computed(() => {
+    const g = this.insights()?.growthPct ?? 0;
+    const live = this.insights()?.live?.count ?? 0;
+    const pending = this.builderStats()?.byStatus?.['submitted'] ?? 0;
+    const pipeline = this.builderStats()?.pipelineInr ?? 0;
+    const bounce = this.insights()?.bounceRate ?? 0;
+
+    if (live >= 3) return { tone: 'live', text: `${live} people are on the site right now — a good moment to check in on the chat.` };
+    if (pending > 0) return { tone: 'warn', text: `${pending} new portfolio request${pending === 1 ? '' : 's'} waiting on your approval.` };
+    if (g >= 15) return { tone: 'up', text: `Traffic is up ${g}% on last week — whatever you changed, it's working.` };
+    if (g <= -15) return { tone: 'down', text: `Traffic has dropped ${Math.abs(g)}% from last week. Worth a look at what changed.` };
+    if (pipeline > 0) return { tone: 'up', text: `₹${pipeline.toLocaleString('en-IN')} sitting in quoted and accepted requests — follow up to close it.` };
+    if (bounce >= 70) return { tone: 'warn', text: `${bounce}% of visits leave after one page. The hero or load speed may be worth a look.` };
+    return { tone: 'flat', text: `Everything is steady. ${this.insights()?.thisWeek ?? 0} visits this week.` };
+  });
+
+  /** Streak-style chip row summarising the week, for a quick scan. */
+  readonly chips = computed<{ label: string; value: number; suffix?: string }[]>(() => {
+    const i = this.insights();
+    if (!i) return [];
+    return [
+      { label: 'Sessions', value: i.sessions ?? 0 },
+      { label: 'Pages/session', value: i.pagesPerSession ?? 0 },
+      { label: 'Bounce', value: i.bounceRate ?? 0, suffix: '%' },
+    ];
   });
 }
