@@ -66,6 +66,7 @@
             <div class="pli-title">{{ p.title }}</div>
             <div class="pli-meta">
               <span class="pli-badge" [class.pub]="p.published" [class.draft]="!p.published">{{ p.published ? 'Published' : 'Draft' }}</span>
+              <span class="pli-badge html" *ngIf="p.format === 'html'">HTML</span>
               <span class="pli-time">{{ timeAgo(p.createdAt) }}</span>
               <span class="pli-tags" *ngIf="p.tags?.length">· {{ p.tags.join(', ') }}</span>
             </div>
@@ -94,8 +95,15 @@
       <!-- Title -->
       <input class="ef-title-input" [(ngModel)]="editorForm.title" placeholder="Post title…" maxlength="200" />
 
+      <!-- Design vs HTML format -->
+      <div class="ef-format">
+        <button [class.on]="editorForm.format === 'text'" (click)="setFormat('text')" type="button">Design editor</button>
+        <button [class.on]="editorForm.format === 'html'" (click)="setFormat('html')" type="button">HTML / embed</button>
+        <span class="ef-format-hint" *ngIf="editorForm.format === 'html'">Published with a live preview and a code view — nothing here reaches the rest of the site.</span>
+      </div>
+
       <!-- Rich text toolbar -->
-      <div class="rte-toolbar">
+      <div class="rte-toolbar" *ngIf="editorForm.format === 'text'">
         <button class="rtb" (click)="cmd('bold')" title="Bold"><strong>B</strong></button>
         <button class="rtb" (click)="cmd('italic')" title="Italic"><em>I</em></button>
         <button class="rtb" (click)="cmd('underline')" title="Underline"><u>U</u></button>
@@ -128,12 +136,30 @@
 
       <!-- Content editable editor -->
       <div
+        *ngIf="editorForm.format === 'text'"
         #editor
         class="rte-editor"
         contenteditable="true"
         (input)="onEditorInput()"
         (paste)="onEditorInput()"
         data-placeholder="Start writing your post here… Select text to format it using the toolbar above.">
+      </div>
+
+      <!-- HTML source + live sandboxed preview -->
+      <div class="html-editor" *ngIf="editorForm.format === 'html'">
+        <div class="html-tabs">
+          <button [class.on]="htmlPane === 'code'" (click)="htmlPane = 'code'" type="button">Code</button>
+          <button [class.on]="htmlPane === 'preview'" (click)="htmlPane = 'preview'" type="button">Preview</button>
+        </div>
+        <div class="html-split">
+          <textarea
+            class="html-code" [class.hide-on-mobile]="htmlPane !== 'code'"
+            [ngModel]="editorForm.body" (ngModelChange)="onHtmlInput($event)"
+            spellcheck="false" placeholder="<!doctype html>&#10;<html>…</html>  or a fragment of markup, styles and scripts"></textarea>
+          <div class="html-preview" [class.hide-on-mobile]="htmlPane !== 'preview'">
+            <iframe [srcdoc]="htmlPreview" title="Live preview" sandbox="allow-scripts allow-popups" referrerpolicy="no-referrer"></iframe>
+          </div>
+        </div>
       </div>
 
       <!-- Link dialog -->

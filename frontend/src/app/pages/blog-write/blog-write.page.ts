@@ -23,10 +23,13 @@ export class BlogWritePageComponent implements OnInit, AfterViewInit {
   tab: DashTab = 'posts';
 
   editingId: number | null = null;
-  editorForm = { title: '', body: '', excerpt: '', coverImage: '', tags: '', published: false };
+  editorForm = { title: '', body: '', excerpt: '', coverImage: '', tags: '', published: false, format: 'text' as 'text' | 'html' };
   saving = false;
   saveErr = '';
   saveOk = false;
+
+  /** For an HTML post: which half of the split view is in front on narrow screens. */
+  htmlPane: 'code' | 'preview' = 'code';
 
   // Profile
   profileForm: any = {};
@@ -79,7 +82,7 @@ export class BlogWritePageComponent implements OnInit, AfterViewInit {
   // ── Editor ───────────────────────────────────────────
   newPost() {
     this.editingId = null;
-    this.editorForm = { title: '', body: '', excerpt: '', coverImage: '', tags: '', published: false };
+    this.editorForm = { title: '', body: '', excerpt: '', coverImage: '', tags: '', published: false, format: 'text' };
     this.saveErr = ''; this.saveOk = false;
     this.tab = 'editor';
     setTimeout(() => {
@@ -89,12 +92,46 @@ export class BlogWritePageComponent implements OnInit, AfterViewInit {
 
   editPost(p: any) {
     this.editingId = p.id;
-    this.editorForm = { title: p.title, body: p.body, excerpt: p.excerpt || '', coverImage: p.coverImage || '', tags: (p.tags || []).join(', '), published: p.published };
+    this.editorForm = {
+      title: p.title, body: p.body, excerpt: p.excerpt || '', coverImage: p.coverImage || '',
+      tags: (p.tags || []).join(', '), published: p.published, format: p.format === 'html' ? 'html' : 'text',
+    };
     this.saveErr = ''; this.saveOk = false;
     this.tab = 'editor';
     setTimeout(() => {
       if (this.editorRef?.nativeElement) this.editorRef.nativeElement.innerHTML = p.body || '';
     }, 0);
+  }
+
+  /**
+   * Switches between the rich-text design editor and a raw HTML source editor.
+   * Going to HTML keeps the current rendered body as a starting point; going
+   * back to Design loads whatever HTML is there into the rich-text area.
+   */
+  setFormat(f: 'text' | 'html') {
+    if (f === this.editorForm.format) return;
+    if (f === 'text') {
+      setTimeout(() => {
+        if (this.editorRef?.nativeElement) this.editorRef.nativeElement.innerHTML = this.editorForm.body || '';
+      }, 0);
+    }
+    this.editorForm.format = f;
+    this.htmlPane = 'code';
+  }
+
+  onHtmlInput(value: string) { this.editorForm.body = value; }
+
+  /** Live preview document for an HTML post, sandboxed the same way the published page renders it. */
+  get htmlPreview(): SafeHtml {
+    const body = this.editorForm.body || '<p style="color:#9ca3af;font:14px system-ui">Nothing to preview yet.</p>';
+    const doc = /<html[\s>]/i.test(body)
+      ? body
+      : `<!doctype html><html><head><meta charset="utf-8">`
+        + `<meta name="viewport" content="width=device-width,initial-scale=1">`
+        + `<style>html,body{margin:0;padding:16px;font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;`
+        + `background:#fff;color:#16181d}*{box-sizing:border-box}img,video,canvas,svg{max-width:100%}</style>`
+        + `</head><body>${body}</body></html>`;
+    return this.san.bypassSecurityTrustHtml(doc);
   }
 
   // ── Toolbar commands ─────────────────────────────────
@@ -133,6 +170,10 @@ export class BlogWritePageComponent implements OnInit, AfterViewInit {
   }
 
   get wordCount(): number {
+    if (this.editorForm.format === 'html') {
+      const text = (this.editorForm.body || '').replace(/<[^>]*>/g, ' ').trim();
+      return text ? text.split(/\s+/).filter(Boolean).length : 0;
+    }
     const text = this.editorRef?.nativeElement?.innerText?.trim() || this.editorForm.body?.trim() || '';
     return text ? text.split(/\s+/).filter(Boolean).length : 0;
   }
@@ -140,12 +181,19 @@ export class BlogWritePageComponent implements OnInit, AfterViewInit {
 
   save(publish?: boolean) {
     if (publish !== undefined) this.editorForm.published = publish;
-    const body = this.editorRef?.nativeElement?.innerHTML?.trim() || this.editorForm.body.trim();
-    if (!this.editorForm.title.trim() || !body) { this.saveErr = 'Title and content are required.'; return; }
+    const isHtml = this.editorForm.format === 'html';
+    const body = isHtml
+      ? this.editorForm.body.trim()
+      : (this.editorRef?.nativeElement?.innerHTML?.trim() || this.editorForm.body.trim());
+    if (!this.editorForm.title.trim() || !body) {
+      this.saveErr = isHtml ? 'Title and HTML source are required.' : 'Title and content are required.';
+      return;
+    }
     this.saving = true; this.saveErr = ''; this.saveOk = false;
     const dto = {
       title:      this.editorForm.title.trim(),
       body,
+      format:     this.editorForm.format,
       excerpt:    this.editorForm.excerpt.trim() || undefined,
       coverImage: this.editorForm.coverImage.trim() || undefined,
       tags:       this.editorForm.tags.split(',').map((t: string) => t.trim()).filter(Boolean),
