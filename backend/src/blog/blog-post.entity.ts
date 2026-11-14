@@ -1,6 +1,14 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { BlogUser } from './blog-user.entity';
 
+export const BLOG_FORMATS = ['text', 'html'] as const;
+export type BlogPostFormat = typeof BLOG_FORMATS[number];
+
+/** Production boots without TypeORM synchronize, so new columns are added here. */
+export const BLOG_DDL = [
+  `ALTER TABLE "blog_posts" ADD COLUMN IF NOT EXISTS "format" varchar(10) NOT NULL DEFAULT 'text'`,
+];
+
 @Entity('blog_posts')
 export class BlogPost {
   @PrimaryGeneratedColumn()
@@ -14,6 +22,14 @@ export class BlogPost {
 
   @Column('text')
   body: string;
+
+  /**
+   * 'text' is plain prose split into paragraphs. 'html' means the body is a
+   * web design the reader can see rendered in a sandboxed frame, with the
+   * source shown alongside it.
+   */
+  @Column({ type: 'varchar', length: 10, default: 'text' })
+  format: BlogPostFormat;
 
   @Column({ nullable: true })
   excerpt: string;

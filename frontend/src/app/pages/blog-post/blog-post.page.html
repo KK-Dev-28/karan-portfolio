@@ -66,9 +66,30 @@
         <!-- Divider -->
         <div class="pp-divider"></div>
 
-        <!-- Body -->
-        <div class="pp-body">
+        <!-- Body: plain prose, or a live design with its source beside it -->
+        <div class="pp-body" *ngIf="!isHtmlPost">
           <p class="pp-para" *ngFor="let para of bodyParagraphs">{{ para }}</p>
+        </div>
+
+        <div class="pp-demo" *ngIf="isHtmlPost">
+          <div class="pp-demo-bar">
+            <div class="pp-demo-tabs">
+              <button [class.on]="htmlView === 'design'" (click)="htmlView = 'design'">Design</button>
+              <button [class.on]="htmlView === 'code'" (click)="htmlView = 'code'">Code</button>
+            </div>
+            <div class="pp-demo-tools">
+              <span class="pp-demo-note">Runs sandboxed — it cannot touch this page</span>
+              <button class="pp-demo-copy" (click)="copyCode()">{{ copied ? 'Copied' : 'Copy code' }}</button>
+            </div>
+          </div>
+
+          <div class="pp-demo-stage" *ngIf="htmlView === 'design'">
+            <iframe [srcdoc]="frameDoc" title="Live preview of this post"
+                    sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                    referrerpolicy="no-referrer" loading="lazy"></iframe>
+          </div>
+
+          <pre class="pp-demo-code" *ngIf="htmlView === 'code'"><code>{{ post.body }}</code></pre>
         </div>
 
         <!-- Footer -->

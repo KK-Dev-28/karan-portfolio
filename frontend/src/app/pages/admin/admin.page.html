@@ -26,6 +26,22 @@
 
       <div class="nav-group-lbl">Overview</div>
 
+      <button class="nav-item" [class.active]="tab==='overview'" (click)="tab='overview'">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1H9a1 1 0 01-1-1V4zM14 8a1 1 0 011-1h2a1 1 0 011 1v8a1 1 0 01-1 1h-2a1 1 0 01-1-1V8z"/></svg>
+        </span>
+        <span class="nav-label">Dashboard</span>
+        <span class="nav-badge" *ngIf="data.analytics?.insights?.live?.count">{{ data.analytics.insights.live.count }}</span>
+      </button>
+
+      <button class="nav-item" [class.active]="tab==='builder'" (click)="tab='builder'">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        </span>
+        <span class="nav-label">Portfolio builder</span>
+        <span class="nav-badge-warn" *ngIf="builderStats?.byStatus?.['submitted']">{{ builderStats?.byStatus?.['submitted'] }}</span>
+      </button>
+
       <button class="nav-item" [class.active]="tab==='visitors'" (click)="tab='visitors'">
         <span class="nav-icon">
           <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
@@ -298,6 +314,16 @@
           <span class="df-sep">–</span>
           <input type="date" class="df-date-input" [(ngModel)]="customTo"   placeholder="To" />
         </ng-container>
+      </div>
+
+      <!-- ── DASHBOARD ──────────────────────────────── -->
+      <div class="tab-panel" *ngIf="tab==='overview'">
+        <app-admin-overview [data]="data" [builder]="builderStats"></app-admin-overview>
+      </div>
+
+      <!-- ── PORTFOLIO BUILDER ──────────────────────── -->
+      <div class="tab-panel" *ngIf="tab==='builder'">
+        <app-admin-builder></app-admin-builder>
       </div>
 
       <!-- ── VISITORS ───────────────────────────────── -->

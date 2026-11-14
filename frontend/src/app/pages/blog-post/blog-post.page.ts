@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { BlogApiService } from '../../services/blog.service';
 import { ReactionBarComponent } from '../../components/reaction-bar/reaction-bar.component';
@@ -16,6 +17,44 @@ export class BlogPostPageComponent implements OnInit, OnDestroy {
   post: any = null;
   loading = true;
   notFound = false;
+
+  /** For an HTML post: the rendered design, or the source behind it. */
+  htmlView: 'design' | 'code' = 'design';
+  copied = false;
+  private sanitizer = inject(DomSanitizer);
+  private framed: { body: string; doc: SafeHtml } | null = null;
+
+  get isHtmlPost() { return this.post?.format === 'html'; }
+
+  /**
+   * The post body wrapped in a minimal document and handed to a sandboxed
+   * iframe. The frame has no access to this origin, so a post's own scripts
+   * and styles cannot reach the site around them.
+   */
+  get frameDoc(): SafeHtml | null {
+    const body: string = this.post?.body ?? '';
+    if (!body) return null;
+    if (this.framed?.body !== body) {
+      const doc = /<html[\s>]/i.test(body)
+        ? body
+        : `<!doctype html><html><head><meta charset="utf-8">`
+          + `<meta name="viewport" content="width=device-width,initial-scale=1">`
+          + `<style>html,body{margin:0;padding:16px;font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;`
+          + `background:#fff;color:#16181d;-webkit-text-size-adjust:100%}*{box-sizing:border-box}img,video,canvas,svg{max-width:100%}</style>`
+          + `</head><body>${body}</body></html>`;
+      // The iframe is sandboxed, so this document can only affect itself.
+      this.framed = { body, doc: this.sanitizer.bypassSecurityTrustHtml(doc) };
+    }
+    return this.framed.doc;
+  }
+
+  copyCode() {
+    const body: string = this.post?.body ?? '';
+    navigator.clipboard?.writeText(body).then(() => {
+      this.copied = true;
+      setTimeout(() => (this.copied = false), 1800);
+    }).catch(() => {});
+  }
 
   ngOnDestroy() {
     // Don't let this post's structured data follow the visitor to the next route.
@@ -87,7 +126,7 @@ export class BlogPostPageComponent implements OnInit, OnDestroy {
   /** First ~200 chars of body text, used when a post has no excerpt. */
   private plainSummary(body?: string): string {
     if (!body) return '';
-    return body.replace(/\s+/g, ' ').trim().slice(0, 200);
+    return body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200);
   }
 
   get readingTime(): number {

@@ -72,6 +72,7 @@ export class VisitorService {
       referrers:  count(all, 'referrer'),
       countries:  count(all, 'country'),
       dailyChart: this.buildChart(weekRows),
+      insights:   this.insights(all),
       // All visitors ever (newest first) so the admin date filters — incl. All Time — see old data too.
       recent: all.slice(0, 5000).map(v => ({
         id: v.id, ip: v.ip, visitorName: v.visitorName, timezone: v.timezone, language: v.language, country: v.country, city: v.city,
@@ -79,6 +80,50 @@ export class VisitorService {
         os: v.os, referrer: v.referrer, page: v.page,
         isReturning: v.isReturning, visitedAt: v.visitedAt, screen: v.screen,
       })),
+    };
+  }
+
+  /** Deeper aggregates for the admin overview: trend, heatmap, sessions, live, growth. */
+  private insights(all: Visitor[]) {
+    const DAY = 86_400_000, IST = 330 * 60_000, now = Date.now();
+    const ist = (d: Date) => new Date(d.getTime() + IST);
+    const dayKey = (d: Date) => ist(d).toISOString().slice(0, 10);
+
+    const byDay: Record<string, { views: number; visitors: Set<string> }> = {};
+    const heat = Array.from({ length: 7 }, () => Array(24).fill(0) as number[]);
+    const sessions: Record<string, number> = {};
+    for (const v of all) {
+      const k = dayKey(v.visitedAt);
+      (byDay[k] ??= { views: 0, visitors: new Set() }).views++;
+      byDay[k].visitors.add(v.ipHash || v.ip);
+      if (now - v.visitedAt.getTime() < 90 * DAY) { const t = ist(v.visitedAt); heat[t.getUTCDay()][t.getUTCHours()]++; }
+      const sid = v.sessionId || `${v.ipHash || v.ip}:${k}`;
+      sessions[sid] = (sessions[sid] ?? 0) + 1;
+    }
+    const daily30 = Array.from({ length: 30 }, (_, i) => {
+      const key = dayKey(new Date(now - (29 - i) * DAY));
+      return { date: key, views: byDay[key]?.views ?? 0, visitors: byDay[key]?.visitors.size ?? 0 };
+    });
+
+    const inRange = (from: number, to: number) => all.filter(v => { const t = now - v.visitedAt.getTime(); return t >= from && t < to; });
+    const thisWeek = inRange(0, 7 * DAY).length, lastWeek = inRange(7 * DAY, 14 * DAY).length;
+    const live = inRange(0, 30 * 60_000);
+    const counts = Object.values(sessions);
+    const count = (rows: Visitor[], key: keyof Visitor, n = 8) => Object.entries(
+      rows.reduce((acc, v) => { const k = String(v[key] || 'Unknown'); acc[k] = (acc[k] || 0) + 1; return acc; }, {} as Record<string, number>),
+    ).sort((x, y) => y[1] - x[1]).slice(0, n).map(([key, n]) => ({ key, n }));
+
+    return {
+      daily30,
+      heatmap: heat,
+      growthPct: lastWeek ? Math.round(((thisWeek - lastWeek) / lastWeek) * 100) : null,
+      thisWeek, lastWeek,
+      sessions: counts.length,
+      pagesPerSession: counts.length ? +(all.length / counts.length).toFixed(2) : 0,
+      bounceRate: counts.length ? Math.round((counts.filter(c => c === 1).length / counts.length) * 100) : 0,
+      live: { count: new Set(live.map(v => v.ipHash || v.ip)).size, pages: count(live, 'page', 5) },
+      os: count(all, 'os'), cities: count(all, 'city'), languages: count(all, 'language', 6),
+      named: all.filter(v => v.visitorName).length,
     };
   }
 

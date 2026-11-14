@@ -19,22 +19,27 @@ import {
   DESIGN_TOKENS, DesignTokenDef, DesignConfig, MotionSettings, TokenGroup, defaultDesign,
 } from '../../services/theme.service';
 
-type TabType = 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'design' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue' | 'studio' | 'credentials';
+type TabType = 'overview' | 'builder' | 'visitors' | 'messages' | 'breakdown' | 'payments' | 'approvals' | 'paylink' | 'newsletter' | 'journal' | 'cms' | 'appearance' | 'design' | 'reviews' | 'orders' | 'surveys' | 'demos' | 'bookings' | 'blog' | 'revenue' | 'studio' | 'credentials';
 type DateFilter = 'today' | 'week' | 'month' | 'custom' | 'all';
 
 import { CrewBroadcastComponent } from '../../components/crew-broadcast/crew-broadcast.component';
+import { AdminOverviewComponent } from './overview/admin-overview.component';
+import { AdminBuilderComponent } from './builder/admin-builder.component';
+import { BuilderService, BuilderStats } from '../../services/builder.service';
 
 @Component({
   selector: 'app-admin-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, CrewBroadcastComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, CrewBroadcastComponent, AdminOverviewComponent, AdminBuilderComponent],
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
 })
 export class AdminPageComponent implements OnInit, OnDestroy {
   data: any       = null;
   loading         = true;
-  tab: TabType    = 'visitors';
+  tab: TabType    = 'overview';
+  /** Portfolio-builder totals for the Overview cards. */
+  builderStats: BuilderStats | null = null;
 
   // ── Date filter state ─────────────────────────────────
   dateFilter: DateFilter = 'all';
@@ -153,7 +158,12 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     private bookingSvc:   BookingService,
     private paymentSvc:   PaymentService,
     private themeSvc:     ThemeService,
+    private builderSvc:   BuilderService,
   ) {}
+
+  private loadBuilderStats() {
+    this.builderSvc.adminStats().subscribe({ next: s => (this.builderStats = s), error: () => (this.builderStats = null) });
+  }
 
   // ── Appearance (theme + layout) ────────────────────────
   appearanceThemes  = THEMES;
@@ -295,6 +305,7 @@ export class AdminPageComponent implements OnInit, OnDestroy {
     });
     this.load();
     this.loadCms();
+    this.loadBuilderStats();
     this.sub = interval(30_000)
       .pipe(switchMap(() => this.analytics.getDashboard()))
       .subscribe(d => (this.data = d));

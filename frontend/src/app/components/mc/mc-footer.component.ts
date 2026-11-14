@@ -15,6 +15,7 @@ import { MC_LINKS } from './mc-shared';
       <nav aria-label="Footer">
         <a routerLink="/resume">Resume</a><a routerLink="/blog">Blog</a>
         <a [href]="links.github" target="_blank" rel="noopener">GitHub</a><a [href]="links.linkedin" target="_blank" rel="noopener">LinkedIn</a>
+        <a routerLink="/build" class="build">Get a portfolio like this</a>
       </nav>
       <span class="avail"><span class="dot"></span>Available for new projects</span>
     </div>
@@ -28,6 +29,8 @@ import { MC_LINKS } from './mc-shared';
     nav{display:flex;flex-wrap:wrap;gap:22px}
     nav a{font:500 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-decoration:none}
     nav a:hover{color:var(--accent)}
+    nav a.build{color:var(--accent)}
+    nav a.build::after{content:' ↗'}
     .avail{display:inline-flex;align-items:center;gap:10px;min-width:260px;justify-content:center;padding:10px 20px;border-radius:99px;
       border:1px solid var(--border);background:var(--card);font:500 13px var(--font-mono);color:var(--text-muted)}
     .dot{width:7px;height:7px;border-radius:50%;background:var(--electric);box-shadow:0 0 0 0 rgba(var(--electric-rgb),.6);animation:pulse 2s infinite}

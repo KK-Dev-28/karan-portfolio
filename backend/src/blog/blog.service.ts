@@ -1,27 +1,34 @@
-import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
 import Razorpay from 'razorpay';
 import { validatePaymentVerification } from 'razorpay/dist/utils/razorpay-utils';
-import { BlogPost } from './blog-post.entity';
+import { BlogPost, BLOG_DDL } from './blog-post.entity';
 import { BlogAccess } from './blog-access.entity';
 import { BlogUser } from './blog-user.entity';
 
 @Injectable()
-export class BlogService {
+export class BlogService implements OnModuleInit {
   private rzp: Razorpay | null = null;
+  private readonly log = new Logger(BlogService.name);
 
   constructor(
     @InjectRepository(BlogPost)   private posts: Repository<BlogPost>,
     @InjectRepository(BlogAccess) private access: Repository<BlogAccess>,
     @InjectRepository(BlogUser)   private users: Repository<BlogUser>,
+    private ds: DataSource,
     private cfg: ConfigService,
   ) {
     const keyId     = cfg.get<string>('RAZORPAY_KEY_ID');
     const keySecret = cfg.get<string>('RAZORPAY_KEY_SECRET');
     if (keyId && keySecret) this.rzp = new Razorpay({ key_id: keyId, key_secret: keySecret });
+  }
+
+  async onModuleInit() {
+    try { for (const q of BLOG_DDL) await this.ds.query(q); }
+    catch (e) { this.log.warn(`Could not ensure blog_posts columns: ${(e as Error).message}`); }
   }
 
   private get currency()  { return (this.cfg.get<string>('RAZORPAY_CURRENCY') || 'INR').toUpperCase(); }
@@ -86,7 +93,7 @@ export class BlogService {
       + '-' + randomBytes(3).toString('hex');
   }
 
-  async createPost(userId: number, dto: { title: string; body: string; excerpt?: string; coverImage?: string; tags?: string[]; published?: boolean }) {
+  async createPost(userId: number, dto: { title: string; body: string; excerpt?: string; coverImage?: string; tags?: string[]; published?: boolean; format?: string }) {
     const user = await this.users.findOneBy({ id: userId });
     if (!user) throw new ForbiddenException();
     const post = this.posts.create({
@@ -96,6 +103,7 @@ export class BlogService {
       authorEmail:    user.email,
       authorUsername: user.username,
       authorId:       user.id,
+      format:         dto.format === 'html' ? 'html' : 'text',
       published:      dto.published ?? false,
       publishedAt:    dto.published ? new Date() : null,
     });
@@ -136,12 +144,13 @@ export class BlogService {
     return { ok: true };
   }
 
-  async createPostAdmin(dto: { title: string; body: string; excerpt?: string; coverImage?: string; tags?: string[]; published?: boolean }) {
+  async createPostAdmin(dto: { title: string; body: string; excerpt?: string; coverImage?: string; tags?: string[]; published?: boolean; format?: string }) {
     const post = this.posts.create({
       ...dto,
       slug:        this.makeSlug(dto.title),
       authorName:  'Karan Kapoor',
       authorEmail: 'kk0888176@gmail.com',
+      format:      dto.format === 'html' ? 'html' : 'text',
       published:   dto.published ?? true,
       publishedAt: dto.published !== false ? new Date() : null,
     });

@@ -11,6 +11,6 @@ import { EmailService } from '../ai-tools/email.service';
   imports: [TypeOrmModule.forFeature([NewsletterSubscriber])],
   controllers: [NewsletterController, CrewController],
   providers: [NewsletterService, CrewService, EmailService],
-  exports: [NewsletterService],
+  exports: [NewsletterService, CrewService],
 })
 export class NewsletterModule {}

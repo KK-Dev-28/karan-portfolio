@@ -426,6 +426,14 @@ export class PaymentService {
     return { id: link.id, url: link.short_url, amount: link.amount };
   }
 
+  /** Live status of a Razorpay payment link, so the admin can confirm a payment against Razorpay itself. */
+  async fetchPaymentLink(id: string): Promise<{ status: string; amountPaid: number; paymentId: string | null }> {
+    if (!this.rzp) throw new BadRequestException('Razorpay not configured.');
+    const link: any = await (this.rzp as any).paymentLink.fetch(id);
+    const paid = (link.payments ?? []).find((p: any) => p.status === 'captured');
+    return { status: link.status, amountPaid: link.amount_paid ?? 0, paymentId: paid?.payment_id ?? null };
+  }
+
   async paymentStats() {
     const raw = await this.repo
       .createQueryBuilder('p')

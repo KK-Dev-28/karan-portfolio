@@ -1,5 +1,6 @@
 import { IsEmail, IsString, MinLength, MaxLength, Matches, IsBoolean, IsOptional, IsArray, IsUrl, IsIn } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { BLOG_FORMATS } from './blog-post.entity';
 
 export class BlogCheckoutDto {
   @IsString() @MinLength(2) @MaxLength(100) name: string;
@@ -52,6 +53,8 @@ export class BlogCreatePostDto {
   @IsOptional() @IsString() @MaxLength(500)  coverImage?: string;
   @IsOptional() @IsArray() @IsString({ each: true }) @MaxLength(30, { each: true }) tags?: string[];
   @IsOptional() @IsBoolean()                 published?: boolean;
+  /** 'html' posts render in a sandboxed frame with their source shown next to them. */
+  @IsOptional() @IsIn(BLOG_FORMATS as unknown as string[]) format?: string;
 }
 
 export class BlogUpdatePostDto {
@@ -61,6 +64,7 @@ export class BlogUpdatePostDto {
   @IsOptional() @IsString() @MaxLength(500)                  coverImage?: string;
   @IsOptional() @IsArray() @IsString({ each: true }) @MaxLength(30, { each: true }) tags?: string[];
   @IsOptional() @IsBoolean()                                 published?: boolean;
+  @IsOptional() @IsIn(BLOG_FORMATS as unknown as string[])   format?: string;
 }
 
 export class BlogAiGenerateDto {

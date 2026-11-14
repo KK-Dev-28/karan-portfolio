@@ -152,6 +152,21 @@ const routes: Routes = [
     loadComponent: () => import('./pages/case-study/case-study.page').then(m => m.CaseStudyPageComponent),
     data: { seo: { title: 'Case Study', description: 'A project case study by Karan Kapoor.' } },
   },
+  {
+    path: 'build',
+    loadComponent: () => import('./pages/build/build.page').then(m => m.BuildPageComponent),
+    data: { seo: { title: 'Get a portfolio like this', description: 'Pick the modules you need and get a designed, deployed and hosted portfolio for a one-time price.', path: '/build' } },
+  },
+  {
+    path: 'client/setup',
+    loadComponent: () => import('./pages/client/client-setup.page').then(m => m.ClientSetupPageComponent),
+    data: { seo: { title: 'Choose a password', description: 'Set the password for your client dashboard.', noindex: true } },
+  },
+  {
+    path: 'client',
+    loadComponent: () => import('./pages/client/client.page').then(m => m.ClientPageComponent),
+    data: { seo: { title: 'Client sign-in', description: 'Sign in to your portfolio client dashboard.', noindex: true } },
+  },
   { path: '**', redirectTo: '' },
 ];
 

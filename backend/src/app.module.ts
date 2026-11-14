@@ -16,6 +16,7 @@ import { PortfolioUpdate } from './portfolio-update/portfolio-update.entity';
 import { SiteContent }   from './site-content/site-content.entity';
 import { Review }        from './reviews/review.entity';
 import { ServiceOrder }  from './service-orders/service-order.entity';
+import { PortfolioClient, PortfolioRequest } from './builder/portfolio-request.entity';
 import { Survey }        from './survey/survey.entity';
 import { SurveyResponse } from './survey/survey-response.entity';
 import { Demo }          from './demos/demo.entity';
@@ -41,6 +42,7 @@ import { ChatModule } from './chat/chat.module';
 import { SiteContentModule } from './site-content/site-content.module';
 import { ReviewModule }  from './reviews/review.module';
 import { ServiceOrderModule } from './service-orders/service-order.module';
+import { BuilderModule } from './builder/builder.module';
 import { SurveyModule }  from './survey/survey.module';
 import { DemoModule }   from './demos/demo.module';
 import { BookingModule } from './booking/booking.module';
@@ -111,6 +113,8 @@ import { GeneratedLayout } from './layouts/layout.entity';
           SiteContent,
           Review,
           ServiceOrder,
+          PortfolioRequest,
+          PortfolioClient,
           Survey,
           SurveyResponse,
           Demo,
@@ -152,6 +156,7 @@ import { GeneratedLayout } from './layouts/layout.entity';
     ChatModule,
     ReviewModule,
     ServiceOrderModule,
+    BuilderModule,
     SurveyModule,
     DemoModule,
     BookingModule,

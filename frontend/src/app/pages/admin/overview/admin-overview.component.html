@@ -1,0 +1,127 @@
+<div class="ov">
+
+  <!-- ── Headline numbers ───────────────────────────── -->
+  <div class="ov-row">
+    <div class="ov-stat live">
+      <span class="ov-stat-lbl"><i class="dot"></i>Reading now</span>
+      <strong>{{ insights()?.live?.count || 0 }}</strong>
+      <small *ngIf="insights()?.live?.pages?.length as n">on {{ n }} page{{ n === 1 ? '' : 's' }}</small>
+      <small *ngIf="!insights()?.live?.pages?.length">quiet right now</small>
+    </div>
+    <div class="ov-stat">
+      <span class="ov-stat-lbl">This week</span>
+      <strong>{{ insights()?.thisWeek || 0 }}</strong>
+      <small class="trend" [class]="growthClass()">
+        {{ (insights()?.growthPct || 0) > 0 ? '▲' : (insights()?.growthPct || 0) < 0 ? '▼' : '—' }}
+        {{ insights()?.growthPct || 0 }}% vs last week
+      </small>
+    </div>
+    <div class="ov-stat">
+      <span class="ov-stat-lbl">Sessions</span>
+      <strong>{{ insights()?.sessions || 0 }}</strong>
+      <small>{{ insights()?.pagesPerSession || 0 }} pages each</small>
+    </div>
+    <div class="ov-stat">
+      <span class="ov-stat-lbl">Bounce rate</span>
+      <strong>{{ insights()?.bounceRate || 0 }}%</strong>
+      <small>one-page visits</small>
+    </div>
+    <div class="ov-stat money">
+      <span class="ov-stat-lbl">Booked</span>
+      <strong>{{ inr(builderStats()?.bookedInr) }}</strong>
+      <small>{{ inr(builderStats()?.pipelineInr) }} in pipeline</small>
+    </div>
+  </div>
+
+  <!-- ── Thirty-day traffic ─────────────────────────── -->
+  <section class="ov-card">
+    <header class="ov-card-hdr">
+      <div>
+        <h3>Last 30 days</h3>
+        <p class="ov-sub">Peak {{ peak() }} {{ metric() === 'views' ? 'views' : 'visitors' }} in a day</p>
+      </div>
+      <div class="ov-toggle">
+        <button [class.on]="metric() === 'views'" (click)="metric.set('views')">Views</button>
+        <button [class.on]="metric() === 'visitors'" (click)="metric.set('visitors')">Visitors</button>
+      </div>
+    </header>
+
+    <div class="ov-chart" *ngIf="points().length as n; else noChart">
+      <svg viewBox="0 0 720 180" preserveAspectRatio="none" role="img"
+           [attr.aria-label]="'Traffic over the last 30 days, peaking at ' + peak()">
+        <defs>
+          <linearGradient id="ovFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(var(--accent-rgb), .38)" />
+            <stop offset="100%" stop-color="rgba(var(--accent-rgb), 0)" />
+          </linearGradient>
+        </defs>
+        <line *ngFor="let g of [0.25, 0.5, 0.75]" x1="0" [attr.y1]="180 * g" x2="720" [attr.y2]="180 * g"
+              stroke="var(--border)" stroke-width="1" />
+        <path [attr.d]="areaPath()" fill="url(#ovFill)" />
+        <path [attr.d]="linePath()" fill="none" stroke="var(--accent)" stroke-width="2"
+              stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+      </svg>
+      <div class="ov-dots">
+        <span *ngFor="let p of points()" class="ov-dot" [style.left.%]="(p.x / 720) * 100" [style.top.%]="(p.y / 180) * 100"
+              [title]="shortDate(p.day.date) + ' — ' + p.day.views + ' views, ' + p.day.visitors + ' visitors'"></span>
+      </div>
+      <div class="ov-axis"><span *ngFor="let l of axisLabels()">{{ l }}</span></div>
+    </div>
+    <ng-template #noChart><p class="ov-empty">Not enough days of data yet.</p></ng-template>
+  </section>
+
+  <!-- ── When people read, and the build pipeline ───── -->
+  <div class="ov-grid">
+    <section class="ov-card">
+      <header class="ov-card-hdr"><div><h3>When people read</h3><p class="ov-sub">Darker is busier · local time</p></div></header>
+      <div class="ov-heat" *ngIf="heatmap().length; else noHeat">
+        <div class="ov-heat-row" *ngFor="let d of dayNames; let di = index">
+          <span class="ov-heat-day">{{ d }}</span>
+          <span class="ov-heat-cell" *ngFor="let h of hours"
+                [style.background]="'rgba(var(--accent-rgb),' + (0.06 + heat(di, h) * 0.9) + ')'"
+                [title]="heatTitle(di, h)"></span>
+        </div>
+        <div class="ov-heat-row legend">
+          <span class="ov-heat-day"></span>
+          <span class="ov-heat-hr" *ngFor="let h of hours">{{ h % 6 === 0 ? h : '' }}</span>
+        </div>
+      </div>
+      <ng-template #noHeat><p class="ov-empty">No hourly data yet.</p></ng-template>
+    </section>
+
+    <section class="ov-card">
+      <header class="ov-card-hdr"><div><h3>Portfolio pipeline</h3><p class="ov-sub">{{ builderStats()?.total || 0 }} requests in all</p></div></header>
+      <ul class="ov-funnel">
+        <li *ngFor="let s of funnel()">
+          <span class="f-lbl">{{ s.label }}</span>
+          <span class="f-track"><i [style.width.%]="s.pct"></i></span>
+          <span class="f-val">{{ s.n }}</span>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- ── Who they are ───────────────────────────────── -->
+  <div class="ov-grid three">
+    <section class="ov-card" *ngFor="let b of [
+      { key: 'cities',    title: 'Top cities' },
+      { key: 'os',        title: 'Operating systems' },
+      { key: 'languages', title: 'Languages' }]">
+      <header class="ov-card-hdr"><div><h3>{{ b.title }}</h3></div></header>
+      <ul class="ov-bars" *ngIf="named(b.key).length; else noBars">
+        <li *ngFor="let r of named(b.key)">
+          <span class="b-lbl" [title]="r.key">{{ r.key }}</span>
+          <span class="b-track"><i [style.width.%]="share(r.n, named(b.key))"></i></span>
+          <span class="b-val">{{ r.n }}</span>
+        </li>
+      </ul>
+      <ng-template #noBars><p class="ov-empty">Nothing recorded yet.</p></ng-template>
+    </section>
+  </div>
+
+  <!-- ── Live pages ─────────────────────────────────── -->
+  <section class="ov-card" *ngIf="insights()?.live?.pages?.length">
+    <header class="ov-card-hdr"><div><h3>Open right now</h3></div></header>
+    <ul class="ov-chips"><li *ngFor="let p of insights().live.pages">{{ p }}</li></ul>
+  </section>
+</div>

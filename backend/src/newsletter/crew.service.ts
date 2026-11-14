@@ -160,6 +160,12 @@ export class CrewService implements OnModuleInit {
     return rows.filter(r => !topic || r.topics.split(',').includes(topic));
   }
 
+  /** Who a crew token belongs to, for other modules that reuse crew sign-in. */
+  async identify(token?: string) {
+    const m = await this.byToken(token);
+    return { id: m.id, email: m.email, name: m.name ?? '' };
+  }
+
   private async byToken(token?: string) {
     if (!token || token.length < 32) throw new UnauthorizedException('Sign in again.');
     const m = await this.repo.findOne({ where: { sessionHash: sha(token) } as any });

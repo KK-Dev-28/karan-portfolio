@@ -1,0 +1,225 @@
+<div class="ab">
+
+  <!-- ── Sub-navigation ─────────────────────────────── -->
+  <div class="ab-top">
+    <div class="ab-tabs">
+      <button [class.on]="view === 'requests'" (click)="show('requests')">Requests <i>{{ requests.length }}</i></button>
+      <button [class.on]="view === 'features'" (click)="show('features')">
+        Feature queue <i [class.warn]="pendingFeatures.length">{{ pendingFeatures.length }}</i>
+      </button>
+      <button [class.on]="view === 'audit'" (click)="show('audit')">Audit trail</button>
+    </div>
+    <button class="ab-btn ghost" (click)="load()" [disabled]="loading">{{ loading ? 'Loading…' : 'Refresh' }}</button>
+  </div>
+
+  <p class="ab-err" *ngIf="err">{{ err }}</p>
+  <p class="ab-ok" *ngIf="note">{{ note }}</p>
+
+  <!-- ══ Requests ═════════════════════════════════════ -->
+  <ng-container *ngIf="view === 'requests'">
+    <div class="ab-filters">
+      <button [class.on]="filter === 'all'" (click)="filter = 'all'">All {{ requests.length }}</button>
+      <button [class.on]="filter === 'open'" (click)="filter = 'open'">Open</button>
+      <button *ngFor="let s of steps" [class.on]="filter === s" (click)="filter = s" [hidden]="!counts[s]">
+        {{ label[s] }} {{ counts[s] }}
+      </button>
+    </div>
+
+    <p class="ab-empty" *ngIf="!loading && !shown.length">No requests match this filter yet.</p>
+
+    <article class="ab-card" *ngFor="let r of shown" [class.open]="openId === r.id">
+      <header class="ab-head" (click)="toggle(r.id)">
+        <div class="ab-who">
+          <strong>{{ r.name }}</strong>
+          <span class="ab-mail">{{ r.email }}</span>
+        </div>
+        <div class="ab-meta">
+          <span class="ab-pill" [attr.data-s]="r.status">{{ label[r.status] || r.status }}</span>
+          <span class="ab-amt">{{ inr(r.quoteAmount) }}</span>
+          <span class="ab-id">#{{ r.id }}</span>
+          <span class="ab-caret">{{ openId === r.id ? '▴' : '▾' }}</span>
+        </div>
+      </header>
+
+      <!-- Where the request stands -->
+      <ol class="ab-steps" *ngIf="stepIndex(r.status) >= 0">
+        <li *ngFor="let s of steps; let i = index" [class.done]="i < stepIndex(r.status)" [class.now]="i === stepIndex(r.status)">
+          <i></i><span>{{ label[s] }}</span>
+        </li>
+      </ol>
+
+      <div class="ab-body" *ngIf="openId === r.id">
+
+        <!-- What they asked for -->
+        <section class="ab-sec">
+          <h4>What they sent</h4>
+          <dl class="ab-dl">
+            <div><dt>Profession</dt><dd>{{ r.profession || '—' }}</dd></div>
+            <div><dt>Headline</dt><dd>{{ r.headline || '—' }}</dd></div>
+            <div><dt>Phone</dt><dd>{{ r.phone || '—' }}</dd></div>
+            <div><dt>Style</dt><dd>{{ r.style || '—' }}</dd></div>
+            <div><dt>Domain</dt><dd>{{ r.domain || '—' }}</dd></div>
+            <div><dt>Asked on</dt><dd>{{ r.createdAt | date:'d MMM y' }}</dd></div>
+          </dl>
+          <p class="ab-para" *ngIf="r.about"><strong>About:</strong> {{ r.about }}</p>
+          <p class="ab-para" *ngIf="r.notes"><strong>Their notes:</strong> {{ r.notes }}</p>
+          <ul class="ab-chips" *ngIf="r.skills?.length"><li *ngFor="let s of r.skills">{{ s }}</li></ul>
+          <ul class="ab-links" *ngIf="r.links?.length">
+            <li *ngFor="let l of r.links"><a [href]="l.url" target="_blank" rel="noopener">{{ l.label || l.url }} ↗</a></li>
+          </ul>
+          <ul class="ab-projects" *ngIf="r.projects?.length">
+            <li *ngFor="let p of r.projects"><strong>{{ p.name }}</strong> — {{ p.summary }}</li>
+          </ul>
+        </section>
+
+        <!-- Modules -->
+        <section class="ab-sec">
+          <h4>Modules to build <small>{{ picked[r.id]?.size || 0 }} picked · guide total {{ inr(suggested(r.id)) }}</small></h4>
+          <div class="ab-mods">
+            <button *ngFor="let m of catalog" class="ab-mod" [class.on]="isPicked(r.id, m.id)"
+                    [class.asked]="r.modules?.includes(m.id)" (click)="pick(r.id, m.id)" type="button">
+              <span class="m-ico">{{ m.icon }}</span>
+              <span class="m-name">{{ m.name }}</span>
+              <span class="m-guide">{{ m.guide ? inr(m.guide) : 'included' }}</span>
+            </button>
+          </div>
+          <p class="ab-hint">A gold outline means they asked for it. Click to add or remove it from what you will build.</p>
+          <div class="ab-actions">
+            <button class="ab-btn ghost" (click)="saveModules(r)" [disabled]="busy[r.id]">Save module list</button>
+          </div>
+        </section>
+
+        <!-- Approve, quote, payment -->
+        <section class="ab-sec">
+          <h4>Approval and quote</h4>
+          <div class="ab-row">
+            <label>One-time price (₹)
+              <input type="number" min="0" step="100" [(ngModel)]="quote[r.id]" placeholder="0" />
+            </label>
+            <button class="ab-btn ghost sm" (click)="useSuggested(r.id)" type="button">Use guide total</button>
+          </div>
+          <label class="ab-field">Note to the client (sent with the quote or rejection)
+            <textarea rows="2" [(ngModel)]="quoteNote[r.id]" placeholder="What is included, how long it will take…"></textarea>
+          </label>
+          <div class="ab-actions">
+            <button class="ab-btn primary" (click)="approve(r)" [disabled]="busy[r.id] || r.status !== 'submitted'">Approve</button>
+            <button class="ab-btn" (click)="sendQuote(r)" [disabled]="busy[r.id] || !['approved','quoted'].includes(r.status)">Send quote</button>
+            <button class="ab-btn danger" (click)="reject(r)" [disabled]="busy[r.id] || ['paid','building','live'].includes(r.status)">Reject</button>
+          </div>
+        </section>
+
+        <!-- Payment -->
+        <section class="ab-sec">
+          <h4>Payment <small>credentials are only issued once this is confirmed</small></h4>
+          <dl class="ab-dl">
+            <div><dt>Confirmed</dt><dd>{{ r.paidAt ? (r.paidAt | date:'d MMM y, h:mm a') : 'Not yet' }}</dd></div>
+            <div><dt>Reference</dt><dd>{{ r.paymentRef || '—' }}</dd></div>
+            <div><dt>Credentials sent</dt><dd>{{ r.credentialsSentAt ? (r.credentialsSentAt | date:'d MMM y') : '—' }}</dd></div>
+          </dl>
+          <p class="ab-para" *ngIf="r.paymentUrl">
+            Razorpay link: <a [href]="r.paymentUrl" target="_blank" rel="noopener">{{ r.paymentUrl }} ↗</a>
+          </p>
+          <div class="ab-actions">
+            <button class="ab-btn" (click)="makeLink(r)" [disabled]="busy[r.id] || !r.quoteAmount || !!r.paidAt">
+              {{ r.paymentUrl ? 'New payment link' : 'Create payment link' }}
+            </button>
+            <button class="ab-btn primary" (click)="checkPayment(r)" [disabled]="busy[r.id] || !r.paymentUrl || !!r.paidAt">Check Razorpay</button>
+          </div>
+          <div class="ab-row" *ngIf="!r.paidAt">
+            <label>Paid by UPI or bank? Reference
+              <input [(ngModel)]="payRef[r.id]" placeholder="UTR / transaction id" />
+            </label>
+            <button class="ab-btn sm" (click)="confirmByHand(r)" [disabled]="busy[r.id]">Confirm payment</button>
+          </div>
+          <div class="ab-actions" *ngIf="r.paidAt">
+            <button class="ab-btn ghost" (click)="resend(r)" [disabled]="busy[r.id]">Email a fresh setup link</button>
+          </div>
+        </section>
+
+        <!-- Permissions -->
+        <section class="ab-sec" *ngIf="r.paidAt">
+          <h4>What this client may do <small>checked by the server on every call, not just hidden</small></h4>
+          <div class="ab-perms">
+            <label class="ab-perm" *ngFor="let p of permissions" [class.on]="hasPerm(r.id, p.id)">
+              <input type="checkbox" [checked]="hasPerm(r.id, p.id)" (change)="togglePerm(r.id, p.id)" />
+              <span class="p-name">{{ p.name }}</span>
+              <span class="p-blurb">{{ p.blurb }}</span>
+            </label>
+          </div>
+          <div class="ab-actions">
+            <button class="ab-btn primary" (click)="savePermissions(r)" [disabled]="busy[r.id]">Save permissions</button>
+          </div>
+        </section>
+
+        <!-- Build and go live -->
+        <section class="ab-sec" *ngIf="r.paidAt">
+          <h4>Build and deploy</h4>
+          <label class="ab-field">Live URL
+            <input [(ngModel)]="liveUrl[r.id]" placeholder="https://theirname.vercel.app" />
+          </label>
+          <div class="ab-actions">
+            <button class="ab-btn" (click)="setStatus(r, 'building')" [disabled]="busy[r.id] || r.status === 'building'">Mark building</button>
+            <button class="ab-btn primary" (click)="setStatus(r, 'live')" [disabled]="busy[r.id] || !liveUrl[r.id]">Mark live</button>
+          </div>
+        </section>
+
+        <!-- Private notes -->
+        <section class="ab-sec">
+          <h4>Your notes <small>never shown to the client</small></h4>
+          <textarea rows="3" [(ngModel)]="adminNotes[r.id]" placeholder="Anything you want to remember about this one."></textarea>
+          <div class="ab-actions">
+            <button class="ab-btn ghost" (click)="saveNotes(r)" [disabled]="busy[r.id]">Save notes</button>
+          </div>
+        </section>
+      </div>
+    </article>
+  </ng-container>
+
+  <!-- ══ Feature queue ════════════════════════════════ -->
+  <ng-container *ngIf="view === 'features'">
+    <p class="ab-empty" *ngIf="!features.length">No client has asked for anything new yet.</p>
+    <article class="ab-card" *ngFor="let f of features">
+      <header class="ab-head">
+        <div class="ab-who">
+          <strong>{{ f.title }}</strong>
+          <span class="ab-mail">{{ requestName(f.requestId) }} · {{ f.email }}</span>
+        </div>
+        <div class="ab-meta">
+          <span class="ab-pill" [attr.data-f]="f.status">{{ featureLabel[f.status] || f.status }}</span>
+          <span class="ab-amt">{{ inr(f.price) }}</span>
+          <span class="ab-id">{{ f.createdAt | date:'d MMM' }}</span>
+        </div>
+      </header>
+      <div class="ab-body">
+        <p class="ab-para" *ngIf="f.details">{{ f.details }}</p>
+        <p class="ab-hint" *ngIf="f.moduleId">Module asked for: <strong>{{ f.moduleId }}</strong> — approving this grants it.</p>
+        <p class="ab-para" *ngIf="f.adminNote"><strong>Your reply:</strong> {{ f.adminNote }}</p>
+        <div class="ab-row">
+          <label>Extra cost (₹)<input type="number" min="0" step="100" [(ngModel)]="fPrice[f.id]" placeholder="0 for free" /></label>
+        </div>
+        <label class="ab-field">Reply to the client
+          <textarea rows="2" [(ngModel)]="fNote[f.id]" placeholder="When you will do it, or why not."></textarea>
+        </label>
+        <div class="ab-actions">
+          <button class="ab-btn primary" (click)="decide(f, 'approved')" [disabled]="fBusy[f.id]">Approve</button>
+          <button class="ab-btn" (click)="decide(f, 'done')" [disabled]="fBusy[f.id]">Mark built</button>
+          <button class="ab-btn danger" (click)="decide(f, 'rejected')" [disabled]="fBusy[f.id]">Decline</button>
+        </div>
+      </div>
+    </article>
+  </ng-container>
+
+  <!-- ══ Audit trail ══════════════════════════════════ -->
+  <ng-container *ngIf="view === 'audit'">
+    <p class="ab-empty" *ngIf="!audit.length">Nothing recorded yet.</p>
+    <ul class="ab-audit" *ngIf="audit.length">
+      <li *ngFor="let a of audit">
+        <span class="a-when">{{ a.createdAt | date:'d MMM, h:mm a' }}</span>
+        <span class="a-who" [attr.data-actor]="a.actor">{{ a.actor }}</span>
+        <span class="a-what">{{ a.action }}</span>
+        <span class="a-detail">{{ a.detail || '' }}</span>
+        <span class="a-req">{{ a.requestId ? '#' + a.requestId : '' }}</span>
+      </li>
+    </ul>
+  </ng-container>
+</div>

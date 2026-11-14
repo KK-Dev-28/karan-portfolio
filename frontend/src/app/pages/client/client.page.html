@@ -1,0 +1,177 @@
+<div class="cl" [class.wide]="view() === 'dash'">
+  <a class="cl-back" routerLink="/">← Portfolio</a>
+
+  <!-- ── Sign in: password ────────────────────────── -->
+  <section class="cl-card" *ngIf="view() === 'login'">
+    <p class="cl-kicker">Client area</p>
+    <h1>Sign in</h1>
+    <p class="muted">For clients whose payment is confirmed. Step 1 of 2: your password.</p>
+    <form (ngSubmit)="login()">
+      <label>Email<input name="email" [(ngModel)]="email" type="email" autocomplete="username" required></label>
+      <label>Password<input name="password" [(ngModel)]="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn gold" type="submit" [disabled]="busy">{{ busy ? 'Checking…' : 'Continue' }}</button>
+    </form>
+    <p class="err" *ngIf="err">{{ err }}</p>
+    <p class="cl-links"><button type="button" (click)="go('forgot')">Forgot password?</button><a routerLink="/build">Not a client yet?</a></p>
+  </section>
+
+  <!-- ── Sign in: emailed code ────────────────────── -->
+  <section class="cl-card" *ngIf="view() === 'code'">
+    <p class="cl-kicker">Step 2 of 2</p>
+    <h1>Enter your code</h1>
+    <p class="muted">Sent to {{ email }}.</p>
+    <form (ngSubmit)="verify()">
+      <label>6-digit code<input class="otp" name="code" [(ngModel)]="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required></label>
+      <button class="btn gold" type="submit" [disabled]="busy || code.length !== 6">{{ busy ? 'Verifying…' : 'Sign in' }}</button>
+    </form>
+    <p class="ok" *ngIf="note">{{ note }}</p>
+    <p class="err" *ngIf="err">{{ err }}</p>
+    <p class="cl-links"><button type="button" (click)="go('login')">Start again</button></p>
+  </section>
+
+  <!-- ── Forgot password ──────────────────────────── -->
+  <section class="cl-card" *ngIf="view() === 'forgot'">
+    <p class="cl-kicker">Reset</p>
+    <h1>Forgot password</h1>
+    <p class="muted">We email a single-use link to choose a new password. Your old sessions are signed out.</p>
+    <form (ngSubmit)="forgot()">
+      <label>Email<input name="email" [(ngModel)]="email" type="email" autocomplete="username" required></label>
+      <button class="btn gold" type="submit" [disabled]="busy">{{ busy ? 'Sending…' : 'Email me a link' }}</button>
+    </form>
+    <p class="ok" *ngIf="note">{{ note }}</p>
+    <p class="err" *ngIf="err">{{ err }}</p>
+    <p class="cl-links"><button type="button" (click)="go('login')">Back to sign in</button></p>
+  </section>
+
+  <!-- ── Dashboard ────────────────────────────────── -->
+  <ng-container *ngIf="view() === 'dash' && me() as m">
+    <header class="cl-head">
+      <div>
+        <p class="cl-kicker">Client dashboard</p>
+        <h1>Hi {{ m.request.name }}</h1>
+        <p class="muted">{{ m.email }} · session ends {{ m.sessionExpires | date:'d MMM, h:mm a' }}</p>
+      </div>
+      <button class="btn ghost" (click)="logout()">Sign out</button>
+    </header>
+
+    <section class="cl-panel">
+      <div class="cl-panel-top">
+        <h2>Your portfolio <small>#{{ m.request.id }}</small></h2>
+        <span class="cl-pill" [attr.data-s]="m.request.status">{{ label[m.request.status] }}</span>
+      </div>
+      <ol class="cl-steps">
+        <li *ngFor="let s of steps; let i = index" [class.done]="i < stepIndex(m.request.status)" [class.now]="i === stepIndex(m.request.status)">
+          <i></i><span>{{ label[s] }}</span>
+        </li>
+      </ol>
+      <p class="cl-live" *ngIf="m.request.liveUrl">
+        <span>Live at</span><a [href]="m.request.liveUrl" target="_blank" rel="noopener">{{ m.request.liveUrl }} ↗</a>
+      </p>
+      <p class="muted" *ngIf="!m.request.liveUrl">Your site link appears here as soon as it is deployed.</p>
+    </section>
+
+    <div class="cl-grid">
+      <section class="cl-panel">
+        <h3>Modules being built</h3>
+        <ul class="cl-chips"><li *ngFor="let id of builtModules(m.request)">{{ moduleName(id) }}</li></ul>
+      </section>
+      <section class="cl-panel">
+        <h3>Payment</h3>
+        <dl>
+          <div><dt>Amount</dt><dd>{{ inr(m.request.quoteAmount) || '—' }}</dd></div>
+          <div><dt>Confirmed</dt><dd>{{ m.request.paidAt ? (m.request.paidAt | date:'d MMM y') : '—' }}</dd></div>
+          <div><dt>Reference</dt><dd>{{ m.request.paymentRef || '—' }}</dd></div>
+        </dl>
+      </section>
+      <section class="cl-panel">
+        <h3>Your details</h3>
+        <ng-container *ngIf="!editing">
+          <dl>
+            <div><dt>Headline</dt><dd>{{ m.request.headline || '—' }}</dd></div>
+            <div><dt>Style</dt><dd>{{ m.request.style || '—' }}</dd></div>
+            <div><dt>Domain</dt><dd>{{ m.request.domain || '—' }}</dd></div>
+          </dl>
+          <p class="cl-links" *ngIf="can('edit_content')">
+            <button type="button" (click)="startEdit()">Edit my headline, about and skills</button>
+          </p>
+          <p class="muted" *ngIf="!can('edit_content')">Need a change? Ask for it under “Request something new” below.</p>
+        </ng-container>
+        <form *ngIf="editing" (ngSubmit)="saveEdit()">
+          <label>Headline<input name="headline" [(ngModel)]="editHeadline" maxlength="160"></label>
+          <label>About you<textarea name="about" [(ngModel)]="editAbout" rows="4" maxlength="4000"></textarea></label>
+          <label>Skills, comma separated<input name="skills" [(ngModel)]="editSkills"></label>
+          <div class="cl-btn-row">
+            <button class="btn gold" type="submit" [disabled]="busy">{{ busy ? 'Saving…' : 'Save' }}</button>
+            <button class="btn ghost" type="button" (click)="editing = false">Cancel</button>
+          </div>
+        </form>
+      </section>
+      <section class="cl-panel">
+        <h3>Security</h3>
+        <dl>
+          <div><dt>Last sign-in</dt><dd>{{ m.lastLoginAt ? (m.lastLoginAt | date:'d MMM y, h:mm a') : '—' }}</dd></div>
+          <div><dt>Sign-in</dt><dd>Password + emailed code</dd></div>
+        </dl>
+        <p class="muted">Closing this tab signs you out. Nobody will ever ask for your password.</p>
+        <div class="cl-btn-row">
+          <button class="btn ghost" type="button" (click)="download()" *ngIf="can('download_data')">Download my data</button>
+          <button class="btn ghost" type="button" (click)="signOutEverywhere()">Sign out everywhere</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ── What the admin has switched on ── -->
+    <section class="cl-panel">
+      <h3>What you can do here</h3>
+      <ul class="cl-perms">
+        <li *ngFor="let p of permissionCatalog" [class.on]="can(p.id)">
+          <strong>{{ p.name }}</strong>
+          <span>{{ p.blurb }}</span>
+          <em>{{ can(p.id) ? 'On' : 'Ask Karan' }}</em>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ── Feature requests ── -->
+    <section class="cl-panel">
+      <div class="cl-panel-top">
+        <h2>Request something new <small>{{ openRequests.length }} waiting</small></h2>
+      </div>
+
+      <form *ngIf="can('request_features'); else noAsk" (ngSubmit)="ask()">
+        <label>What would you like?<input name="title" [(ngModel)]="askTitle" maxlength="120" placeholder="A booking page, say" required></label>
+        <label>Any detail that helps<textarea name="details" [(ngModel)]="askDetails" rows="3" maxlength="2000"></textarea></label>
+        <label *ngIf="askableModules.length">Is it one of these modules?
+          <select name="moduleId" [(ngModel)]="askModule">
+            <option value="">Not in the list</option>
+            <option *ngFor="let mod of askableModules" [value]="mod.id">{{ mod.name }}</option>
+          </select>
+        </label>
+        <button class="btn gold" type="submit" [disabled]="asking">{{ asking ? 'Sending…' : 'Send to Karan' }}</button>
+        <p class="muted">Nothing is built or charged until Karan approves it and you agree to the cost.</p>
+      </form>
+      <ng-template #noAsk>
+        <p class="muted">Requests from the dashboard are not switched on for your account. Reply to any email from Karan instead.</p>
+      </ng-template>
+
+      <ul class="cl-reqs" *ngIf="features().length">
+        <li *ngFor="let f of features()">
+          <div class="r-top">
+            <strong>{{ f.title }}</strong>
+            <span class="cl-pill" [attr.data-f]="f.status">{{ featureLabel[f.status] || f.status }}</span>
+          </div>
+          <p class="r-det" *ngIf="f.details">{{ f.details }}</p>
+          <p class="r-note" *ngIf="f.adminNote"><strong>Karan:</strong> {{ f.adminNote }}</p>
+          <div class="r-foot">
+            <span>{{ f.createdAt | date:'d MMM y' }}</span>
+            <span *ngIf="f.price">{{ inr(f.price) }}</span>
+            <button type="button" *ngIf="f.status === 'pending'" (click)="withdraw(f)">Withdraw</button>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <p class="err" *ngIf="err">{{ err }}</p>
+    <p class="ok" *ngIf="note">{{ note }}</p>
+  </ng-container>
+</div>

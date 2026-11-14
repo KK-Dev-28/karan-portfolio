@@ -1,0 +1,139 @@
+<div class="bd">
+  <a class="bd-back" routerLink="/">← Portfolio</a>
+
+  <!-- ── Hero ─────────────────────────────────────── -->
+  <header class="bd-hero">
+    <p class="bd-kicker"><span class="dot"></span>Portfolio as a service</p>
+    <h1>Get a portfolio <em>like this one.</em></h1>
+    <p class="bd-lede">Tell me about yourself and pick the modules you need. I design, build and deploy it, and keep it hosted for you.
+      You pay once, and the price depends only on the modules you choose.</p>
+    <ol class="bd-flow" aria-label="How it works">
+      <li><b>1</b><span>Register</span><small>Verify your email and send your details</small></li>
+      <li><b>2</b><span>Approval</span><small>I review every request by hand</small></li>
+      <li><b>3</b><span>Quote</span><small>One-time price for your modules</small></li>
+      <li><b>4</b><span>Pay securely</span><small>Razorpay link, confirmed by me</small></li>
+      <li><b>5</b><span>Your sign-in</span><small>Secure email link to set a password</small></li>
+      <li><b>6</b><span>Live</span><small>Built, deployed and hosted</small></li>
+    </ol>
+  </header>
+
+  <!-- ── My requests ──────────────────────────────── -->
+  <section class="bd-sec" *ngIf="crew.member() && mine().length">
+    <h2>Your requests</h2>
+    <article class="bd-req" *ngFor="let r of mine()" [class.off]="r.status === 'cancelled' || r.status === 'rejected'">
+      <div class="bd-req-top">
+        <div>
+          <h3>{{ r.name }} <small>#{{ r.id }}</small></h3>
+          <p class="muted">{{ r.modules.length }} modules · sent {{ r.createdAt | date:'d MMM y' }}</p>
+        </div>
+        <span class="bd-pill" [attr.data-s]="r.status">{{ label[r.status] }}</span>
+      </div>
+
+      <ol class="bd-steps" *ngIf="r.status !== 'cancelled' && r.status !== 'rejected'">
+        <li *ngFor="let s of steps; let i = index" [class.done]="i < stepIndex(r.status)" [class.now]="i === stepIndex(r.status)">
+          <i></i><span>{{ label[s] }}</span>
+        </li>
+      </ol>
+
+      <div class="bd-quote" *ngIf="r.quoteAmount && ['quoted','accepted'].includes(r.status)">
+        <div><small>One-time price</small><b>{{ inr(r.quoteAmount) }}</b><span>Build, deployment and hosting included</span></div>
+        <p *ngIf="r.quoteNote">{{ r.quoteNote }}</p>
+        <div class="bd-actions">
+          <button class="btn gold" *ngIf="r.status === 'quoted'" (click)="accept(r)">Accept quote</button>
+          <a class="btn gold" *ngIf="r.status === 'accepted' && r.paymentUrl" [href]="r.paymentUrl" target="_blank" rel="noopener">Pay securely ↗</a>
+          <span class="muted" *ngIf="r.status === 'accepted' && !r.paymentUrl">Payment link coming by email.</span>
+        </div>
+      </div>
+
+      <p class="bd-note ok" *ngIf="['paid','building','live'].includes(r.status)">
+        Payment confirmed. Your sign-in link was emailed to {{ r.email }}. <a routerLink="/client">Open the client dashboard →</a>
+      </p>
+      <p class="bd-note ok" *ngIf="r.status === 'live' && r.liveUrl">Live at <a [href]="r.liveUrl" target="_blank" rel="noopener">{{ r.liveUrl }}</a></p>
+      <p class="bd-note" *ngIf="r.status === 'submitted'">Waiting for approval. Nothing is charged until you accept a quote.</p>
+
+      <div class="bd-actions">
+        <button class="btn ghost" *ngIf="canEdit(r)" (click)="edit(r)">Edit details</button>
+        <button class="btn ghost danger" *ngIf="canEdit(r) || r.status === 'accepted'" (click)="cancel(r)">Cancel</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Modules ──────────────────────────────────── -->
+  <section class="bd-sec">
+    <h2>Choose your modules</h2>
+    <p class="muted">The core four are always included. Tap a module to add it.</p>
+    <div class="bd-group" *ngFor="let g of groups()">
+      <h4>{{ g.name }}</h4>
+      <div class="bd-mods">
+        <button type="button" class="bd-mod" *ngFor="let m of g.items" (click)="toggle(m)"
+          [class.on]="picked().has(m.id)" [class.fixed]="m.included" [attr.aria-pressed]="picked().has(m.id)">
+          <span class="ic">{{ m.icon }}</span>
+          <span class="tx"><b>{{ m.name }}</b><small>{{ m.blurb }}</small></span>
+          <span class="tick">{{ m.included ? 'Included' : (picked().has(m.id) ? '✓' : '+') }}</span>
+        </button>
+      </div>
+    </div>
+    <p class="bd-count">{{ picked().size }} modules selected</p>
+  </section>
+
+  <!-- ── Verify email ─────────────────────────────── -->
+  <section class="bd-sec bd-card" *ngIf="!crew.member()">
+    <h2>Register with your email</h2>
+    <p class="muted">We send a 6-digit code to prove the address is yours. This also adds you to occasional portfolio updates, and you can unsubscribe from any email.</p>
+    <div class="bd-row" *ngIf="!codeSent">
+      <input [(ngModel)]="nameForCode" placeholder="Your name" autocomplete="name" aria-label="Your name">
+      <input [(ngModel)]="email" type="email" placeholder="you@example.com" autocomplete="email" aria-label="Email">
+      <button class="btn gold" (click)="sendCode()" [disabled]="authBusy">{{ authBusy ? 'Sending…' : 'Send code' }}</button>
+    </div>
+    <div class="bd-row" *ngIf="codeSent">
+      <input [(ngModel)]="code" inputmode="numeric" maxlength="6" placeholder="6-digit code" aria-label="Code" autocomplete="one-time-code">
+      <button class="btn gold" (click)="verifyCode()" [disabled]="authBusy || code.length !== 6">{{ authBusy ? 'Checking…' : 'Verify' }}</button>
+      <button class="btn ghost" (click)="codeSent = false">Change email</button>
+    </div>
+    <p class="err" *ngIf="authErr">{{ authErr }}</p>
+  </section>
+
+  <!-- ── Details ──────────────────────────────────── -->
+  <section class="bd-sec bd-card" id="details" *ngIf="crew.member()">
+    <h2>{{ editingId ? 'Edit request #' + editingId : 'Tell me about you' }}</h2>
+    <p class="muted">Signed in as {{ crew.member()?.email }}.</p>
+    <div class="bd-grid">
+      <label>Full name<input [(ngModel)]="form.name" maxlength="80" required></label>
+      <label>Phone (optional)<input [(ngModel)]="form.phone" maxlength="30" inputmode="tel"></label>
+      <label>Profession<input [(ngModel)]="form.profession" maxlength="80" placeholder="e.g. UI designer"></label>
+      <label>Headline<input [(ngModel)]="form.headline" maxlength="160" placeholder="One line that sums you up"></label>
+      <label class="wide">About you<textarea [(ngModel)]="form.about" rows="4" maxlength="4000" placeholder="Your story, what you do, what you're looking for"></textarea></label>
+      <label>LinkedIn<input [(ngModel)]="form.linkedin" placeholder="linkedin.com/in/…"></label>
+      <label>GitHub<input [(ngModel)]="form.github" placeholder="github.com/…"></label>
+      <label>Website<input [(ngModel)]="form.website" placeholder="Optional"></label>
+      <label>Domain you'd like<input [(ngModel)]="form.domain" maxlength="120" placeholder="yourname.com (optional)"></label>
+      <label class="wide">Skills (comma separated)<input [(ngModel)]="form.skills" placeholder="Figma, React, Branding…"></label>
+    </div>
+
+    <h4>Projects to feature</h4>
+    <div class="bd-proj" *ngFor="let p of form.projects; let i = index">
+      <input [(ngModel)]="p.name" [placeholder]="'Project ' + (i + 1)" maxlength="80">
+      <input [(ngModel)]="p.summary" placeholder="One-line summary" maxlength="600">
+      <input [(ngModel)]="p.url" placeholder="Link (optional)" maxlength="300">
+    </div>
+
+    <h4>Look and feel</h4>
+    <div class="bd-styles">
+      <button type="button" *ngFor="let s of styles" class="bd-style" [attr.data-v]="s.id" [class.on]="form.style === s.id" (click)="form.style = s.id">
+        <span class="sw"></span><b>{{ s.name }}</b><small>{{ s.hint }}</small>
+      </button>
+    </div>
+
+    <label class="wide">Anything else?<textarea [(ngModel)]="form.notes" rows="3" maxlength="2000" placeholder="Deadlines, references you like, content you'll send later"></textarea></label>
+
+    <div class="bd-actions">
+      <button class="btn gold" (click)="submit()" [disabled]="busy">{{ busy ? 'Sending…' : (editingId ? 'Save changes' : 'Send request · ' + picked().size + ' modules') }}</button>
+      <button class="btn ghost" *ngIf="editingId" (click)="stopEditing()">Stop editing</button>
+      <button class="btn ghost" (click)="crew.logout(); mine.set([])">Sign out</button>
+    </div>
+    <p class="err" *ngIf="err">{{ err }}</p>
+    <p class="ok" *ngIf="done">{{ done }}</p>
+  </section>
+
+  <p class="bd-foot muted">Already paid? <a routerLink="/client">Sign in to your client dashboard</a>.</p>
+</div>

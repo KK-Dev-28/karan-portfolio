@@ -18,6 +18,8 @@ export class CrewService {
 
   private get token(): string | null { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } }
   private headers() { return new HttpHeaders({ 'X-Crew-Token': this.token ?? '' }); }
+  /** Headers other services use to act as the signed-in crew member. */
+  authHeaders() { return this.headers(); }
 
   /** Restores the signed-in member on page load, if a token is stored. */
   restore() {
